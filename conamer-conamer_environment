@@ -1,0 +1,107 @@
+#!/bin/bash
+
+set -x
+
+# Set up the Continental American data transfer environment
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="Amanda Harding"
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_in=/home/hcmprod/inbound/continental_american
+export hcmdir_out=/home/hcmprod/outbound/continental_american
+export alert_recipient=joanne.gies@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp_rem=`/bin/date +%m%d%Y`
+export info_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+function outproc {
+
+cd $hcmdir_out
+
+ls -1 ${basename}.tag | while read FILE1
+	do
+
+export tag_file=`ls -1 ${basename}*.tag`
+export data_file=`echo $tag_file | sed -e 's/tag/txt/'`
+export pgpfile=${data_file}.pgp
+
+	if [ ! -s $hcmdir_out/$data_file ]; then
+echo -e "\nExpected data file $data_file IS EMPTY,
+directory listing of `pwd`:"
+ls -l $hcmdir_out
+	exit 4
+	fi
+
+cp $data_file $outbound_dir
+
+cd $outbound_dir
+
+securezip $data_file outbound
+
+data_records=`wc -l $data_file | awk '{print $1}'`
+
+echo -e "\n$datestamp: there were $data_records records sent to continental_american" 
+
+echo -e "\nencrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r "$pgp_remote_signature" --output $pgpfile --encrypt $data_file >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "continental_american data file encryption failure, contact Production Services."
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+echo -e "\nRemove temp files"
+rm -fv $hcmdir_out/$data_file $hcmdir_out/$tag_file $data_file
+	done
+
+archive_clean $outbound_archive $basename $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $local_file --decrypt $pgp_infile >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $local_file ]; then
+	echo -e "\ncontinental_american data file encryption failure, contact Production Services.\n"
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+securezip $local_file inbound
+
+
+echo -e "\nMove $local_file to $hcmdir_in"
+mv $local_file $hcmdir_in
+touch $hcmdir_in/$local_tagfile
+
+	result=$?
+
+	if [ $result -ne 0 -o -f $local_file ]; then
+	echo -e "\nMove $localfile to $hcmdir_in failed, contact Production Services.\n"
+  	exit 8
+	fi
+
+rm -f $local_file $pgp_infile
+
+}

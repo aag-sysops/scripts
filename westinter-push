@@ -1,0 +1,37 @@
+#!/bin/bash
+
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="systems.management@alaskaair.com"
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_archive
+
+
+#ftp_check $ftp_local_host 
+
+	ls -1 *.zip | while read FILE1
+     	do
+
+pkzipc -extract -passphrase=t00c00l4u $FILE1 
+sleep 2
+	done
+
+exit
+
+ftp_file $ftp_local_host $FILE1 $FILE1 "cd AlaskaAir/WestData/saved"
+
+#securezip $FILE1 inbound
+
+#rm -fv $FILE1
+	done
+
+#archive_clean $inbound_archive .del $FileAge

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# no other scripts needed
+
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="joanne.gies@alaskaair.com"
+export FileAge=60
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+filecount=`ls -1 *.SIM | wc -l`
+echo $filecount
+
+echo -e "\nCheck for inbound Delta Air/Northwest files"
+
+	if [ $filecount -eq 0 ]; then
+echo -e "\nexpected ssim files not present"
+echo "sending email notification Systems Management.."
+$errmsg1 | Mail -s "Delta Air data file - no files SSDELTAAIRSIM" $errors_to
+	exit 8
+	fi
+
+ls -1  *.SIM | while read FILE1
+     	do  
+        datafile=`echo $FILE1 | sed -e 's/.SIM//'`      
+
+echo -e "\nput file $FILE1 to  $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<PUTDATA >ftp_results.$$
+	cd "Scheduling\rm\ssimupld"
+	put $FILE1 $datafile.$datestamp.SIM
+	dir	
+	bye
+PUTDATA
+
+securezip $FILE1 inbound
+
+rm $FILE1 
+
+	done
+
+#echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ *.TAG DELTASIM.TAG
+
+
+archive_clean $inbound_archive .SIM $FileAge
+
+

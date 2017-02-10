@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd /ftphome/atpco/outbound.archive
+
+ls -1 XAS.*201009* | 
+	while read FILE1
+	do
+pkzipc -add -cryptalgorithm=AES,256 -passphrase="t00c00l4u" $FILE1.zip $FILE1
+mv -v $FILE1 /tmp/xasfiles
+	done

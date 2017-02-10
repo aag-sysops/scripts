@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# Set up the rewards data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/rewards_environment"
+
+export PGPPASS=seavvdmzftp
+#export pgp_remote_signature='rs_alaska@clients.rewardstream.com'
+export pgp_remote_signature='rs_de_4_lt@clients.rewardstream.com'
+export ftp_host=ftp.rewardstream.com
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp=`/bin/date +%Y%m%d`
+export nofiledate=`/bin/date "+%A, %D"`
+export local_file=LTLENDINGTREEPIT.txt
+export out_data_file=LT_out_formatted
+export outfile_prefix=LTLENDINGTREEPIT
+export out_pgp_file=${out_pgp_file}.pgp
+export MAILLIST="joanne.gies@alaskaair.com"
+FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+	if [ ! -f $data_pgp_file ]; then
+	echo -e "\nexpected rewards data file ($data_pgp_file) not found\n"
+	export MSG="There was no rewards file found for $nofiledate."
+	echo $MSG
+	echo $MSG | Mail -s "rewards Mileage Plan data" $MAILLIST
+	exit 0
+	fi
+
+echo -e "decrypt $data_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $data_pgp_file    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "${program}: inbound results file decrypt problem.  Call Ops Analyst."
+        exit 8
+	fi
+
+records=`wc $local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="rewards data file for date $rundate is empty."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "rewards Mileage Plan data" $MAILLIST
+	mv $local_file $inbound_archive/$local_file.MT.$datestamp
+	exit 0
+	fi
+
+echo -e "\n$local_file file ($records records) received at `date`"
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file $data_pgp_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+echo -e "\nmake record length 152 for all records"
+$HOME/bin/152.pl $solar_file >$out_data_file
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e  "\nchange record length failed, contact EPS"
+	exit 4
+	fi
+
+securezip $out_data_file outbound
+
+echo -e "\nencrypt $solar_file (output to $handback_pgp_file)"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output $out_pgp_file --encrypt $out_data_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $out_pgp_file -o $result -ne 0 ]; then
+	echo -e "\n$solar_file encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm -fv pgp_transcript.$$
+	exit 4
+	fi
+
+rm -fv pgp_transcript.$$
+
+ftp_vendor $ftp_host $out_pgp_file $out_pgp_file.$datestamp.pgp  "cd in"
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "remove local files in outbound"
+rm -fv $out_pgp_file $solar_file $out_data_file
+
+archive_clean $outbound_archive $out_data_file $FileAge
+
+}

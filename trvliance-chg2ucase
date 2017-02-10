@@ -1,0 +1,27 @@
+#!/bin/sh
+
+cd /ftphome/trisept/data
+
+mv asairl ASAIRL
+mv ascarl ASCARL
+mv asccnuml ASCCNUML
+mv ascusadl ASCUSADL
+mv asdepl ASDEPL
+mv asdestl ASDESTL
+mv aseconfl ASECONFL
+mv asflighl ASFLIGHL
+mv asgnamel ASGNAMEL
+mv ashotell ASHOTELL
+mv asnamel ASNAMEL
+mv asotherl ASOTHERL
+mv aspromol ASPROMOL
+mv asrecadl ASRECADL
+mv asrefndl ASREFNDL
+mv asresl ASRESL
+mv assaladl ASSALADL
+mv asseatl ASSEATL
+mv astickel ASTICKEL
+mv asvdetll ASVDETLL
+mv asvmainl ASVMAINL
+mv aszzzzzz ASZZZZZZ         
+

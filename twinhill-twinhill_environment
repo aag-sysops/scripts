@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Set up the Twinhill data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export GPGPASS=seavvdmzftp
+export gpg_rem_sig="MensWearhouse"
+export ftp_host=ftp.tmw.com
+export local_ftp_host=appprod6
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export dir_in=/appl/fin/interfaces/ap/data
+export hcmdir_out=/home/hcmprod/outbound/twinhill
+export alert_recipient=dean.liebrich@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="joanne.gies.liebricha@alaskaair.com"
+export errors_to="eps@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=30
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+echo -e "get $data_file from $hcmdir_out"
+cp $hcmdir_out/$data_file $outbound_dir
+
+echo -e "\nEncrypt $data_file"
+echo $GPGPASS | gpg --passphrase-fd 0 --batch -v -r "$gpg_rem_sig" --output $gpgfile --encrypt $data_file > gpg_transcript.$$ 2>&1
+
+	result=$?
+
+        if [ $result -ne 0 -o ! -f $gpgfile ]; then
+        echo "Twinhill data file encryption failure, contact Production Services."
+        cat gpg_transcript.$$
+        rm -f gpg_transcript.$$
+        exit 8
+        fi
+
+rm -f gpg_transcript.$$
+
+ftp_vendor $ftp_host $gpgfile $gpgfile bin
+
+securezip $data_file outbound
+
+data_records=`wc -l $data_file | awk '{print $1}'`
+echo -e "\n$datestamp: There were $data_records records sent to Twinhill"
+
+echo -e "\nRemove temp files"
+rm -fv $data_file  $gpgfile  $hcmdir_out/$data_file $hcmdir_out/$tagfile_out
+
+archive_clean $outbound_archive $data_file $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+rm -fv $rtagfile
+
+ftp_check $local_ftp_host
+
+echo $GPGPASS | gpg --passphrase-fd 0 --batch -v --output $localfile --decrypt $data_file >gpg_transcript.$$ 2>&1
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nTwinhill inbound file decrypt problem.\n"
+	exit 8
+	fi
+
+rm -fv gpg_transcript.$$
+
+securezip $localfile inbound
+
+touch $tagfile
+
+ftp_file $local_ftp_host $localfile $localfile "cd $dir_in"
+ftp_file $local_ftp_host $tagfile $tagfile "cd $dir_in"
+
+rm  -fv $localfile $data_file $tagfile
+
+archive_clean $inbound_archive $localfile $FileAge
+
+}
+

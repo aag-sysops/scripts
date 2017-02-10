@@ -1,0 +1,43 @@
+#!/bin/bash
+
+program=`basename $0`
+
+. $HOME/bin/talx_environment
+
+export file_id=$1
+
+#make sure airline parm was passed as first arg
+ if [ -z $file_id ]; then
+echo -e "\n Missing airline parm.  Proper syntax
+ is put_as_talx_pre_emp, where file_id
+ is equal to wtpa or wtpatest."
+ exit 4
+ fi
+case "$file_id" in
+ wtpa)
+
+        export datafile=talxwtpa.csv
+        export hcmdir=$ashcmdir
+        export pgpfile=HRX00107CNH_${ni90datestamp}.csv.pgp
+        export tagfile=talxwtpa.tag
+
+mainproc
+
+echo -e "\nTalx Service Plan data transfer for Alaska Air complete"
+
+;;
+
+ wtpa_test)
+	
+ 	export datafile=talxwtpatest.csv
+        export hcmdir=$ashcmdir
+      	export pgpfile=HRX00107CNH_${ni90datestamp}.csv.pgp
+      	export tagfile=talxwtpatest.tag
+mainproc
+
+;;
+
+esac
+
+
+#Mail -s "Talx data AS  file sent to $ftp_host at `date`" $talx_mailto </dev/null

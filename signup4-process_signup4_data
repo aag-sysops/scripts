@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -x
+
+# Set up the signup4 data transfer environment
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_out=/home/hcmprod/outbound/signup4
+export alert_recipient=joanne.gies@alaskaair.com
+export filepref=signup4
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+#export infor_to="joanne.gies@alaskaair.com"
+export infor_to="valerie.dotson@alaskaair.com,Yana.Danilchuk@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+cd $hcmdir_out
+
+ls -1 ${filepref}*.csv |
+	while read FILE1
+	do
+	export datafile=$FILE1
+	export tagfile=`echo $FILE1 | sed -e 's/csv/tag/'`
+
+echo -e "\nget $datafile from $hcmdir_out"
+cp -p $hcmdir_out/$datafile $outbound_dir
+
+securezip $datafile outbound 
+
+cd $outbound_dir
+
+echo -e "\nsend email to Val and Yana that files have been put on the sever"
+ls -1 | Mail -s "File(s) are available for Signup4 on the external FTP server" $infor_to
+
+echo -e "\nRemove $datafile and $tagfile"
+rm -fv $hcmdir_out/$tagfile $hcmdir_out/$datafile
+
+	done
+
+archive_clean $outbound_dir $filepref $FileAge

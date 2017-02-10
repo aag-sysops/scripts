@@ -1,0 +1,33 @@
+#!/bin/sh
+
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export data_file=apascdat
+export done_file=trisept_asc.dat
+#export psfindir=/ftptest/FINTEST/inbound/aptrisept
+export psfindir=/home/finprod/inbound/apctrisept
+export psdatafile=trisept_as.dat
+export psdonefile=trisept_as.tag
+export datestamp=`date +%m%d%y.%H%M`
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+    
+cd $inbound_dir
+
+securezip $data_file inbound
+
+echo -e "\ncopy $data_file to $psfindir as $psdatafile"
+cp $data_file $psfindir/$psdatafile
+errorchk $? "copy $data_file to $psfindir as $psdatafile"
+
+echo -e "\ncopy $done_file to $psfindir as $psdonefile"
+cp $done_file $psfindir/$psdonefile
+errorchk $? "copy $done_file to $psfindir as $psdonefile"
+
+echo -e "\nclean up data directory"
+rm -fv $data_file $done_file $psfindir_out/$tag_file $psfindir_out/$done_file
+
+archive_clean $inbound_archive $data_file $FileAge

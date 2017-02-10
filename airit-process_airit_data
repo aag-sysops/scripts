@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# no other scripts needed
+
+export ftp_local_host=asprodftp
+export ftp_host=asprodftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=joanne.gies@alaskaair.com
+export filedate=`date +%Y%m%d`
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="joanne.gies@alaskaair.com"
+#export cryptalg="-cryptalgorithm=AES,128"
+#export something=A1@skaG!D$
+
+
+export mail_to="joanne.gies@alaskaair.com,greg.wick@alaskaair.com"
+#export mail_to="joanne.gies@alaskaair.com"
+
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\nget file on $ftp_host" 
+	ftp -v -i $ftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd airit
+        bin
+	mget "*.zip"
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+	ls -1 *.zip | while read File1
+	do
+
+export airit_file=$File1
+echo -e "\nprocessing airit file $newname"
+
+
+ftp_file $ftp_host $File1 $File1 bin "cd /airit/Archive"
+
+ftp_delete $ftp_host "$File1" "cd airit"
+
+
+	done
+
+
+echo -e "\nemail to airit  that the handback file is ready"
+Mail -s "Zipped file(s) are now on our server, please delete after picking up $datestamp" $mail_to </dev/null

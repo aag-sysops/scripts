@@ -1,0 +1,59 @@
+#!/bin/bash
+
+export mail_list="dean.liebrich@alaskaair.com,Production.Operations@alaskaair.onmicrosoft.com"
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+	ftp -v $ftp_host <<TEST >ftp_results.$$ 2>&1
+	quit
+TEST
+
+ftptest1=`grep -i -c -e "$ftp_host" ftp_results.$$`
+ftptest2=`grep -i -c -e "log" ftp_results.$$`
+ftptest3=`grep -i -c -e "failed" ftp_results.$$`
+
+rm -f ftp_results.$$
+
+#The test condition below is coded with a || (double pipe) which equates to an OR statement.
+#For future reference - You can also use a && (double ampersand) which equates to an AND statement.
+
+	if [ $ftptest1 -lt 1 -a $ftptest2 -lt 1 ] || [ $ftptest3 -ge 1 ]; then
+
+sleep 900
+
+	ftp -v $ftp_host <<TEST >ftp_results.$$ 2>&1
+	quit
+TEST
+
+ftptest1=`grep -i -c -e "$ftp_host" ftp_results.$$`
+ftptest2=`grep -i -c -e "log" ftp_results.$$`
+ftptest3=`grep -i -c -e "failed" ftp_results.$$`
+
+rm -f ftp_results.$$
+
+		if [ $ftptest1 -lt 1 -a $ftptest2 -lt 1 ] || [ $ftptest3 -ge 1 ]; then
+export MSG="UNABLE TO OPEN FTP SESSION TO Port of SEA host $portip, please notify SEA of this problem.  
+We connect to Airgroup address $ftp_host which is nat'd to Port address $portip.  The Port of SEA Service
+Desk can be reached at 206-787-3333."
+echo $MSG | Mail -s "PORT of SEA FIDS feed" $mail_list
+	exit
+		fi
+	fi
+	
+}
+
+export ftp_host=159.49.11.51
+export portip=10.254.137.56
+mainproc
+export ftp_host=159.49.11.52
+export portip=10.254.137.50
+mainproc
+export ftp_host=159.49.11.54
+export portip=10.254.138.50
+mainproc
+export ftp_host=159.49.11.55
+export portip=10.254.137.63
+mainproc
+

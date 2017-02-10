@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Set up the colonial data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/colonial_environment"
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="Unum Public Key"
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export ftp_host=ftp.coloniallife.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_in=/home/hcmprod/inbound/colonial
+export hcmdir_out=/home/hcmprod/outbound/colonial
+export alert_recipient=dean.liebrich@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="dean.liebricha@alaskaair.com"
+export errors_to="eps@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+echo -e "get $data_file from $hcmdir_out"
+cp $hcmdir_out/$data_file $outbound_dir
+
+echo -e "\nencrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r "$pgp_remote_signature" --output $pgpfile --encrypt $data_file >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "colonial data file encryption failure, contact Production Services."
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+ftp_vendor $ftp_host $pgpfile $pgpfile bin "cd CLA/IN"
+
+securezip $data_file outbound
+
+echo -e "\nRemove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+data_records=`wc -l $data_file | awk '{print $1}'`
+echo -e "\n$datestamp: there were $data_records records sent to colonial" 
+
+echo -e "\nRemove temp files"
+rm -f $data_file $tagfile_out $hcmdir_out/$data_file $hcmdir_out/$tagfile_out $pgpfile
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $local_file --decrypt $pgp_file >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $local_file ]; then
+	echo -e "\ncolonial data file encryption failure, contact Production Services.\n"
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+echo -e "\nMove $local_file to $hcmdir_in"
+mv $local_file $hcmdir_in
+touch $hcmdir_in/$tagfile
+
+	result=$?
+
+	if [ $result -ne 0 -o -f $local_file ]; then
+	echo -e "\nMove $localfile to $hcmdir_in failed, contact Production Services.\n"
+  	exit 8
+	fi
+
+echo -e "\nMove encrypted file $pgp_file to the archive directory as $pgp_file.$datestamp"
+mv $pgp_file $inbound_archive/$pgp_file.$datestamp
+
+}

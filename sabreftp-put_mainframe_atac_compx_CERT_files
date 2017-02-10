@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#This is only for atac file. change as needed.
+
+export job=$1
+export filedate=$2
+export ftphost=mvs
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export datestamp=`date +%m%d%y.%H%M`
+export dcbparms=""
+export fileage=10
+
+. /opt/local/ops_scripts/function_lib
+
+function putdsn {
+
+cd $inbound_dir
+
+dsn_2mvs $ftphost $data_file "'$dsn'" bin
+
+echo -e "\ndatestamp tag file(s) and put in archive dir"
+mv $tagfile $inbound_archive/$tagfile.$datestamp
+
+echo -e "\nremove previous version from $inbound_archive"
+rm -fv $inbound_archive/$data_file
+
+echo -e "\nmove $data_file to $inbound_archive"
+mv $data_file $inbound_archive
+
+echo -e "\nremove tagfiles older than $fileage days"
+find $inbound_archive/*.tag* -mtime +$fileage -print |
+        while read FILE1
+        do
+        echo "removing file $FILE1"
+        rm -f $FILE1
+        done
+}
+
+echo -e "\nprocess atac file"
+	export tagfile=certrecatc_atac.tag
+	export data_file=1s_amris_receive_atac_1016_cert.comp
+	export dsn=PROG.SR.CERT.AMRIS.RECEIVE.ATAC.COMP
+putdsn
+

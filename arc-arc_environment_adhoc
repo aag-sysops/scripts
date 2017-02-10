@@ -1,0 +1,287 @@
+#!/bin/bash
+
+# Set up the ARC data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/arc_environment"
+
+export PGPPASS=seavvdmzftp
+export asfilename=PEX027
+export ext='.csv'
+export ftp_host=alaska@mover.arccorp.com
+export wtag=arcw.tag
+export qtag=arcq.tag
+export local_host=asprodftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`date +%m%d%y.%H%M`
+export month=`date +%m`
+export year=`date +%Y`
+export FileAge=14
+
+. /opt/local/ops_scripts/function_lib
+
+######################################################################
+
+function outproc {
+
+cd $outbound_dir
+
+if [ $month = 01 ]; then
+let procmonth=12
+let year="$year-1"
+else
+	let procmonth="$month-1"
+	let year=$year
+fi
+
+arcfilename=PEX027$procmonth$year$ext
+
+#get the file $asfilename$ext from the landing zone on SEAVVFILE1
+echo -e "\nget $asfilename$ext from SEAVVFILE1" 
+	ftp -v asprodftp <<GETDATA >ftp_results.$$
+	cd "sis\bidt\outbound\ARC"
+	get $asfilename$ext
+	ren $asfilename$ext $asfilename.SENT$datestamp$ext
+	bye
+GETDATA
+
+result=$?
+
+if [ $result -ne 0 ]; then
+echo "ftp get of $asfilename$ext failed"
+cat ftp_results.$$
+exit 4 
+fi
+
+rm -f ftp_results.$$
+
+echo -e "\ncheck for ftp connectivity to $ftp_host"
+	sftp -o port=1022 $ftp_host <<TEST >ftp_results.$$
+	quit
+TEST
+
+ftptest1=`grep -i -c -e "sftp>" ftp_results.$$`
+
+	if [ $ftptest1 -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN FTP SESSION TO $ftp_host
+Determine cause and restart job\n"
+	cat ftp_results.$$
+	cp ftp_results.$$ ftp_debug.$$
+	rm ftp_resutls.$$
+	exit 4
+	else
+echo -e "\nconnection to $ftp_host confirmed, processing continues...\n"
+rm ftp_results.$$
+	fi
+
+echo -e "\nFTP file $asfilename$ext to $ftp_host as $arcfilename"
+	sftp -o port=1022 $ftp_host <<DATA >ftp_results.$$
+	cd in
+	put $asfilename$ext $arcfilename
+	ls -l
+	quit
+DATA
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nFTP of $local_file to $exthost failed\n"
+        cat ftp_results.$$
+        rm ftp_results.$$
+        exit 8
+        fi
+
+echo -e "\nresults of FTP:"
+cat ftp_results.$$
+rm  ftp_results.$$
+
+echo -e "\nmove $asfilename$ext to $outbound_archive/$asfilename.$datestamp"
+mv $asfilename$ext $outbound_archive/$asfilename.$datestamp
+
+
+}
+
+######################################################################
+
+function inproc_ecb {
+
+cd $inbound_dir
+
+echo -e "\ncheck for ftp connectivity to $ftp_host"
+	sftp -o port=1022 $ftp_host <<TEST >ftp_results.$$
+	bye
+TEST
+
+ftptest1=`grep -i -c -e "sftp>" ftp_results.$$`
+
+	if [ $ftptest1 -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN FTP SESSION TO $ftp_host
+Determine cause and restart job\n"
+	cat ftp_results.$$
+	cp ftp_results.$$ ftp_debug.$$
+	rm ftp_resutls.$$
+	exit 4
+
+	else
+
+echo -e "\nconnection to $ftp_host confirmed, processing continues...\n"
+rm ftp_results.$$
+	fi
+
+ftp_check mvs
+
+#Run mainproc fuction for each file to be received.
+mainproc "ATY.DALY.DAATA435.OECB#027.CYC$CYC" "RA.ARC.RECEIVE.DETAIL.ECCB"
+
+#TEST mainproc....REMOVE FOR PRODUCTION.
+#mainproc "TEST.ATY.DALY.DAATA435.OECB#027.CYC$CYC" "PROG.TEST.RECEIVE.DETAIL.ECCB"
+
+#Run proc to put JCL to mainframe which will then create the dataset to trigger the CA7 job RAECBRCV.
+cd ../bin
+ftp_jcl ftraecb.jcl mvs
+
+}
+
+###########################################################################
+
+
+function inproc_bank {
+
+cd $inbound_dir
+
+echo -e "\ncheck for ftp connectivity to $ftp_host"
+	sftp -o port=1022 $ftp_host <<TEST >ftp_results.$$
+	bye
+TEST
+
+ftptest1=`grep -i -c -e "sftp>" ftp_results.$$`
+
+	if [ $ftptest1 -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN FTP SESSION TO $ftp_host
+Determine cause and restart job\n"
+	cat ftp_results.$$
+	cp ftp_results.$$ ftp_debug.$$
+	rm ftp_resutls.$$
+	exit 4
+
+	else
+
+echo -e "\nconnection to $ftp_host confirmed, processing continues...\n"
+rm ftp_results.$$
+	fi
+
+ftp_check mvs
+
+#Run mainproc fuction for each file to be received.
+mainproc "ATW.DALY.DAATA120.IAP0276.CYC$CYC" "ra.arc.receive.detail.bank4"
+mainproc "ATR.DALY.DAATA120.IAR0276.CYC$CYC" "ra.arc.receive.detail.bank7"
+
+#TEST mainproc....REMOVE FOR PRODUCTION.
+#mainproc "TEST.ATW.DALY.DAATA120.IAP0276.CYC$CYC" "prog.test.receive.detail.bank4"
+#mainproc "TEST.ATP.DALY.DAATA120.ELW0276.CYC$CYC" "prog.test.receive.detail.bank5"
+#mainproc "TEST.ATR.DALY.DAATA120.IAR0276.CYC$CYC" "prog.test.receive.detail.bank7"
+
+#Run ftp_jcl proc to put JCL to mainframe which will then create the dataset to trigger the CA7 job RARECARC.
+cd ../bin
+ftp_jcl ftraarc.jcl mvs
+
+}
+
+######################################################################
+
+function mainproc {
+
+export remotedsn=$1
+export pgp_file=${remotedsn}.pgp
+export localdsn=$2
+
+echo -e "\nGet $remotedsn from $ftp_host as $pgp_file"
+	sftp -o port=1022 $ftp_host <<DATA >ftp_results.$$
+	cd out
+	get $remotedsn $pgp_file
+	bye
+DATA
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nFTP get of $remotedsn to $inbound_dir/$localfile failed\n"
+        cat ftp_results.$$
+        rm ftp_results.$$
+        exit 8
+        fi
+
+echo -e "\nresults of FTP:"
+cat ftp_results.$$
+rm  ftp_results.$$
+
+#decrypt goes here
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $remotedsn --decrypt $pgp_file
+
+#call function to push dataset to MVS.
+dsn_2mvs mvs $remotedsn "'$localdsn'"
+
+echo -e "\nMove $pgp_file to $inbound_archive/$pgp_file.$datestamp"
+mv $pgp_file $inbound_archive/$pgp_file.$datestamp
+
+echo -e "\nRemove $remotedsn from $inbound_dir" 
+rm $remotedsn
+
+# Call function 'archive_clean' to delete old archived files.
+archive_clean $inbound_archive $pgp_file $FileAge
+
+}
+
+######################################################################
+
+function inproc_weekly {
+
+cd $inbound_dir
+
+#Set wkly_file to be the name of this weeks file.
+wkly_file=`ls -1 o2uw*.dat`
+
+#call function to check connectivity $local_host (Seavvfile1). 
+ftp_check $local_host 
+
+#call function to push dataset to $local_host
+ftp_file $local_host $wkly_file $wkly_file "cd sis/travelagency/inbound/arc"
+
+echo -e "\nMove $wkly_file to $inbound_archive/$wkly_file.$datestamp"
+mv $wkly_file $inbound_archive/$wkly_file.$datestamp
+
+echo -e "\nRemove $wtag from $inbound_dir" 
+rm $wtag
+
+# Call function 'archive_clean' to delete old archived files.
+archive_clean $inbound_archive $wkly_file $FileAge
+
+}
+
+######################################################################
+
+function inproc_quarterly {
+
+cd $inbound_dir
+
+qtrly_file=`ls -1 o1mq*.dat`
+
+#call function to check connectivity $local_host (Seavvfile1). 
+ftp_check $local_host 
+
+#call function to push dataset to $local_host
+ftp_file $local_host $qtrly_file $qtrly_file "cd sis/travelagency/inbound/arc"
+
+echo -e "\nMove $qtrly_file to $inbound_archive/$qtrly_file.$datestamp"
+mv $qtrly_file $inbound_archive/$qtrly_file.$datestamp
+
+echo -e "\nRemove $qtag from $inbound_dir" 
+rm $qtag
+
+# Call function 'archive_clean' to delete old archived files.
+archive_clean $inbound_archive $qtrly_file $FileAge
+
+}
+

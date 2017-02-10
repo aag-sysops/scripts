@@ -1,0 +1,43 @@
+#!/bin/bash
+
+. $HOME/bin/spec_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+echo -e "\nput $cxbill_file to $sftp_host"
+	sftp $sftp_host <<PUTDATA >ftp_results.$$
+	put $cxbill_file
+	bye
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $cxbill_file to Cathay failed, contact EPS"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+count_records=`wc -l $cxbill_file | awk '{print $1}'`
+echo -e "\n$count_records records sent to Cathay at $sftp_host"
+
+exit
+echo -e "\nMove $cxbill_file to $outbound_archive"
+gzip <$cxbill_file >$outbound_archive/$cxbill_file.$datestamp.gz
+
+echo -e "\nremove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+echo -e "\nclean up outbound directory"
+rm -f $cxbill_file $bill_tagfile ftp_results.$$
+
+#end of script

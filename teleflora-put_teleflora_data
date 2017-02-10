@@ -1,0 +1,3 @@
+#!/bin/bash
+
+export sftp_host=sftp alaskaair@sshftp.teleflora.com

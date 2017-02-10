@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Get file from Seavvfile1 and place in outbound directory of
+# west coast hotels account. Delete file from seavvfile1 location.
+
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=production.services@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export local_file=FWCHOTELS_HB.txt
+export outfile_prefix=WCWESTCOASTHOTELSPIT
+export data_file=Westcoast_handback
+export rundate=`date "+%A,%B%d,%y"`
+export info_to="production.services@alaskaair.com"
+export errors_to="production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+export MAILLST="ftp.partner.alerts@alaskaair.com"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=35
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+archive_clean $outbound_dir $data_file $FileAge
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+securezip $solar_file outbound
+
+echo -e "\nrename $solar_file to $data_file.$rundate"
+mv $solar_file $data_file.$rundate
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+archive_clean $outbound_archive $outfile_prefix $FileAge

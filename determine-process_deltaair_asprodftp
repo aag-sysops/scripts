@@ -1,0 +1,48 @@
+#!/bin/bash
+
+program=`basename $0`
+. $HOME/bin/deltaair2_asprodftp_environment
+
+export filetype=$1
+
+#make sure file parm was passed as first arg
+ if [ -z $filetype ]; then
+echo -e "\n Missing file parm.  Proper syntax
+ is process_delta_asprodftp file, where file
+ is equal to accr or red or summ"
+ exit 4
+ fi
+
+case "$filetype" in
+ accr)
+      export local_file=accrual 
+      export data_pgp_file=accrual.pgp
+      
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nDeltaAir upload to asprodftp upload for Alaska Air complete"
+;;
+
+ red)
+
+      export local_file=redempt 
+      export data_pgp_file=redempt.pgp
+
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nDeltaAir Service Plan upload for AlaskaAir Air complete"
+;;
+
+ sum)
+      export local_file=milesum 
+      export data_pgp_file=milesum.pgp
+     
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nDeltaAir upload to asprodftp upload for Alaska Air complete"
+
+esac
+
+
+
+

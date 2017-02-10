@@ -1,0 +1,67 @@
+
+#!/bin/bash
+
+set -x
+#this is a stand alone script
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="wageworks"
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export ftp_host=ftp.wageworks.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+#export hcmdir_in=/home/hcmprod/inbound/wageworks
+export hcmdir_out=/home/hcmprod/outbound/wageworks
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export filedate=`/bin/date +%Y%m%d`
+export data_file=PSF_28542.upd
+export tag_file=PSF_28542.tag
+export pgp_file=PSF_28542_${filedate}_wageworks.upd.pgp
+export alert_recipient=dean.liebrich@alaskaair.com
+export info_to="dean.liebricha@alaskaair.com"
+export errors_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "get $data_file from $data_file"
+cp $hcmdir_out/$data_file $outbound_dir
+
+echo -e "\nencrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r "$pgp_remote_signature" --output $pgp_file --encrypt $data_file >gpg_transcript.$$
+
+
+result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "wageworks data file encryption failure, contact Production Services."
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+securezip $data_file outbound
+
+ftp_vendor $ftp_host $pgp_file $pgp_file bin "cd psf"
+
+echo -e "\nRemove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+data_records=`wc -l $data_file | awk '{print $1}'`
+echo -e "\n$datestamp: there were $data_records records sent to wageworks" 
+
+echo -e "\nRemove temp files"
+rm -f $data_file  $pgp_file $hcmdir_out/$data_file $hcmdir_out/$tag_file

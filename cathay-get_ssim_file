@@ -1,0 +1,67 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export ftp_host=icp-production.lhsystems.com
+export partner=CX
+export mail_partner=Cathay Pacific
+export file_prefix=SSIM
+export lzout_dir=scheduling/PartnerSSIM/$partner/outbound
+export lzout_archive=scheduling/PartnerSSIM/$partner/outbound.archive
+export lzin_dir=scheduling/PartnerSSIM/$partner/inbound
+export lzin_archive=scheduling/PartnerSSIM/$partner/inbound.archive
+export maildom=alaskaair.com
+export mail_list="joanne.gies@$maildom"
+#export mail_list="ASQX.ScheduleDistribution@$maildom,fi.distribution@$maildom,dean.liebrich@$maildom"
+export sentdate=`/bin/date "+%Y%m%d"`
+export datestamp=`/bin/date "+%j%y-%H%M"`
+export maildate=`/bin/date "+%Y%m%d %H:%M"`
+export FileAge=7
+
+export program=`basename $0`
+
+. /opt/local/ops_scripts/function_lib
+
+ftp_check $ftp_local_host
+ftp_check $ftp_host
+
+cd $inbound_dir
+
+echo -e "\nget file on Emirates server" 
+	ftp -v $ftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "EK_SSIM"
+        bin
+       	mget EK-to-AS*.ssim
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+export data_file=`ls -1 EK-to-AS*.ssim`
+
+echo -e "nThis is the $data_file" $data_file
+
+
+ftp_file $ftp_local_host $data_file SSIM_in.$sentdate.txt "cd $lzin_dir"
+
+echo -e "\nDelete file on Emirates server" 
+	ftp -v $ftp_host <<RENMDATA >ftp_results.$$ 2>&1
+        cd EK_SSIM
+       	delete $data_file 
+      quit
+RENMDATA
+
+#echo "SSIM file SSIM file was pulled from $partner to AS on $senddate. The files can be found here: $lzin_dir" | Mail -s "$partner to AS SSIM file release 
+
+rm -fv ftp_results* $data_file 
+
+archive_clean $outbound_archive $data_file $FileAge
+
+
+
+
+

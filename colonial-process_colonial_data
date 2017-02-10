@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Encrypt the AS data file to ftp to colonial
+# Set the environment variables
+. $HOME/bin/colonial_environment
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: ftp_colonial_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in 
+	IN)
+
+data_file=colonial_inbound
+local_file=${data_file}.txt
+pgp_file=${local_file}.pgp
+tagfile=${data_file}.tag
+
+echo -e "\nbegin processing for `whoami` $local_file"		
+inproc 
+echo -e "\nend processing for `whoami` $local_file"
+
+	;;
+
+	OUT)
+
+export base_file=Alaska_deductions
+export data_file=Alaska_deductions.txt
+export pgpfile=${data_file}.pgp
+export tagfile_out=${base_file}.tag
+
+outproc 
+
+	;;
+esac

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Determine file direction for continental_american then process
+# Set the environment variables
+. $HOME/bin/conamer_environment
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_conamer_data direction
+	where direction equals in or out\n"  
+	exit 4
+	fi
+
+case "$direction" in 
+	in)
+
+export pgp_infile=Alaska_bill_CAIC.txt.pgp
+export local_file=Alaska_bill_CAIC.txt
+export local_tagfile=Alaska_bill_CAIC.tag
+
+echo -e "\nbegin processing for `whoami` Input file"		
+inproc 
+echo -e "\nend processing for `whoami` Input file"
+
+	;;
+
+	out)
+export basename=Alaska_coll_CAIC
+echo "\nbegin processing for `whoami` Output file"
+outproc
+echo -e "\nend processing for `whoami` $Output File"
+
+	;;
+esac

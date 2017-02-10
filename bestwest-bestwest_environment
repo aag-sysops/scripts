@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Set up the bestwest data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/bestwest_environment"
+
+export ftp_local_host=asprodftp
+export lz=mpprod
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature='Best Western International'
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=Production.Services@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export remote_file=MPbestwest
+export remote_pgp_file=${remote_file}.pgp
+export outfile_prefix=BWBESTWESTERNPIT
+export handback_file=AKbestwest
+export handback_pgp_file=${handback_file}.pgp
+export local_file=BWBESTWESTERNPIT.txt
+export info_to="production.services@alaskaair.com"
+export errors_to="production.services@alaskaair.com"
+export FileAge=30
+export rundate=`date "+%A, %B %d, %Y"`
+#export MAILLIST="ftp.partner.alerts@alaskaair.com"
+export MAILLIST="joanne.gies@alaskaair.com"
+export mail_to="becky.bryan@bestwestern.com,joanne.gies@alaskaair.com"
+
+
+
+. /opt/local/ops_scripts/function_lib
+
+

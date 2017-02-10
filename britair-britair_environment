@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Set up the British airway  data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/safeway_environment"
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="aslive@baplc.com"
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export ftp_host=ftp.baplc.com
+export ftp_local_host=asprodftp
+export lz=mpprod
+export datestamp=`/bin/date +%b%d%Y`
+export batape_file=ASAUPTBA
+export batape_datestamp=$batape_file.$datestamp
+export batape_pgp_file=$batape_datestamp.asc
+export britair_file=ASAUBAPTD
+export local_file=BABRITISHAIRWAYSPIT.txt
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export tagfile=britair.tag
+export alert_recipient=dean.liebrich@alaskaair.com
+export info_to="dean.liebricha@alaskaair.com"
+export errors_to="eps@alaskaair.com,production.services@alaskaair.com"
+export mvs_dsn="'ff.ffcrtbai.input.backup(+1)'"
+export mvs_jcl=$HOME/bin/ffcrtbai.jcl
+export logfile=$HOME/transfer_log
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+

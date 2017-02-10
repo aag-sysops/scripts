@@ -1,0 +1,73 @@
+#!/bin/bash
+#stand alone script
+
+set -x
+
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export sftp_host=AAI890301JJ3_TCK@aspebi.sedeb2b.com
+export dom=alaskaair.com
+export fileprefix=MX.HOT.D*.zip
+export maillist="joanne.gies@$dom,fire.team.oncall.support@$dom"
+#export maillist="dolores.saldana@$dom"
+export datestamp=`date +%Y%m%d`
+export logdate=`date +%Y%m%d.%H%M`
+export FileAge=30
+
+ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+echo -e "\ncheck for ftp connectivity to $sftp_host"
+	sftp -v -o port=9032 $sftp_host <<PUT >ftp_results.$$
+	pwd
+	bye
+PUT
+
+export ftpcheck=`grep -ci "sftp\>" ftp_results.$$`
+
+	if [ $ftpcheck -lt 1 ]; then
+echo -e "\nConnection to $sftp_host failed, check for
+connectivity and/or contact `whoami` to see why then rerun.\n"
+cat ftp_results.$$
+rm -fv ftp_results.$$
+	exit 4
+	fi
+
+rm -fv ftp_results.$$
+
+export zip_file=`ls -1 $fileprefix`
+
+echo -e "\nThis is the Mexico file name $zip_file"
+
+size_check $zip_file
+     
+	sftp -v -o port=9032 $sftp_host <<PUT >ftp_results.$$
+	cd out/ZIP_HOT_AAI890301JJ3_TCK/AAI890301JJ3_TCK
+        pwd
+	put $zip_file
+	quit
+PUT
+        result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $zip_file BSP"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+securezip $zip_file inbound
+
+ls -1 MX* |Mail -s "BSP daily file was sent to Edicom on $logdate" $maillist
+
+rm -fv $zip_file 
+
+archive_clean $outbound_archive $fileprefix $FileAge

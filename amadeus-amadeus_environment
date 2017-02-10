@@ -1,0 +1,60 @@
+#!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export ftphost=seavvpsmcfs
+export datestamp=`/bin/date +%Y%m%d.%H%M`
+export info_to=""
+export errors_to="production.services@alaskaair.com"
+export FileAge=20
+export DOM=@alaskaair.com
+export MAILLST=""
+
+ops=/opt/local/ops_scripts
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+cd $inbound_dir
+
+data_present=`ls -l $datafile | wc -l`
+
+	if [ $data_present -eq 0 ]; then
+	echo "expected amadeus BIDT data file not present"
+	exit 4
+	fi
+
+echo -e "\nftp any $datafile file(s) to the SEAVVDMZFTP server"
+
+	ls -1 $datafile | while read file1
+		do
+		echo $file1 
+
+		ftp_check $ftphost
+		ftp_file $ftphost $file1 $file1 ascii "cd PSMC/BIDT/amadeus" 
+	
+		record_count=`wc -l $file1 | awk '{print $1}'`
+		echo -e "\n$record_count records received in amadeus BIDT file $file1 on `date`"
+
+		echo -e "\nmoving $file1 to $inbound_archive/$file1.$datestamp"
+		mv $file1 $inbound_archive/$file1.$datestamp
+
+		echo -e "\nclean up inbound directory"
+		rm -f $file1 
+
+		done
+
+echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ $tagfile
+
+echo -e "\nremove files older than $FileAge from archive directory"
+	find $inbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+ 	done
+}

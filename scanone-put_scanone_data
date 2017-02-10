@@ -1,0 +1,75 @@
+#!/bin/bash
+
+#this is a stand alone script
+
+#export sftp_host=Alaska_PROiiD@mft.landsend.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+#export findir_in=/home/finprod/inbound/ap_scan_one
+export findir_out=/home/finprod/outbound/ap_scan_one
+export datestamp=`/bin/date +%Y%m%d`
+export info_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function ftpput {
+
+echo -e "\nput $File1 to $sftp_host"
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+	put aag*${datestamp}
+        dir
+	bye
+PUTDATA
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $File1 to Scanone failed, contactSystem Operations"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+}
+
+cd $outbound_dir
+
+#echo -e "\nremove files older than 7 days from outbound"
+#find . -mtime +7 | xargs rm -v
+
+cp -fv $findir_out/AAG*.dat $outbound_dir
+
+	ls -1 aag*.csv | while read File1
+	do
+
+export tag_file=`echo $File1 | sed -e 's/dat/tag/'`
+echo -e "\nprocessing Scanone $File1"
+
+securezip $File1 outbound
+
+mv -v $File1 $File1.$datestamp
+
+rm -fv $File1 $hcmdir_out/$File1 $hcmdir_out/$tag_file
+
+done
+
+exit
+
+
+#ftpput
+
+echo -e "\nRemove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done

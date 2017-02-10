@@ -1,0 +1,52 @@
+#!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="QANTAS Airways (Alaskan) Frequent Flyer Data Interfaces Key"
+export ftp_host=139.163.83.60
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export lz=rev_acctg/AS_TO_BA
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export dom=alaskaair.com
+export alert_recipient=dean.liebrich@$dom
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp=`/bin/date +%Y%m%d`
+export nofiledate=`/bin/date "+%A, %D"`
+export data_file=AS2BAUSG.dat
+#export maillist="loyaltyoperation@qantas.com.au,loyaltysupport@qantas.com.au"
+export maillist=dean.liebrich@$dom
+
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+echo -e "\nBegin processing of file $data_file"
+
+cd $outbound_dir
+
+export pgp_file=`echo $data_file | sed -e '/dat/pgp//'`
+
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --sign -r "$pgp_remote_signature" --text --output $pgp_file --encrypt $data_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $pgp_file -o $result -ne 0 ]; then
+	echo -e "\n$out_data_file encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+	exit 4
+	fi
+
+ftp_vendor $ftp_host $pgp_file $pgp_file bin "cd upload" 
+
+securezip $data_file outbound
+
+echo -e "\nremove local files in outbound"
+rm -fv $pgp_file $data_file pgp_transcript.$$ 
+
+archive_clean $outbound_archive $data_file $FileAge
+
+echo -e "\nEnd of processing file $data_file"

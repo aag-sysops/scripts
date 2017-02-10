@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Encrypt the AS data file to ftp to fidelity
+# Set the environment variables
+. $HOME/bin/fidelity_environment
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: ftp_fidelity_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in 
+	IN_DEF)
+
+file=AAGBN013
+remotefile=odc02776.def.pgp
+localfile=${file}.txt
+tagfile=${file}.tag
+
+echo -e "\nbegin processing for `whoami` $localfile"		
+inproc 
+echo -e "\nend processing for `whoami` $localfile"
+
+	;;
+
+	IN_LON)
+
+file=AAGBN014
+remotefile=odc02776.lon.pgp
+localfile=${file}.txt
+tagfile=${file}.tag
+
+echo -e "\nbegin processing for `whoami` $localfile"		
+inproc 
+echo -e "\nend processing for `whoami` $localfile"
+
+	;;
+
+	OUT)
+
+outproc 
+
+	;;
+esac

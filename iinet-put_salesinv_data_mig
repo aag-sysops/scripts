@@ -1,0 +1,71 @@
+#!/bin/bash
+#stand alone script
+
+set -x
+
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export sftp1_host=alaska@ftp.sistemasmig.com.mx
+export dom=alaskaair.com
+export maillist="fire.team.oncall.support@$dom,Ricardo.Curiel@$dom"
+#export maillist="dolores.saldana@$dom"
+export datestamp=`date +%Y%m%d`
+export logdate=`date +%Y%m%d.%H%M`
+export FileAge=30
+
+ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\ncheck for connectivity to $sftp1_host"
+        sftp -v $sftp1_host <<PUT >ftp_results.$$
+	quit
+PUT
+
+export ftpcheck=`grep -ci "sftp\>" ftp_results.$$`
+
+	if [ $ftpcheck -lt 1 ]; then
+echo -e "\nConnection to $sftp1_host failed, check for
+connectivity and/or contact `whoami` to see why then rerun.\n"
+cat ftp_results.$$
+rm -fv ftp_results.$$
+	exit 4
+	fi
+
+rm -fv ftp_results.$$
+
+zip SalesInvoice.zip aero.mig.txt cabfac.mig.txt cargos.mig.txt impfac.mig.txt linfac.mig.txt
+
+
+echo -e "\nHere is where we put the file to MIG \n"
+	sftp -v $sftp1_host <<PUT >ftp_results.$$
+	cd upload
+        pwd
+	put SalesInvoice.zip SalesInvoice.zip.$datestamp
+	quit
+PUT
+        result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $zip_file BSP"
+	cat ftp_results.$$
+#	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+securezip SalesInvoice.zip outbound
+
+ls -1 *.txt |Mail -s "SalesInvoice daily file was sent to Mig on $logdate" $maillist
+
+rm -fv SalesInvoice.zip  
+
+rm -fv aero.mig.txt cabfac.mig.txt cargos.mig.txt impfac.mig.txt linfac.mig.txt
+
+archive_clean $outbound_archive SalesInvoice* $FileAge

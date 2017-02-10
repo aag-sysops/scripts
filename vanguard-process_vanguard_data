@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Process Vanguard data for AS and QX Payroll.
+
+# Set the environment variables
+. $HOME/bin/vanguard_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_vanguard_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	OUT09)
+
+export basename=AAGBN009
+export filename=${basename}.txt
+export gpgfile=${filename}.pgp
+export tagfile=$hcmdir_out/${basename}.tag
+
+outproc
+
+       ;;
+
+	OUT25)
+
+export basename=AAGBN025
+export filename=${basename}.txt
+export gpgfile=${filename}.pgp
+export tagfile=$hcmdir_out/${basename}.tag
+
+outproc
+
+	;;
+ 
+	IN)
+
+remotefile=VGI_09385*.pgp
+
+inproc
+
+	;;
+
+esac
+
+
+
+
+
+
+

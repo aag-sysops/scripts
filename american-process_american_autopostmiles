@@ -1,0 +1,147 @@
+#!/bin/bash
+
+#This script is for the partner miles that American sends us once
+#a week. It also includes - us sending them a handback file.
+#Job names are: FFAMERICANMLS_IN and FFAMERICANMLS_HBL_PUT
+
+export pgppass=seavvdmzftp
+export pgp_rem_sig=EDSELIT
+#export sftp_host=ASAAtest@mft2.svcs.hp.com
+export sftp_host=ASAA@mft2.svcs.hpe.com
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export indate=`date +%Y%m%d%H%M`
+export outdate=`date +%y%m%d`
+export info_to="joanne.gies@alaskaair.com,dean.liebricha@alaskaair.com"
+export FileAge=14
+
+. /opt/local/ops_scripts/function_lib
+
+direction=$1
+
+#make sure direction parm was passed in as first arg
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_american_mls_new direction where
+        direction equals mls_in or hbk_out\n"
+        exit 4
+        fi
+
+function outproc {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+
+echo -e "\ncheck for ftp connectivity to $sftp_host"
+	sftp -v $sftp_host <<TEST >ftp_results.$$
+	pwd
+	bye
+TEST
+
+ftptest=`grep -i -c -e "Remote working directory" ftp_results.$$`
+
+	if [ $ftptest -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN SFTP SESSION TO $sftp_host\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	else
+echo -e "\nconnection to $sftp_host confirmed, processing continues...\n"
+rm ftp_results.$$
+	fi
+
+#ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+echo $solar_file
+
+securezip $solar_file outbound
+
+export out_file=HF${outdate}.AS
+
+echo $pgppass | gpg --passphrase-fd 0 --batch --armor -r $pgp_rem_sig --output $out_file --encrypt $solar_file >pgp_transcript.$$ 2>&1
+errorchk $? "encrypt outbound $data_file for `whoami`"
+
+
+echo -e "\nsftp data files to $sftp_host"
+	sftp -v $sftp_host <<PUT >ftp_results.$$
+	$chgdir
+       	put $out_file
+        dir
+	bye
+PUT
+errorchk $? "ftp data files to $sftp_host"
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "\nremove $data_file files from $outbound_dir"
+rm -fv $solar_file pgp_transcript.$$ $out_file
+errorchk $? "remove $solar_file from $outbound_dir"
+
+archive_clean $outbound_archive $file_prefix $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+ftp_check $ftp_local_host
+
+export pgp_file=`ls -1 $in_file_pref*`
+
+echo $pgppass | gpg --passphrase-fd 0 --batch --output $local_tmp_file --decrypt $pgp_file >pgp_transcript.$$ 2>&1 
+errorchk $? "decrypt $pgp_file for inbound `whoami`"
+
+mv -fv $pgp_file $inbound_archive
+errorchk $? "move $pgp_file to $inbound_archive"
+
+echo -e "\nremove carriage control"
+$HOME/bin/remove_crlf.pl $local_tmp_file >$local_file
+errorchk $? "remove carriage control"
+
+ftp_solar_in $ftp_local_host $local_file
+
+#ftp_file $ftp_local_host $local_file  $local_file "cd $lz"
+
+echo "remove temp files"
+rm -fv $local_file pgp_transcript.$$ $local_tmp_file
+errorchk $? "remove temp files from $inbound_dir"
+
+archive_clean $inbound_archive $in_file_pref $FileAge
+
+}
+
+case "$direction" in 
+
+	mls_in)
+
+export in_file_pref=AFAS
+export local_tmp_file=AAAMERICANAIRPIT.tmp
+export local_file=AAAMERICANAIRPIT.txt
+echo -e "\nBegin processing for Autopost 'in' file"
+inproc
+echo -e "\nProcessing for Miles from American autopost 'in' complete"
+	;;
+
+        hbk_out)
+
+export lz=mpprod
+export outfile_prefix=AAAMERICANAIRPIT
+#export chgdir="cd /asaatest/aadvantage/hfastest/./striplf/lrecl=300"
+export chgdir="cd /asaa/aadvantage/hfasprod/./striplf/lrecl=300"
+echo -e "\nBegin processing for $outfile_prefix"
+outproc
+echo -e "\nProcessing for handback mls to American for complete"
+	;;
+
+esac

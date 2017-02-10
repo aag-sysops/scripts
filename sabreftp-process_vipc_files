@@ -1,0 +1,98 @@
+#!/bin/bash
+
+export PATH=/usr/local/TDAccess3.2:$PATH
+export local_host=seavvairvisapp01
+export test_host=seatsairvisapp01
+export RUNTIMEPATH=/usr/local/TDAccess3.2
+export LD_LIBRARY_PATH=/usr/local/TDAccess3.2
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export lz=/odym/AS/clients/AS/input
+export lz_archive=/revmgmt/archive_avrm_upgrade
+export file_pref=sabre_as_vipc
+export in_prefix=invAS
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=10
+export ops=/opt/local/ops_scripts
+export dom1=txt.att.net
+export dom2=messaging.sprintpcs.com
+
+export mail_to="2536702212@$dom1,2065103344@$dom2,Production.Operations@alaskaair.onmicrosoft.com"
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+echo -e "\ncheck for existence of vipc file"
+export file_count=`ls -1 $file_pref* | wc -l`
+
+        if [ $file_count -lt 1 ]; then
+echo "There are no files to process, contact Sabre to have them send the vipc file"
+echo "There are no files to process, contact Sabre to have them send the vipc file" | Mail -s "sabre vipc files" $mail_to
+	exit 4
+        fi
+
+        if [ $file_count -gt 1 ]; then
+echo "There is more than one file to process, keep the file closest to 20:30 and
+move the extra file to inbound.archive."
+echo "There is more than one file to process, keep the file closest to 20:30 and
+move the extra file to inbound.archive." | Mail -s "vipc files" $mail_to
+echo -e "\ncontents of inbound directory:"
+ls -l
+	exit 4
+        fi
+
+echo -e "\nBegin processing for incoming VIPC files from Sabre at `date`"
+ftp_check $local_host
+ftp_check $test_host
+
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+export encfile=`ls -1 ${file_pref}*.cmp`
+export datadate=`echo $encfile | cut -c15-22`
+export datfile=${in_prefix}.${datadate}.TXT
+export zipfile=${datfile}.gz
+export tagfile=${in_prefix}.${datadate}.TAG
+
+echo -e "\nprocessing encrypted vipc file $encfile"
+
+size_check $encfile
+
+echo -e "\ndecompress $encfile at `date`\n"
+echo $encfile | decompx $datfile 
+errorchk $? "decompress $encfile"
+
+echo -e "\nMove $encfile to $inbound_archive at `date`"
+mv -v $encfile $inbound_archive
+errorchk $? "Move $encfile to $inbound_archive"
+
+echo -e "\nzip up $datfile as $zipfile at `date`"
+gzip $datfile
+errorchk $? "zip $datfile"
+
+ftp_file $local_host $zipfile $zipfile bin "cd $lz"
+ftp_file $test_host $zipfile $zipfile bin "cd $lz"
+ftp_file $local_host $zipfile $zipfile bin "cd $lz_archive"
+ftp_file $test_host $zipfile $zipfile bin "cd $lz_archive"
+
+echo -e "\nremove $zipfile at `date`"
+rm -v $zipfile
+errorchk $? "remove $zipfile files"
+
+echo -e "\ncreate tag file $tagfile"
+touch $tagfile
+
+ftp_file $local_host $tagfile $tagfile "cd $lz"
+ftp_file $test_host $tagfile $tagfile "cd $lz"
+
+echo -e "\nremove tag file $tagfile"
+rm -v $tagfile
+errorchk $? "remove tag file $tagfile"
+
+archive_clean $inbound_archive $file_pref $FileAge
+
+echo -e "\nProcessing of incoming VIPC files complete at `date`"

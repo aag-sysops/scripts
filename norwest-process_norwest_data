@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Process data from Northwest Airlines.
+
+# Set the environment variables
+. $HOME/bin/norwest_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_norwest_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	IN_NWAS)
+
+export gpgfile=nwasssim.gpg
+export datafile=nwasssim
+
+echo "Begin processing for Northwest file $gpgfile"
+inproc
+echo "End processing for Northwest files $gpgfile"
+
+	
+	;;
+
+	IN_ASOW)
+
+export gpgfile=asowner.gpg
+export datafile=asowner
+
+echo "Begin processing for Northwest file $gpgfile"
+inproc
+echo "End processing for Northwest files $gpgfile"
+
+	
+	;;
+
+	IN_QXLI)
+
+export gpgfile=qxlist.gpg
+export datafile=qxlist
+
+echo "Begin processing for Northwest file $gpgfile"
+inproc
+echo "End processing for Northwest files $gpgfile"
+
+	
+	;;
+
+
+	IN_QXOW)
+
+export gpgfile=qxowner.gpg
+export datafile=qxowner
+
+echo "Begin processing for Northwest file $gpgfile"
+inproc
+echo "End processing for Northwest files $gpgfile"
+
+	
+	;;
+
+
+esac
+

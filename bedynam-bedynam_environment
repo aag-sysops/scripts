@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Set up the Bedynamic data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/bedynam_environment"
+
+export PGPPASS=seavvdmzftp
+export ftp_local_host=asprodftp
+export ftp_local_test_host=testftp
+export lz=alaskaair_web
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export local_file1=AAG_BeDynamic_data.xml
+export local_file2=AAG_BeDynamic_city_mapping.xml
+#export outfile_prefix=xxxxx
+export errors_to="producton.servces@alaskaair.com"
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+
+function inbound {
+
+cd $inbound_dir
+
+	if [ ! -s $data_file ]; then
+	MSG="No BeDynamic file to process for $nofiledate"
+	echo -e "\n$MSG"
+	echo $MSG | Mail -s "bedynamic" $errors_to
+	exit 0
+	fi
+
+ls -l
+dir
+
+echo "unzip file"
+
+unzip $data_file 
+
+ftp_vendor $ftp_local_host $local_file1 $local_file1 "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_host $local_file2 $local_file2  "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_host $local_file1 $local_file1.$datestamp.txt "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_host $local_file2 $local_file2.$datestamp.txt  "cd Alaskaair_web/BeDynamic"
+
+ftp_vendor $ftp_local_test_host $local_file1 $local_file1 "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_test_host $local_file2 $local_file2  "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_test_host $local_file1 $local_file1.$datestamp.txt "cd Alaskaair_web/BeDynamic"
+ftp_vendor $ftp_local_test_host $local_file2 $local_file2.$datestamp.txt  "cd Alaskaair_web/BeDynamic"
+
+
+securezip $local_file1 inbound
+securezip $local_file2 inbound
+
+echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ $local_file1 $local_file2 $data_file  
+rm bedynamic.tag
+
+archive_clean $inbound_archive "BeDynamic" $FileAge
+
+}
+
+##########################OUTBOUND HAS NOT BEEN TESTED OR REDONE AFTER  A COPY FROM ANOTHER VENDER
+
+function outbound {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+echo -e "\nzip $solar_file to $outbound_archive"
+gzip <$solar_file >$outbound_archive/$solar_file.gz
+
+echo -e "\nrename $solar_file to $data_file"
+mv $solar_file $data_file
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+}

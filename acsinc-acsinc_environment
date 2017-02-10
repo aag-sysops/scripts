@@ -1,0 +1,46 @@
+#!/bin/bash
+
+export ftp_host=mvs
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`date +%b%d%Y.%H%M`
+export procdate=`date "+%b. %d, %Y"`
+export crfile=alaskatrans
+export tag=alaskatrans.tag
+export data_file=ranpcnewin
+export dataset="'prod.npc.scanfile'"
+export dcbparms="site recfm=fb lrecl=80 cylinders pri=15 sec=5 unit=prdda blksize=0"
+export info_to="nancy.holdaas@alaskaair.com"
+export data_jcl=/ftphome/acsinc/bin/rarecnpc.jcl
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function inproc {
+
+cd $inbound_dir
+
+ftp_check mvs
+
+#replace record terminator crlf (wintel) with newline (unix)
+crlf_rem $crfile $data_file
+
+dsn_2mvs $ftp_host $data_file $dataset
+
+ftp_jcl $data_jcl $ftp_host
+
+Mail -s "Scanner Lift File was sent to mvs at $procdate" $info_to < $tag
+
+securezip $tag inbound
+securezip $crfile inbound
+
+echo -e "\nclean up $inbound_dir"
+rm -f $tag $crfile $data_file
+
+archive_clean $inbound.archive $crfile $FileAge
+archive_clean $inbound.archive $tag $FileAge
+
+}

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Set the environment variables
+. $HOME/bin/boa-vbc_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm,
+	proper syntax is process_solarenroll_data direction
+	where direction=in or out. i.e.
+	process_solarenroll_data\n"
+	exit 4
+	fi	
+
+case "$direction" in
+         IN)
+
+echo -e "\nBegin processing for file inbound $boa_pgp_file"
+inproc
+echo -e "\nInbound processing complete for $boa_pgp_file"
+
+;;
+
+	OUT)
+
+echo -e "\nBegin processing for $airline outbound file $remote_file"
+outproc
+echo -e "\nOutbound processing complete for $airline file $remote_file"
+
+;;
+
+esac

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Jan 2009 - Set up an SFTP inbound file transfer for AS/QX Sabre Accounts file.
+# Modifications - 
+
+export local_file=report_5.csv
+export local_host=asprodftp
+export qa_host=ftpqa
+export test_host=testftp
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export lz=BI/ConformedDimensions
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=10
+export ops=/opt/local/ops_scripts
+export mail_to="crc.alerts@alaskaair.com,ground.opsalerts@alaskaair.com"
+
+. /opt/local/ops_scripts/function_lib
+
+function inproc {
+
+cd $inbound_dir
+
+#call function to check connectivity $local_host (Seavvfile1). 
+ftp_check $local_host 
+
+#call function to push incoming file to $local_host
+ftp_file $local_host $local_file $local_file "cd $lz"
+ftp_file $qa_host $local_file $local_file "cd $lz"
+ftp_file $test_host $local_file $local_file "cd $lz"
+
+#send email notification to customer.
+Mail -s "Monthly Sabre Accounts file received" $mail_to < ~/bin/email_text.txt
+
+# Call function 'securezip' to zip and archive the inbound file.
+securezip $local_file inbound
+
+# Clean up inbound directory.
+rm -v $local_file
+
+# Call function 'archive_clean' to delete old archived files.
+archive_clean $inbound_archive $local_file $FileAge
+
+}

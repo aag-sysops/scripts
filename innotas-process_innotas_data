@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -x
+
+# Set up the innotas data transfer environment
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export sftp_host=alaska_air@ftp2.innotas.com
+export inbound_dir=$HOME/inbound
+export dir=alaska_air
+export filepref=aaginnotas
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_out=/home/hcmprod/outbound/innotas
+export alert_recipient=joanne.gies@alaskaair.com
+export filepref=aaginnotas*
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+#export infor_to="joanne.gies@alaskaair.com"
+export infor_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $hcmdir_out
+dir
+
+ls -1 ${filepref}*.csv |
+	while read FILE1
+	do
+	export datafile=$FILE1
+	export tagfile=`echo $FILE1 | sed -e 's/csv/tag/'`
+
+echo -e "\nget $datafile from $hcmdir_out"
+cp -p $hcmdir_out/$datafile $outbound_dir
+
+cd $outbound_dir
+
+securezip $datafile outbound 
+
+echo -e "\nput  $datafile on Innotas server" 
+	sftp -v $sftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd $dir
+        put $FILE1 $FILE1
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+rm $FILE1
+
+echo -e "\nRemove $datafile and $tagfile"
+rm -fv $hcmdir_out/$tagfile $hcmdir_out/$FILE1
+
+	done
+
+archive_clean outbound aaginn* $FileAge

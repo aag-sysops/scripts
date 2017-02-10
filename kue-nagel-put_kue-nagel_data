@@ -1,0 +1,114 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export ftp_host=ftp.kuehne-nagel.com
+export partner=KuehneNagel
+export lzout_dir=scheduling/PartnerSSIM/$partner/outbound
+export lzout_archive=scheduling/PartnerSSIM/$partner/outbound.archive
+export lzin_dir=scheduling/PartnerSSIM/$partner/inbound
+export lzin_archive=scheduling/PartnerSSIM/$partner/inbound.archive
+export basename=ops.txt
+export notify="ASQX.ScheduleDistribution@alaskaair.com"
+export sentdate=`/bin/date "+%Y%m%d_%H%M"`
+export maildate=`/bin/date "+%Y%m%d %H:%M"`
+export FileAge=7
+export datestamp=`/bin/date +%b%d%Y`
+export program=`basename $0`
+
+. /opt/local/ops_scripts/function_lib
+
+function sendmail {
+
+echo -e "$maildate
+
+The following files were successfully sent from AS to $partner via FTP.
+
+$sim_file" | Mail -s "AS to $partner $maildate complete" $notify
+
+}
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_check $ftp_host
+
+sleep 60
+
+echo -e "\nftp get $basename file from $ftp_local_host\n"
+	ftp -v -i $ftp_local_host <<MGET >ftp_results.$$
+	cd $lzout_dir
+	dir
+	mget *$basename
+	bye
+MGET
+	result=$?
+
+	if [ $result -ne 0 ];then
+	echo "\nFTP get of *$basename file failed,
+	please investigate\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+#remove spaces in file name if needed
+namechk=`ls -1 *$basename | wc | awk '{print $2}'`
+
+	if [ $namechk -gt 1 ]; then
+echo -e "\nrename *$basename to `ls -1 *$basename | sed -e 's/ /_/g'`"
+mv -v $namebase* `ls -1 *$basename | sed -e 's/ /_/g'`
+	fi
+
+#determine file name
+filecount=`ls -1 *$basename | wc | awk '{print $1}'`
+
+	if [ $filecount -eq 0 ]; then
+	echo -e "\n no file to process, exiting..."
+	exit 0
+	fi
+
+export sim_file=`ls -1 *$basename`
+export arch_pref=`echo $sim_file | sed -e  's/.txt//'`
+
+securezip $sim_file outbound
+
+ftp_vendor $ftp_host $sim_file $sim_file "cd /pub/inbound"
+
+set -x
+sendmail
+set +x
+
+ftp_file $ftp_local_host $sim_file ${arch_pref}_${sentdate}.txt "cd $lzout_archive" dir
+
+echo -e "\nDelete file $sim_file from $local_host"
+	ftp -v -i $ftp_local_host <<DATA >ftp_results.$$
+	cd $lzout_dir
+	mdel *$basename
+	dir
+	quit
+DATA
+
+	result=$?
+
+	if [ $result -ne 0 ];then
+	echo "\nFTP delete of file $sim_file failed,
+	please investigate\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nclean up outbound directory"
+rm -fv $sim_file
+
+archive_clean $outbound_archive $basename $FileAge

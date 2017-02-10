@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Set the environment variable
+. $HOME/bin/citi-direct-wire_environment
+
+export airdir=$1
+
+	if [ -z $airdir ]; then
+echo -e "\n	Missing airline/direction parm,
+	proper syntax is process_citi_direct_wire airline.direction
+	where airdir=usin or usout
+	process_citi_direct_wire_data out or in\n"
+	exit 4
+	fi	
+
+case "$airdir" in
+
+	usin)
+        export file_pref=AACDW
+echo -e "\nBegin processing for US inbound $local_file"
+inproc
+echo -e "\nInbound processing complete for $local_file"
+;;
+
+	usout)
+        export file_pref=AACDW
+	export findir=/home/finprod/outbound/ap_citidwire
+echo -e "\nBegin processing for $airdir outbound file $file_pref"
+outproc
+echo -e "\nOutbound processing complete for $airline file $file_pref"
+;;
+
+esac

@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# Check for, upload to windows and then archive the holiday data file
+set -x
+
+
+# Set environment values
+. $HOME/bin/holiday_environment
+program=`basename $0`
+
+cd $HOME/inbound
+
+echo -e "\ndecrypt file $remote_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $remote_pgp_file
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "`whoami` $remote_pgp_file decrypt failed."
+	exit 4
+	fi
+
+records=`wc $local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="holiday data file for date $rundate is empty."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "holiday Mileage Plan data" $MAILLIST
+	exit 0
+	fi
+
+echo -e "\nfile $local_file ($records records) received at `date`"
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\nmove $remote_pgp_file to $inbound_archive/$remote_pgp_file.$datestamp"
+mv $remote_pgp_file $inbound_archive/$remote_pgp_file.$datestamp
+
+echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ $local_file 
+
+archive_clean $inbound_archive $remote_pgp_file $FileAge
+
+

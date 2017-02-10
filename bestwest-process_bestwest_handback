@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Encrypt the AS data file for bestwest to pickup
+# Set the environment variables
+. $HOME/bin/bestwest_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+# Is there a previous handback file in outbound dir?
+# If so, datestamp and send email notification to EPS 
+	if [ -s $handback_pgp_file ]; then
+	mv $handback_pgp_file $handback_pgp_file.$datestamp
+	fi
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+securezip $solar_file outbound
+
+echo -e "\nencrypt $solar_file (output to $handback_pgp_file)"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output $handback_pgp_file --encrypt $solar_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $handback_pgp_file -o $result -ne 0 ]; then
+	echo -e "\n$solar_file encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+	exit 4
+	fi
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "\nclean up directory $outbound_dir"
+rm -f file $solar_file pgp_transcript.$$
+
+#echo -e "\nemail to bestwest that the handback file is ready"
+#Mail -s "Handback file is now on our server, please delete after picking up $datestamp" $mail_to </dev/null

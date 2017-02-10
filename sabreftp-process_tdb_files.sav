@@ -1,0 +1,225 @@
+#!/bin/bash
+
+#export local_host=asprodftp
+export RUNTIMEPATH=/usr/local/TDAccess2.2
+export LD_LIBRARY_PATH=/usr/local/TDAccess2.2
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+#export inbound_archive=${inbound_dir}.archive
+export lz=TravelDataBatch
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=7
+export ops=/opt/local/ops_scripts
+export dom=alaskaair.com
+
+. /opt/local/ops_scripts/function_lib
+
+function ftpproc {
+
+	ftp -v -i $local_host <<PUT >ftp_results.$$
+	cd $lz
+	mput *.dat
+PUT
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+echo -e "\nFTP .dat files to $local_host failed"
+	cat ftp_results.$$
+	rm -v ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+### this section is temporary until UAT has been completed ###
+### putting files to both prod and QA                      ###
+	ftp -v -i ftpqa <<PUT >ftp_results.$$
+	cd TravelDataBatch
+	mput *.dat
+PUT
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+echo -e "\nFTP .dat files to $local_host failed"
+	cat ftp_results.$$
+	rm -v ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+}
+
+function mainproc {
+
+echo -e "\nBegin processing for incoming TDB files from Sabre at `date`"
+ftp_check $local_host
+ftp_check ftpqa
+
+cd $inbound_dir
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+export encfile=`ls -1 $file_pref*.enc`
+export zipfile=`echo $encfile | sed -e 's/enc/zip/'`
+export donefile=`echo $encfile | sed -e 's/enc/done/'`
+
+echo -e "\nprocessing encrypted TDB batch file $encfile"
+
+echo -e "\ndecompress $encfile at `date`"
+echo $encfile | decompx $zipfile 
+errorchk $? "decompress $encfile"
+
+echo -e "\nMove $encfile to $inbound_archive at `date`"
+mv -v $encfile $inbound_archive
+errorchk $? "Move $encfile to $inbound_archive"
+
+echo -e "\nunzip $zipfile at `date`\n"
+unzip $zipfile
+errorchk $? "unzip $zipfile"
+
+echo -e "\nremove $zipfile at `date`"
+rm -v $zipfile
+errorchk $? "remove $zipfile"
+
+echo -e "\nremove potential credit card data at `date`"
+$HOME/bin/remove_potential_cc_data.ksh 
+errorchk $? "remove potential credit card data"
+
+echo -e "\nFTP the following TDB files to $local_host at `date`"
+ls -1 *.dat
+ftp_check $local_host
+ftpproc
+
+echo -e "\nremove .dat files at `date`"
+rm -v *.dat
+errorchk $? "remove .dat files"
+
+ftp_file $local_host $donefile $donefile "cd $lz"
+#temporary
+ftp_file ftpqa $donefile $donefile "cd $lz"
+
+echo -e "\nmove $donefile to $inbound_archive at `date`"
+mv -v $donefile $inbound_archive
+errorchk $? "move $donefile to $inbound_archive"
+
+archive_clean $inbound_archive $file_pref $FileAge
+
+echo -e"\nProcessing of incoming TDB files complete at `date`"
+
+}
+
+function batchproc {
+
+cd $inbound_dir
+
+echo -e "\nBegin processing for incoming TDB files from Sabre at `date`"
+ftp_check $local_host
+ftp_check ftpqa
+
+cd $inbound_dir
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+export encfile=`ls -1 $file_pref*.enc`
+export zipfile=`echo $encfile | sed -e 's/enc/zip/'`
+export donefile=`echo $encfile | sed -e 's/enc/done/'`
+export donefile1=`echo $encfile | sed -e 's/_extract//' | sed -e 's/enc/done.pnr/'`
+export donefile2=`echo $encfile | sed -e 's/_extract//' | sed -e 's/enc/done.vcr/'`
+
+echo -e "\nprocessing encrypted TDB batch file $encfile"
+
+echo -e "\ndecompress $encfile at `date`"
+echo $encfile | decompx $zipfile 
+errorchk $? "decompress $encfile"
+
+echo -e "\nMove $encfile to $inbound_archive at `date`"
+mv -v $encfile $inbound_archive
+errorchk $? "Move $encfile to $inbound_archive"
+
+echo -e "\nunzip $zipfile at `date`"
+unzip $zipfile
+errorchk $? "unzip $zipfile"
+
+echo -e "remove $zipfile at `date`"
+rm -v $zipfile
+errorchk $? "remove $zipfile"
+
+echo -e "\nremove potential credit card data at `date`"
+$HOME/bin/remove_potential_cc_data.ksh 
+errorchk $? "remove potential credit card data"
+
+echo -e "\nFTP the following TDB files to $local_host at `date`"
+ls -1 *.dat
+ftp_check $local_host
+ftpproc
+
+echo -e "\nremove .dat files at `date`"
+rm -v *.dat
+errorchk $? "remove .dat files"
+
+ftp_file $local_host $donefile $donefile1 "cd $lz"
+ftp_file $local_host $donefile $donefile2 "cd $lz"
+
+#temporary
+ftp_check ftpqa
+ftp_file ftpqa $donefile $donefile1 "cd $lz"
+ftp_file ftpqa $donefile $donefile2 "cd $lz"
+
+
+echo -e "\nmove $donefile to $inbound_archive at `date`"
+mv -v $donefile $inbound_archive
+errorchk $? "move $donefile to $inbound_archive"
+
+archive_clean $inbound_archive $file_pref $FileAge
+
+echo -e"\nProcessing of incoming TDB files complete at `date`"
+
+}
+
+export filetype=$1
+
+	if [ -z $filetype ]; then
+echo -e "\n	Missing filetype parm, proper syntax is:
+	process_tdb_files filetype where filename is:
+	acs, batch, or epr."
+	fi
+
+case "$filetype" in
+ 
+	 acs)
+export inbound_archive=${inbound_dir}.archive
+export local_host=asprodftp
+export file_pref=as_acs_prod
+mainproc
+;;
+
+	 batch)
+export inbound_archive=${inbound_dir}.archive
+export local_host=asprodftp
+export file_pref=as_batch
+batchproc
+;;
+
+	 epr)
+export inbound_archive=${inbound_dir}.archive
+export local_host=asprodftp
+export file_pref=as_epr_prod
+mainproc
+;;
+
+*)
+
+echo -e "\nargument is missing or invalid, 
+need to run script with a file type arg"
+
+exit 4
+	;;
+
+esac

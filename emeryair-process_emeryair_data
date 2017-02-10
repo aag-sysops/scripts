@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# no other scripts needed
+
+export ftp_local_host=asprodftp
+export ftp_host=50.76.66.193
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export filedate=`date +%Y%m%d`
+export tagext=".tag"
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="joanne.gies@alaskaair.com"
+export FileAge=10
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\nget file on asprodftp" 
+	ftp -v asprodftp <<GETDATA >ftp_results.$$ 2>&1
+        cd "MTX_Vendor_FTP\Emery"
+        bin
+	mget *.zip
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+export emeryair_file=`ls -1 *.zip`
+echo -e "\nthis is the Emery Air File: $emeryair_file"
+
+ftp_vendor $ftp_host $emeryair_file $emeryair_file bin
+
+#securezip $emeryair_file outbound
+
+echo -e "\ndelete $emeryair_file on asprodftp" 
+        ftp -v asprodftp <<DELDATA >ftp_results.$$
+	cd "MTX_Vendor_FTP\Emery\Archive"
+        put $emeryair_file $emeryair_file
+        dir
+	cd ..
+        delete $emeryair_file
+	bye
+
+DELDATA
+
+rm -f ftp_results.$$ $tag_file *.zip ftp_results*
+
+archive_clean $outbound_archive "*" $FileAge

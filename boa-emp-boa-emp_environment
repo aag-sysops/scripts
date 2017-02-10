@@ -1,0 +1,167 @@
+#!/bin/bash
+
+# Set up the Bank of America Employee incentive visa data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export PGPPASS=seavvdmzftp
+#export gpg_sig=BOAPUBKY
+export ftp_host=elink-ftp4.bankofamerica.com
+export sftp_host=jgalaska@b2b22.bankofamerica.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export hcmdir=/home/hcmprod
+export hcmout_dir=${hcmdir}/outbound/bankofamerica
+export hcmin_dir=${hcmdir}/inbound/bankofamerica
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export maildate=`/bin/date "+%Y%m%d %H:%M"`
+#export boa_inbound_file="PGP BCC OUTBNM VAFSBCC"
+export zipfile=AAGPY008_incentelig.txt.zip
+export FileAge=40
+export outputerrors_to="production.services@alaskaair.com"
+export erros_to="joanne.gies@alaskaair.com"
+export dom=alaskaair.com 
+#maillist="joanne.gies@$dom,richard.fulcher@td.com,EstherLuda.Dapar@td.com"
+#maillist="joanne.gies@$dom"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+
+. /opt/local/ops_scripts/function_lib
+
+function inproc {
+
+rm ~/.netrc
+ln -s ~/.netrc.empinc ~/.netrc
+
+echo -e "\ncheck for $boa_inbound_file at $ftp_host\n"
+
+	ftp -v $ftp_host <<CHECK >ftp_results.$$
+	passive
+	dir
+	quit
+CHECK
+
+	data_ready=`grep -c -e "-AR-.*$boa_inbound_file" ftp_results.$$`
+
+	if [ $data_ready -eq 0 ]; then
+	echo -e "\nexpected file not found on BankofAmerica server, exiting\n"
+	MSG="expected BOA Employee Incentive data file not found"
+	echo $MSG | Mail -s "BOA-EMP get" $errors_to
+	cat ftp_results.$$
+	rm -f ftp_resutlts.$$
+	exit 4
+	fi
+
+	if [ $data_ready -ne 1 ]; then
+	echo -e "\nthere are $data_ready files to process, expecting one\n"
+	cat ftp_results.$$
+	rm -f ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+ftp_vendor_get $ftp_host "$boa_inbound_file" $inbound_pgp_file passive bin
+
+echo -e "\decrypt file $inbound_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --decrypt --output $inbound_file $inbound_pgp_file
+    
+	result=$?
+
+	if [ $result -gt 4 -o ! -s $inbound_file ]; then
+	echo -e "\ninbound file $inbound_pgp_file decrypt failed\n"
+	exit 8
+	fi
+
+echo -e "\ncopy $inbound_file to $hcmin_dir"
+cp $inbound_file $hcmin_dir
+
+echo -e "\ncreate tag file"
+touch $tagfile
+
+echo -e "\nclean up inbound directory"
+rm -f $inbound_file
+
+echo -e "\nmove $inbound_pgp_file to $inbound_archive and date stamp"
+mv  $inbound_pgp_file $inbound_archive/$inbound_pgp_file.$datestamp
+
+echo -e "\nremove files older than $FileAge days from archive directory"
+	find $inbound_archive/$inbound_pgp_file* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+}
+
+function encrypt {
+
+cd $outbound_dir
+
+echo -e "\n contents of $hcmdir"
+ls -l $hcmout_dir
+
+echo -e "\nget $outfile from $hcmout_dir"
+cp $hcmout_dir/$outfile $outbound_dir
+
+errorchk $? "get $outfile from $hcmout_dir"
+
+	if [ -f $gpg_file ]; then
+MSG="Previous gpg file found in `pwd`, moved to $outbound.archive"
+echo $MSG | Mail -s "boa-emp outbound" $errors_to
+echo $MSG
+mv $gpg_file $outbound_archive/$gpg_file.$datestamp
+	fi
+
+echo -e "\nencrypt file $outfile"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r $gpg_sig --output $gpg_file --encrypt $outfile
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nBofA EMP data file encryption failure, contact EPS.\n"
+	exit 8
+	fi
+
+securezip $outfile outbound
+
+pkzipc -add -cryptalgorithm=AES,256 -passphrase="vbprod$%t" $zipfile $outfile
+
+mutt -s "email file to Bank $maildate complete" -a "$zipfile"  $maillist
+
+}
+
+function putfile {
+
+echo -e "\nput  $outfile to Bank of America server" 
+	sftp -v $sftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd $dir
+       	put $outfile 
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+output_records=`wc -l $outfile`
+echo -e "\n$output_records data records sent to $sftp_host"
+
+}
+
+function cleanup {
+
+echo -e "\nclean up local directory"
+rm -fv $outfile $zipfile $hcmout_dir/$outfile $hcmout_dir/$tag_file
+
+echo -e "\nremoved archived files older than $FileAge days"
+find $outbound_archive/$gpg_file* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+}

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+program=`basename $0`
+
+export PGPPASS=seavvdmzftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export remote_host=ftp.gomez.com
+export filedate=`/bin/date +%Y%m%d`
+export FileAge=2
+export ftp_local_host=asprodftp
+export mail_to="joanne.gies@alaskaair.com"
+
+. /opt/local/ops_scripts/function_lib
+
+export getdate=`datecalc today -1 days pic YYYY-MM-DD`
+
+cd $inbound_dir
+
+	ftp -v $remote_host <<GET >>ftp_results.$$
+        bin
+        prompt
+	dir
+        mget *$getdate* 
+  	quit
+GET
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nftp get of $getdate* files get failed... fix it"
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nThere are `ls -1 |wc -l` files to process"
+
+	ls -1 *.zip | while read File1
+	do
+echo -e "\nprocessing Gomez file $File1"
+unzip $File1 
+
+mv -v $File1 $inbound_archive
+	done
+
+	ftp -v $ftp_local_host <<GET >>ftp_results.$$
+	prompt
+        cd "BI/IT_Operations/Gomez"
+        mput *$getdate* 
+  	quit
+GET
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nftp put  of $getdate* files to seavvfile1 failed... fix it"
+cat ftp_results.$$
+rm -fv *.txt ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$ *.txt 
+ 
+archive_clean $inbound_archive .zip $FileAge
+
+#echo -e "\nemail to MLR Team that files have been received from Gomez"
+#Mail -s "File(s) are available on Seavvfile1 from Gomez" $mail_to </dev/null

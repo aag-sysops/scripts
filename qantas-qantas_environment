@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# Set up the qantas data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/qantas_environment"
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="QANTAS Airways (Alaskan) Frequent Flyer Data Interfaces Key"
+export ftp_host=139.163.83.60
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=joanne.gies@alaskaair.com
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp=`/bin/date +%Y%m%d`
+export nofiledate=`/bin/date "+%A, %D"`
+export local_file=QFQANTASAIRWAYSPIT.txt
+export airpac_local_file=FJAirPacific.txt
+export QANTAS_MAILLIST="loyaltyoperation@qantas.com.au; loyaltysupport@qantas.com.au"
+export AIRPAC_MAILLIST="loyaltyoperation@qantas.com.au; loyaltysupport@qantas.com.au"
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+	if [ ! -f $data_pgp_file ]; then
+	echo -e "\nexpected qantas data file ($data_pgp_file) not found\n"
+	export MSG="Alaska Airlines did not receive their weekly Mileage Plan file $data_pgp_file for $nofiledate.  Please investigate."
+	echo $MSG
+	echo $MSG | Mail -s "Alaska Airlines missing Qantas Mileage Plan data" $QANTAS_MAILLIST
+	exit 0
+	fi
+
+echo -e "decrypt $data_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $data_pgp_file    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "${program}: inbound results file decrypt problem.  Call Ops Analyst."
+        exit 8
+	fi
+
+records=`wc $local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="Alaska Airlines received an empty Mileage Plan file $data_pgp_file for $nofiledate.  Please investigate."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "Alaska Airlines empty Qantas Mileage Plan file" $QANTAS_MAILLIST
+	mv $local_file $inbound_archive/$local_file.MT.$datestamp
+	exit 0
+	fi
+
+echo -e "\n$local_file file ($records records) received at `date`"
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file $data_pgp_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --sign -r "$pgp_remote_signature" --text --output $out_pgp_file --encrypt $out_data_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $out_pgp_file -o $result -ne 0 ]; then
+	echo -e "\n$out_data_file encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+	exit 4
+	fi
+
+ftp_vendor $ftp_host $out_pgp_file $out_pgp_file bin "cd upload" 
+
+securezip $out_data_file outbound
+
+echo -e "\nremove local files in outbound"
+rm -f $out_pgp_file $out_data_file pgp_transcript.$$ 
+
+archive_clean $outbound_archive $out_data_file $FileAge
+
+}
+
+function airpac_in {
+
+cd $inbound_dir
+
+	if [ ! -f $data_pgp_file ]; then
+	echo -e "\nexpected Air Pacific data file ($data_pgp_file) not found\n"
+	export MSG="Alaska Airlines did not receive their weekly Mileage Plan file $data_pgp_file for $nofiledate.  Please investigate."
+	echo $MSG
+	echo $MSG | Mail -s "Air Pacific missing Mileage Plan data" $AIRPAC_MAILLIST
+	exit 0
+	fi
+
+echo -e "decrypt $data_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $airpac_local_file --decrypt $data_pgp_file    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "${program}: inbound results file decrypt problem.  Open ticket for Systems Mgmt."
+        exit 8
+	fi
+
+records=`wc $airpac_local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="Alaska Airlines received an empty Mileage Plan file $data_pgp_file for $nofiledate.  Please investigate."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "Alaska Airlines empty Air Pacific Mileage Plan file" $AIRPAC_MAILLIST
+	mv $airpac_local_file $inbound_archive/$airpac_local_file.AIRPAC.$datestamp
+	exit 0
+	fi
+
+echo -e "\n$airpac_local_file file ($records records) received at `date`"
+
+securezip $airpac_local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $airpac_local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $airpac_local_file $data_pgp_file
+
+archive_clean $inbound_archive $airpac_local_file $FileAge
+
+}
+

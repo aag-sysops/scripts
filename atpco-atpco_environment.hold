@@ -1,0 +1,89 @@
+#!/bin/bash
+
+###############################################################################
+# Name:   atpco_environment
+#
+# Description:  This script is run by other scripts to set variables for atpco userid.
+#
+# Purpose:  Set up the ATPCO data transfer environment for AIRPRICE and Rev. Acctg.
+#
+#            CONFIGURED FOR Production
+#
+# Usage: (in another script) ". $HOME/bin/atpco_environment"
+#
+# Modifications:
+# 4/22/08 J. Grant Add new ATPCO connectivity variables
+#                  Change ftphost vars to SEAVVPSMCFS
+#                  For Testing, set:  export INBOUND=$HOME/inbound_test
+#                  Add FTPHOST_ATPCO_IN_TEST variable
+#                  Remove SFTP_ATPCO variable.
+#                  Add INBOUND_WORK var for inbound work dir path
+# 6/13/08 J. Grant Add OUTBOUND_WORK var for outbound work dir path
+# 10/23/09  DKIM changed ftphost_outbound from 12.109.131.135 to ftpin.atpco.net
+###############################################################################
+###-------------------------------------------------
+### FTP Requirements 
+###-------------------------------------------------
+rm ~/.netrc
+ln -s ~/.netrc.prod ~/.netrc
+
+###-------------------------------------------------
+### PKZIPC Requirements
+###-------------------------------------------------
+export cryptalg="-cryptalgorithm=AES,256"
+export password=4FsQyx6sqAT1YyjJBTsc8eSm9GiTmZwknvnS4BCWU6RijiQvFO
+
+###-------------------------------------------------
+### Target internal FTP server and directories.
+### ATPCO files received here on seavvftp are FTP'd
+### to these server locations by RMAPFETCH TWS Schedule.
+### Production sends to both Test and Prod dirs on SEAVVPSMCFS!
+###-------------------------------------------------
+### Server Name (to become a DNS)               
+export ftphost_inbound=seavvpsmcfs
+### Production target directory on SEAVVPSMCFS 
+export FTPHOST_ATPCO_IN=psmc/airprice/atpco/inbound_PROD
+### Test target directory on SEAVVPSMCFS       
+export FTPHOST_ATPCO_IN_TEST=psmc/airprice/atpco/inbound_TEST
+
+###-------------------------------------------------
+### Target FTP server at ATPCO.               
+### Files received here on seavvftp from Airprice are
+### FTP'd to this ATPCO server by RMAPSEND@ TWS schedules.
+export ftphost_outbound=ftpin.atpco.net
+###-------------------------------------------------
+
+###-------------------------------------------------
+### Alias names for directories on this server
+###-------------------------------------------------
+# TEST Config:  Use these for Testing              
+#export ELIST=$HOME/elist_test
+#export INBOUND=$HOME/inbound_test
+#export OUTBOUND=$HOME/outbound_test
+
+# PROD Config:  Use these in Production
+export ELIST=$HOME/elist
+export INBOUND=$HOME/inbound
+export OUTBOUND=$HOME/outbound
+
+#Following are the same for Test and Prod configs
+export BIN=$HOME/bin
+export LOG=$HOME/log
+export INBOUND_WORK=${INBOUND}.work   
+export INBOUND_ARCHIVE=${INBOUND}.archive
+export OUTBOUND_ARCHIVE=${OUTBOUND}.archive
+export OUTBOUND_WORK=${OUTBOUND}.work   
+
+###-------------------------------------------------
+### Alias names for files
+###-------------------------------------------------
+export ARCHDATE=`date +%Y%m%d.%H%M%S`
+export TAGFILENAME=inbound.tag.list
+export ZIPFILENAME=inbound.zip.list
+###ftp results log      
+export FTP_RESULT=ftp.$ARCHDATE
+###file for sed command
+export SEDFILE=$BIN/tag_to_z.sed
+
+# Set userid (required for TWS sessions)
+export USER="`id -un`"

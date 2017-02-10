@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/ipsos_environment"
+
+export PGPPASS=seavvdmzftp
+#export pgp_remote_signature="Frank Lecce"
+export pgp_remote_signature="Veronica Gunta" 
+export ftp_host=ftp.ipsos-na.com
+export data_file=alaska_survey.csv
+export data_file_out=alaska_survey.csv.$outdate
+export outdate=`/bin/date +%b%d%Y`
+export pgp_data_file=alaska.$outdate.asc
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archiveexport alert_recipient=eps@alaskaair.com 
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export MAILLIST1="ftp.partner.alerts@alaskaair.com,joanne.gies@AlaskaAir.com"
+export errors_to="eps@alaskaair.com"
+export FileAge=10
+
+. /opt/local/ops_scripts/function_lib
+
+function ftpipsos {
+echo -e "\n***********************************************"
+echo -e "FTP the $pgp_data_file to $ftp_host"
+echo -e "************************************************\n"
+	ftp -v $ftp_host <<FTPDATA >ftp_results.$$ 
+	put $pgp_data_file
+	dir 
+	bye
+FTPDATA
+
+echo -e "\results of ftpipsos"
+cat ftp_results.$$
+rm ftp_results.$$
+
+}

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Encrypt the AS BofA/epsilon massmail data file.
+# Set the environment variables
+. $HOME/bin/epsilon_environment_onetime
+program=`basename $0`
+
+export type=$1
+
+#make sure type parm was passed as first arg
+	if [ -z $type ]; then
+echo -e "\n Missing type parm.  Proper syntax
+	is put_epsilon_data type, where
+	type is equal to us or inact."
+	exit 4
+	fi
+
+case "$type" in
+	onetime)
+	export data_file=BAC_AS_extract_file_us042815
+      	export data_file_padded=${data_file}.tmp
+      	export data_file_pgp=${data_file}.pgp
+;;
+
+esac
+
+echo -e "\nBegin processing `whoami` $data_file"
+mainproc
+echo -e "\nProcessing for `whoami` $data_file complete"

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Encrypt the wadental data file and push to wadental
+# for processing
+
+# Set the environment variables
+. $HOME/bin/wadental_environment
+
+cd $outbound_dir
+rm -f $tagfile
+
+#process wadental file
+export datafile=wadentservice.txt
+export pgpfile=${datafile}.asc
+
+mainproc
+
+

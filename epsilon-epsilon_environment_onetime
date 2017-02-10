@@ -1,0 +1,32 @@
+#!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="narnia.epsilon.com"
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export alert_recipient=dean.liebrich@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export epsilon_mailto="joanne.gies@alaskaair.com"
+export errors_to="joanne.gies@alaskaair.com"
+export FileAge=50
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+cd $outbound_dir
+
+echo -e "\npgp encrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r $pgp_remote_signature --output $data_file_pgp --encrypt $data_file > pgp.transcript 2>&1
+
+	result=$?	
+
+	if [ $result -ne 0 ]; then
+	echo -e "\n$data_file encryption failure, contact EPS."
+	cat  pgp.transcript
+	rm pgp.transcript
+  	exit 8
+	fi
+}

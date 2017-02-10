@@ -1,0 +1,127 @@
+#!/bin/bash
+
+set -x
+
+# Set up the Skywest data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="production.services@alaskaair.com"
+export mail_to="mlr.alerts@alaskaair.com"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+	ls -1 * | while read File1
+	do
+
+echo -e "\nprocessing Skywest $File1"
+
+securezip $File1 inbound
+
+ftp_file $ftp_local_host $File1 $File1 "cd employeetravel/skywest/from"
+
+echo -e "\nArchive file on $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "employeetravel/skywest/from/Archive"
+        put $File1 
+        quit
+GETDATA
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "Archive of file $File1 on $ftp_local_host failed" | Mail -s "$program failure" $mail_to
+	cat ftp_results.$$
+	rm ftp_results.$$
+	fi
+
+cat ftp_results.$$
+rm ftp_results.$$
+
+rm -fv $File1 
+
+	done
+
+archive_clean $inbound_archive .txt $FileAge
+
+echo -e "\nemail to MLR Team that files have been received from SkyWest"
+Mail -s "File(s) are available on Seavvfile1 from SkyWest" $mail_to </dev/null
+
+
+}
+
+
+function outbound {
+
+cd $outbound_dir
+
+
+echo -e "\nget file on $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "employeetravel/skywest/to"
+	dir
+	bin
+      	mget *.xlsx
+	ascii
+	mget *.txt
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+	ls -1 | while read File1
+	do
+
+#Check for spaces in file name
+namechk=`echo $File1 | wc | awk '{print $2}'`
+	if [ $namechk -gt 1 ]; then
+newname=`echo $File1 | sed -e 's/ /_/g'`
+echo "renaming $File1 to newname"
+mv -v "$File1" $newname
+	else
+newname=$File1
+	fi
+
+echo -e "\nprocessing Skywest files"
+
+securezip $newname outbound
+
+echo -e "\nArchive file on $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "employeetravel/skywest/to/Archive"
+        put $newname
+        cd ..
+        del "$File1"
+        quit
+GETDATA
+
+	result=$?
+	if [ $result -ne 0 ]; then
+	echo -e "\narchive of file $File1 on $ftp_local_host failed.\n"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+	done
+
+echo -e "\nemail to MLR Team that files have been put on the sever"
+Mail -s "File(s) are available for SkyWest out on the external FTP server " $mail_to </dev/null
+
+}

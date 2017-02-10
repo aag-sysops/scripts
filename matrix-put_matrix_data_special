@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Encrypt the matrix data file and push to matrix
+# for processing
+
+program=`basename $0`
+
+. $HOME/bin/matrix_environment_special
+
+
+export airline=$1
+
+	case "$airline" in
+
+as)
+	export datafile=${basename}.txt
+	export outfile=Alaska_TEST.txt
+        export pgpfile=${outfile}.pgp
+	export hcmdir=/home/hcmprod/outbound/matrix
+	export tagfile=$hcmdir/${basename}.tag
+
+echo -e "\nbegin processing for AS file $datafile"
+mainproc
+echo -e "\nMatrix Service Plan data transfer for Alaska Air complete"
+
+	;;
+
+qx)
+	export datafile=${basename}.txt
+	export outfile=Horizon_TEST.txt
+        export pgpfile=${outfile}.pgp
+      	export hcmdir=/home/hcmprod/outbound/qxmatrix
+      	export tagfile=$hcmdir/${basename}.tag
+
+echo -e "\nbegin processing for QX file $datafile"
+mainproc
+echo -e "\nMatrix Service Plan data transfer for Horizon Air complete"
+
+	;;
+
+*)
+
+echo -e "\nargument is missing or invalid, 
+need to pass airline argument of qx or as\n"
+
+exit 4
+
+	;;
+
+esac

@@ -1,0 +1,107 @@
+#!/bin/bash
+
+export ftp_local_host=asprodftp
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export mail_to="joanne.gies@alaskaair.com"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=30
+
+set -x
+
+export range=$1
+
+function mainproc {
+
+	ftp -vi $ftp_local_host <<GET >>ftp_results.$$
+        cd "BR_Chesapeake/Outgoing/BackUp/BRftp/Data"
+        mget *201606${range}*.txt
+  	quit
+GET
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nftp get of br files failed... fix it"
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+	ls -1 *.txt |grep -iv bank | while read File1
+	do
+
+export filesize=`ls -l $File1 | awk '{print $5}'`
+
+	if [ $filesize -eq 0 ]; then
+	rm -v $File1
+	fi
+
+echo -e "processing Bank recon file $File1"
+
+export file_name=$File1
+export reform_file=`echo $file_name | sed -e 's/txt/dat/'`
+
+$HOME/bin/decimal $file_name
+
+
+       done
+
+rename .dat .txt *
+
+
+}
+
+function decimal {
+
+	ls -1 *.txt |grep -iv bank | while read File1
+	do
+
+echo -e "processing Bank recon file $File1"
+
+export file_name=$File1
+export reform_file=`echo $file_name | sed -e 's/txt/dat/'`
+
+$HOME/bin/decimal $file_name
+
+#rm -fv $file_name
+
+#mv -v $reform_file $file_name
+
+
+
+       done
+
+
+
+}
+
+cd $outbound_dir
+
+case "$range" in
+
+        0)
+echo -e "\nProcessing file $data_file for `whoami`"
+mainproc
+echo -e "\nFile $data_file processing for `whoami` complete"
+        ;;
+
+        1)
+echo -e "\nBegin processing BR files for 10th-19th for `whoami` inbound"
+mainproc
+echo -e "\nEnd of `whoami` inbound confirmation file processing"
+        ;;
+
+        2)
+echo -e "\nBegin processing confirmation file for `whoami` inbound"
+mainproc
+range=3
+mainproc
+echo -e "\nEnd of `whoami` inbound confirmation file processing"
+        ;;
+
+esac
+

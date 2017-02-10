@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# Set up the BOA solar enrollment data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/solarenroll_environment"
+
+export PGPPASS=seavvdmzftp
+export remote_sig=BOAPUBKY
+export ftp_host=elink-ftp4.bankofamerica.com
+export ftp_local_host=asprodftp
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export DT=`date '+%c'`
+export info_to="joanne.gies@alaskaair.com"
+export datestamp=`/bin/date '+%b%d%Y.%H%M'`
+export outdate=`/bin/date '+%Y%m%d'`
+export errors_to="dean.liebrich@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=99
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+rm ~/.netrc
+ln -s ~/.netrc.psolarout ~/.netrc
+
+cd $outbound_dir
+
+
+ftp_vendor_get $ftp_local_host "$local_file" $local_pgp_file "cd MPTEST/BofAEnrollment/Handback"
+
+dir
+echo $remote_pgp_file
+
+echo -e "\nencrypting file $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r $remote_sig --output $remote_pgp_file --encrypt $local_pgp_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $remote_pgp_file ]; then
+	echo "Alaska BOA file $local_pgp_file encryption failure"
+	cat pgp_transcript.$$
+	rm -f pgp_transcript.$$
+	exit 8
+	fi
+
+
+cat pgp_transcript.$$
+rm -f pgp_transcript.$$
+
+
+ftp_vendor $ftp_host "$remote_pgp_file" "$remote_pgp_file" 
+bin
+
+dir
+
+echo -e "\nmove $data_file_asc to $outbound_archive"
+mv $local_file $outbound_archive/$local_file.$datestamp
+
+echo -e "\nremoving temporary files"
+rm -f pgp_transcript.$$ ftp_results.$$ $local_file $tag_file
+
+echo -e "\nclean up archive directory"
+	find $outbound_archive/$local_file* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+}
+
+function inproc {
+
+rm ~/.netrc
+ln -s ~/.netrc.psolarin ~/.netrc
+
+cd $inbound_dir
+
+ftp_vendor_get $ftp_host $boa_pgp_file $local_pgp_file passive bin
+
+echo -e "\ndecrypt $local_pgp_file" 
+echo $PGPPASS | gpg --passphrase-f 0 --batch --output $boa_pgp_file --decrypt $local_pgp_file
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -s $boa_pgp_file ]; then
+	echo -e "\n`whoami` $local_pgp_file decrypt problem.\n"
+	exit 8
+	fi
+
+record_count=`wc -l $boa_pgp_file | awk '{print $1}'`
+echo -e "\n$boa_pgp_file record count is $record_count on `date`"
+
+ftp_solar_in $ftp_local_host $boa_pgp_file
+
+echo -e "\nmove $local_pgp_file to archive directory and timestamp"
+mv $local_pgp_file $inbound_archive/$local_pgp_file.$datestamp
+
+echo "remove temp file $boa_pgp_file"
+rm -f $boa_pgp_file
+
+archive_clean $inbound_archive $local_pgp_file $FileAge
+
+}

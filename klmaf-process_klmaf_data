@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Check for and then archive the klmaf data file
+#
+# Set environment values
+
+. $HOME/bin/klmaf_environment
+program=`basename $0`
+
+direction=$1
+
+cd $HOME/inbound
+
+#make sure direction parm was passed in as first arg
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_klm or af data direction where
+        direction equals in or out\n with airlines"
+        exit 4
+        fi
+
+case "$direction" in
+
+        in_klm)
+
+indata_file=`ls -1 RCXAS3.RIXAS3.F*.pgp`
+echo $indata_file
+
+export local_file=KLKLMROYALDUTCHPIT.txt
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nEnd of `whoami` inbound processing"
+
+        ;;
+
+
+        in_af)
+
+indata_file=`ls -1 RCXAS1.RIXAS1.F*.pgp`
+echo $indata_file
+
+export local_file=AFAIRFRANCEPIT.txt
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nEnd of `whoami` inbound processing"
+
+        ;;
+
+        out_klmaf)
+
+export data_file=klmafout
+export out_pgp_file=${data_file}.pgp
+
+echo -e "\nBegin processing for `whoami` outbound processing"
+outbound
+echo -e "\nEnd of `whoami` outbound processing"
+
+        ;;
+
+esac

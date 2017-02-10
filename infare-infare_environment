@@ -1,0 +1,77 @@
+#!/bin/bash
+
+export ftp_host=seavvairvisapp01
+export test_host=seatsairvisapp01
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export ops=/opt/local/ops_scripts
+export lz=/odym/AS/clients/AS/input
+export FileAge=10
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+ftp_file $ftp_host $filename $filename bin "cd $lz"
+ftp_file $ftp_host $tagfile $tagfile "cd $lz"
+ftp_file $test_host $filename $filename bin "cd $lz"
+ftp_file $test_host $tagfile $tagfile "cd $lz"
+
+echo -e "\nmove $filename to $inbound_archive"
+mv -v $filename $inbound_archive
+
+echo -e "\nremove $tagfile from $inbound_dir"
+rm -fv $tagfile
+
+archive_clean $inbound_archive $filepref* $Fileage
+
+}
+
+function infareproc {
+
+cd $inbound_dir
+
+ftp_check $ftp_host
+ftp_check $test_host
+
+ls -1 $filepref*.zip | while read FILE1
+		do
+export filename=$FILE1
+export tagfile=`echo $filename | sed -e 's/zip/tag/'`
+
+touch $tagfile
+
+mainproc
+		done
+}
+
+function asproc {
+
+cd $inbound_dir
+
+ftp_check $ftp_host
+ftp_check $test_host
+
+export filename=`ls -1 $filepref*.zip`
+export tagfile=`echo $filename| sed -e 's/zip/tag/'`
+
+echo -e "\nmake sure incoming file transmit is complete, sleeping 480 secs at `date +%H%M%S`"
+startsize=`ls -l $filename | awk '{print $5}'`
+        sleep 480
+endsize=`ls -l $filename | awk '{print $5}'`
+        until [ $endsize -eq $startsize ]
+        do
+echo -e "\nfile $filename is still growing... sleeping 480 secs at `date +%H%M%S`"
+startsize=`ls -l $filename | awk '{print $5}'`
+        sleep 480
+endsize=`ls -l $filename | awk '{print $5}'`
+	done
+
+echo -e "create tag file $tagfile"
+touch $tagfile
+
+mainproc
+
+}

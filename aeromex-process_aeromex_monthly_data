@@ -1,0 +1,35 @@
+#!/bin/bash
+
+export ftp_local_host=asprodftp
+export file_pref=FFBAMAS
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=systems.mamangement@alaskaair.com
+export datestamp=`/bin/date +%Y%m%d`
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+echo -e "\nBegin processing for `whoami` inbound monthly billing report"
+
+cd $inbound_dir
+
+ftp_check $ftp_local_host
+
+export data_file=`ls -1 $file_pref*`
+records=`wc $data_file | awk '{print $2}'`
+
+echo -e "\n$data_file file ($records records) received at `date`"
+
+securezip $data_file inbound
+
+ftp_file $ftp_local_host $data_file $data_file "cd mplan/balancing/Aeromexico_Detail"
+
+echo -e "\ncleaning up inbound directory"
+rm -fv $data_file
+
+archive_clean $inbound_archive $file_pref $FileAge
+
+echo -e "\nProcessing for `whoami` inbound monthly billing report complete"

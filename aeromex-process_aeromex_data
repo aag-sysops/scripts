@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Check for and then archive the emiles data file
+#
+# Set environment values
+
+. $HOME/bin/aeromex_environment
+program=`basename $0`
+
+direction=$1
+
+#make sure direction parm was passed in as first arg
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_aeromex_data direction where
+        direction equals in or out\n"
+        exit 4
+        fi
+
+case "$direction" in
+
+        in)
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nEnd of `whoami` inbound processing"
+        ;;
+
+        out)
+echo -e "\nBegin processing for `whoami` outbound processing"
+outbound
+echo -e "\nEnd of `whoami` outbound processing"
+        ;;
+
+esac

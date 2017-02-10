@@ -1,0 +1,55 @@
+#!/bin/bash
+
+
+set -x
+export ftphost=mvs
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export datestamp=`date +%m%d%y.%H%M`
+export dcbparms=""
+export fileage=20
+
+. /opt/local/ops_scripts/function_lib
+
+
+function putdsn {
+
+cd $inbound_dir
+
+export data_file=`ls -1 $file_pref*`
+
+dsn_2mvs $ftphost $data_file "'$dsn'" bin
+
+echo -e "\nmove $data_file to $inbound_archive"
+mv $data_file $inbound_archive
+
+
+}
+
+cd $inbound_dir
+
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+echo -e "\nprocess accb file"
+        export file_pref=SABRE_AS_ACCB*.CMP
+	export dsn=SR.ACCB.RECEIVE.DATA
+putdsn
+	
+echo -e "\nprocess auth file"
+        export file_pref=SABRE_AS_AUTH*.CMP
+	export dsn=SR.ACCB.RECEIVE.AUTH
+putdsn
+
+echo -e "\nprocess local file"
+        export file_pref=SABRE_AS_LOCAL*.CMP
+	export dsn=SR.ACCB.RECEIVE.LOCAL
+putdsn
+
+
+echo -e "\nprocess nobill file"
+        export file_pref=SABRE_AS_NOBILL*.CMP
+	export dsn=SR.ACCB.RECEIVE.NOBILL
+putdsn
+
+

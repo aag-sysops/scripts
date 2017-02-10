@@ -1,0 +1,13 @@
+#Check for spaces in names.
+
+	ls -1 ${filepref}.* | while read FILE1
+	do
+export namechk=`echo $FILE1 | wc | awk '{print $2}'`
+
+	if [ $namechk -gt 1 ]; then
+newname=`echo $FILE1 | sed -e 's/ /_/g'`
+echo -e "\nrenaming $FILE1 to $newname"
+mv "FILE1" $newname
+else
+newname=$FILE1
+	fi

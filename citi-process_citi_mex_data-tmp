@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Set the environment variable
+. $HOME/bin/citi_environment_mex-tmp
+
+export airdir=$1
+
+	if [ -z $airdir ]; then
+echo -e "\n	Missing airline/direction parm,
+	proper syntax is process_citi_data airline.direction
+	where airline=as or qx and direction=in or out. i.e.
+	process_citi_data mxout or mxin\n"
+	exit 4
+	fi	
+
+case "$airdir" in
+
+	mxin)
+#	export basename=AACDMXLOG
+        export basename=AACDMXLOG
+      
+
+echo -e "\nBegin processing for AS inbound $local_file"
+inproc
+echo -e "\nInbound processing complete for $local_file"
+;;
+
+	mxout)
+#	export basename=AACDMX_test
+        export basename=AACDMX_prod
+	export findir=/home/finprod/outbound/ap_mxciti
+
+echo -e "\nBegin processing for $airline outbound file $data_file"
+outproc
+echo -e "\nOutbound processing complete for $airline file $datafile"
+;;
+
+esac

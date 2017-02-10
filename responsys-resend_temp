@@ -1,0 +1,30 @@
+#!/bin/bash
+
+export sftp_host=alaskaair_scp@files.dc2.responsys.net
+#export ftp_host=ftptest #test
+export ftp_host=asprodftp #prod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export filedate=20140527
+export datestamp=`date +%Y%m%d%H%M`
+export FileAge=15
+export file_name=CONTACT_LIST_20150331.txt
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+securezip $file_name outbound
+
+echo -e "\nput $file_name to $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd upload
+       	put $file_name
+      	ls -l $file_name
+       	quit
+PUT
+
+echo -e "\nclean up outbound directory"
+rm -fv $file_name

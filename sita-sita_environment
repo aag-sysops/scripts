@@ -1,0 +1,165 @@
+#!/bin/bash
+
+# Set up the SITA UATP data transfer environment
+# 9/13/2011 - commented out the Temporary Email steps.  tsonnen.
+
+export PGPPASS=seavvdmzftp
+export pgp_rem_sig=sitauatp
+export ftp_host=sitaftp.sita.aero
+export ftp_local_host=mvs
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export alert_recipient=production.services@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export currday=`/bin/date +%d`
+export info_to="tyler.sonnen@alaskaair.com"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+rm ~/.netrc
+ln -s ~/.netrc.outbound ~/.netrc
+
+	if [ -f $uatp_file ]; then
+echo -e "\nprevious encrypted file $uatp_file found in $outbound_dir
+	moving file to $outbound_archive\n"
+	mv $uatp_file $outbound_archive\$uatp_file.$datestamp
+	fi
+
+echo -e "\nencrypt file $file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r $pgp_rem_sig --output $uatp_file --encrypt $file
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $uatp_file ]; then
+echo -e "\nUATP file $file encryption failure, contact Systems Management\n"
+	exit 8
+	fi
+
+ftp_vendor $ftp_host $uatp_file $uatp_file passive bin
+
+echo -e "\ncreate archived version of $uatp_file"
+mv $uatp_file $outbound_archive/$uatp_file.$datestamp
+
+output_records=`wc -l $file`
+echo -e "\n$datestamp: $output_records records sent to $ftp_host"
+
+echo -e "\nclean up outbound directory directory"
+rm -f $file
+
+echo -e "\nremove archived files older than $FileAge days"
+        find $outbound_archive/$uatp_file* -mtime +$FileAge -print |
+        while read FILE1
+        do
+        echo "removing file $FILE1"
+        rm -f $FILE1
+        done
+
+}
+
+function decrypt {
+
+cd $inbound_dir
+
+rm ~/.netrc
+ln -s ~/.netrc.inbound ~/.netrc
+
+ftp_vendor_get $ftp_host $uatp_file $uatp_file passive bin
+
+echo -e "\ndecrypt file $uatp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $file --decrypt $uatp_file
+
+	result=$?
+
+echo "return code is $result"
+
+	if [ $result -ne 0 -o ! -f $file ]; then
+echo -e "\nUATP file $uatp_file decryption failure, contact Systems Management\n"
+	exit $result
+	fi
+
+archive_clean $inbound_archive atcv $Fileage
+
+}
+
+function result {
+
+#determine type of file (confirm or error)
+	accepted=`grep -c "FILE ACCEPTED" $file`
+
+	if [ $accepted -eq 1 ]; then
+
+#export dsn="'PROG.SR.UATPATCN.CONFIRM'"	#TEST
+export dsn="'SR.UATPATCN.CONFIRM'"	#PROD
+dsn_2mvs $ftp_local_host $file "$dsn"
+	
+	else
+
+#export dsn="'PROG.SR.UATPATCN.ERRORS'"	#TEST
+export dsn="'SR.UATPATCN.ERRORS'"	#PROD
+dsn_2mvs $ftp_local_host $file "$dsn"
+
+	fi
+
+ftp_jcl $jcl $ftp_local_host
+
+#temporarily send email
+#Mail -s "`whoami` results file received at `date`" $info_to
+
+echo -e "\nclean up inbound directory directory"
+rm -f $file
+
+echo -e "\ncreate archived version of $uatp_file"
+mv $uatp_file $inbound_archive/$uatp_file.$datestamp
+
+}
+
+function recon {
+
+cd $inbound_dir
+
+#unzip and check for expected files
+unzip -o $file
+
+	if [ ! -r AL0027 -o ! -r FORM0027 ]; then
+echo -e "\nexpected `whoami` data file missing\n"
+	ls -l
+	exit 4
+	fi
+
+# validate correct file date
+filemonth=`head -4 $formfile | tail -1 | awk '{print $1}'`
+filedate=`head -4 $formfile | tail -1 | awk '{print $2}'`
+
+	if [ $filedate != $currday ]; then
+echo -e "\ndate of file being processed is incorrect, file should be dated `date "+%B %d"`,but is dated $filemonth $filedate instead.  Wait 30 minutes then rerun this job.\n"
+rm -fv $file $alfile $formfile
+mv $uatp_file $inbound_archive/dup_${uatp_file}.$datestamp
+	exit 4
+	fi
+
+#export dsn="'PROG.SR.UATPATCN.RECON'"	#TEST
+export dsn="'SR.UATPATCN.RECON'"	#PROD
+dsn_2mvs $ftp_local_host $alfile "$dsn"
+
+#export dsn="'PROG.SR.UATPATCN.FORM1'"	#TEST
+export dsn="'SR.UATPATCN.FORM1'"	#PROD
+dsn_2mvs $ftp_local_host $formfile "$dsn"
+
+ftp_jcl $jcl $ftp_local_host
+
+echo -e "\nclean up inbound directory directory"
+rm -fv $file $alfile $formfile
+
+echo -e "\ncreate archived version of $uatp_file"
+mv $uatp_file $inbound_archive/$uatp_file.$datestamp
+
+}

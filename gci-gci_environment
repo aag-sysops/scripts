@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Set up the GCI data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/gci_environment"
+
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export local_file=GCGCIALASKAPIT.txt
+export outfile_prefix=GCGCIALASKAPIT
+export handback_file=gci_handback
+FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+records=`wc $data_file | awk '{print $2}'`
+	
+	if [ $records -eq 0 ]; then
+	echo "gci data file ($data_file) is empty"
+	exit 4
+	fi
+
+echo -e "\n`whoami` file ($records records) received at `date`"
+
+#rename local file for SOLAR conv.
+mv $data_file $local_file
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+securezip $solar_file outbound
+
+echo -e "\nrename $solar_file to $data_file"
+mv $solar_file $data_file
+
+ftp_delete $ftp_local_host $solar_file "cd $lz/outbound/handback"
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+}

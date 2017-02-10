@@ -1,0 +1,111 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export sftp_host=as-qx@ari.lcl@sftp.amadeusri.com
+export partner=Amadeus
+export lzout_dir=scheduling/PartnerSSIM/$partner/outbound
+export lzout_archive=scheduling/PartnerSSIM/$partner/outbound.archive
+export lzin_dir=scheduling/PartnerSSIM/$partner/inbound
+export lzin_archive=scheduling/PartnerSSIM/$partner/inbound.archive
+export namebase=ASoag
+export maildom=alaskaair.com
+#export mail_list="dean.liebrich@$maildom"
+export mail_list="ASQX.ScheduleDistribution@$maildom"
+export sentdate=`/bin/date "+%Y%m%d_%H%M"`
+export datestamp=`/bin/date "+%j%y-%H%M"`
+export maildate=`/bin/date "+%Y%m%d %H:%M"`
+export FileAge=7
+
+export program=`basename $0`
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+sleep 30
+
+ftp_check $ftp_local_host
+
+echo -e "\nftp get $namebase file from $ftp_local_host\n"
+	ftp -v -i $ftp_local_host <<MGET >ftp_results.$$
+	cd $lzout_dir
+	dir
+	mget ${namebase}*
+	bye
+MGET
+	result=$?
+
+	if [ $result -ne 0 ];then
+	echo "\nFTP get of $namebase file failed,
+	please investigate\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+#remove spaces in file name if needed
+namechk=`ls -1 ${namebase}* | wc | awk '{print $2}'`
+
+	if [ $namechk -gt 1 ]; then
+echo -e "\nrename ${namebase}* to `ls -1 ${namebase}* | sed -e 's/ /_/g'`"
+mv -v ${namebase}* `ls -1 ${namebase}* | sed -e 's/ /_/g'`
+	fi
+
+export sim_file=`ls -1 ${namebase}*`
+export arch_name=`echo $sim_file | sed -e 's/.txt//'`
+export zip_name=${arch_name}.zip
+export reldate=`head -10 $sim_file | grep -v 00000000 | tail -1 | cut -c65-71`
+
+securezip $sim_file outbound
+
+	sftp -v $sftp_host <<PUT >>ftp_results.$$
+	cd AS-QX/incoming/SSIM
+	put $sim_file
+	quit
+PUT
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nsftp get of $file_prefix files get failed... fix it"
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo "SSIM file $sim_file for release $reldate was sent from AS to $partner on $maildate" | Mail -s "AS to $partner SSIM file" $mail_list
+
+ftp_file $ftp_local_host $sim_file ${arch_name}_$sentdate.txt "cd $lzout_archive"
+
+echo -e "\nDelete file $sim_file from $local_host"
+	ftp -v -i $ftp_local_host <<DATA >ftp_results.$$
+	cd $lzout_dir
+	mdel ${namebase}*
+	dir
+	quit
+DATA
+
+	result=$?
+
+	if [ $result -ne 0 ];then
+	echo "\nFTP delete of file $sim_file failed,
+	please investigate\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo "remove file $sim_file"
+rm -fv $sim_file
+
+archive_clean $outbound_archive $namebase $FileAge

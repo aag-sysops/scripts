@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -x
+
+#this is a stand alone script
+
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_out=/home/hcmprod/outbound/smartrec
+export datestamp=`/bin/date +%m%d%Y%H%M%S`
+export filepref=AAG_
+export dom=alaskaair.com
+export infor_to="valerie.dotson@$dom,jerry.trujillo@$dom"
+#export infor_to="joanne.gies@$dom"
+export errors_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+echo -e "\nprocessing $whoami $out_file"
+
+cd $hcmdir_out
+
+ls -1 ${filepref}*.csv |
+	while read FILE1
+	do
+	export datafile=$FILE1
+	export tagfile=`echo $FILE1 | sed -e 's/csv/tag/'`
+
+
+echo -e "\nget $datafile from $hcmdir_out"
+cp -p $hcmdir_out/$datafile $outbound_dir
+
+securezip $datafile outbound 
+
+cd $outbound_dir
+
+
+echo -e "\nRemove $datafile and $tagfile"
+rm -fv $hcmdir_out/$tagfile $hcmdir_out/$datafile
+
+     done
+
+echo -e "\nsend email to Val and Jerry that files have been put on the sever"
+ls -1 | Mail -s "File(s) are available for Smart Recruiters on the external FTP server" $infor_to
+
+archive_clean $outbound_dir $filepref $FileAge
+

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Set up the Matrix data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="Matrix Absence Management"
+export ftp_host=ftp.matrixcos.com
+export datestamp=`/bin/date +%b%d%Y`
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export filedate=`/bin/date +%Y%m%d`
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export basename=AGBN0076
+export alert_recipient=joanne.gies@alaskaair.com
+export info_to="dean.liebrich@alaskaair.com,joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+cd $outbound_dir
+rm ~/.netrc
+ln -s ~/.netrc.$airline ~/.netrc
+
+cp -v $hcmdir/$datafile $outbound_dir/$outfile
+
+	result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nget $datafile from $hcmdir failed"
+	echo "contents of $hcmdir:"
+	ls -l $hcmdir
+        exit 4
+        fi
+
+echo -e "\nencrypting file $outfile"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output $pgpfile --encrypt $outfile >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $pgpfile -o $result -ne 0 ]; then
+	echo -e "\n$datafile encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+	exit 4
+	fi
+
+rm -f pgp_transcript.$$
+
+ftp_vendor $ftp_host $pgpfile $pgpfile bin
+
+securezip $outfile outbound
+
+rm -fv $pgpfile $hcmdir/$datafile $outfile $tagfile
+
+archive_clean $outbound_archive $outfile $FileAge
+ 
+}

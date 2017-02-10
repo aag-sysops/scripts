@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#######################################################
+#        THIS SCRIPT/JOB NOW RUNS TUK                 #
+#######################################################
+
+export sftp_host=alaskaair_scp@files.dc2.responsys.net
+#export ftp_host=ftptest #test
+export ftp_host=asprodftp #prod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export outbound_adhoc=$HOME/out-adhoc
+export filedate=`date +%Y%m%d`
+export datestamp=`date +%Y%m%d%H%M`
+export FileAge=7
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+ls -1 *20161027* | while read FILE1
+	do
+
+securezip $FILE1 inbound
+
+ftp_file $ftp_host $FILE1 $FILE1 "cd MPPROD/Inbound/Responsys_CED" 	#prod
+
+let cutamt="`echo $FILE1 | wc | awk '{print $3}'` -21"
+newtmp="`echo $FILE1 | cut -c1-$cutamt`.txt"
+
+newname=`echo $newtmp | sed -e 's/54080_//'`
+
+echo -e "\nrename file $FILE1 to $newname"
+mv $FILE1 -fv $newname
+
+	done
+
+touch $tagfile
+
+}
+
+echo -e "\nBegin processing for `whoami` inbound"
+export tagfile=responsys_in.tag
+inbound
+echo -e "\nEnd of `whoami` inbound processing"

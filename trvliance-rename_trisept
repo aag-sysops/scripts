@@ -1,0 +1,13 @@
+#!/bin/sh
+
+export datestamp=`date +%m%d%y.%H%M`
+cd /ftphome/trisept/inbound
+
+ls -1 AS* |
+        while read FILE1
+   	do                                
+	newname=`echo $FILE1 | sed -e 's/.012516.2100//'`
+ 	echo "renaming $FILE1 to $newname"
+	#gzip <$FILE1 >/ftphome/trisept/inbound.archive/$FILE1.$datestamp.gz
+        mv $FILE1 $newname
+	done

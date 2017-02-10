@@ -1,0 +1,81 @@
+#!/bin/bash
+
+program=`basename $0`
+
+set -x
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="Mark Chilbert"
+export ftp_host=ftp.cobramanagement.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=joanne.gies@alaskaair.com
+#export hcmdir=/ftptest/HCMTEST/outbound/cobra #test
+export ashcmdir=/home/hcmprod/outbound/ascobra #as prod
+export qxhcmdir=/home/hcmprod/outbound/qxcobra #qx prod
+export datestamp=`/bin/date +%Y%m%d`
+export info_to="joanne.gies@alaskaair.com"
+export errors_to="production.services@aaskaair.com"
+export cobra_mailto="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function cobraproc {
+
+cd $hcmdir_out
+
+filecnt=`ls -1 $filepref |wc -l`
+echo -e "\nthere are $filecnt files to process"
+
+ls -1 $filepref |
+	while read FILE1
+	do
+	export datafile=$FILE1
+	export outfile=`echo $FILE1 | sed -e s/.txt//`
+	export pgpfile=${outfile}.$datestamp
+
+echo -e "get $datafile from $hcmdir"
+cp $hcmdir/$FILE1 $outbound_dir
+
+	result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nget $FILE1 from $hcmdir failed"
+	echo "contents of $hcmdir:"
+	ls -l $hcmdir
+        exit 4
+        fi
+	
+cd $outbound
+
+echo -e "\nencrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output $outfile --encrypt $datafile >pgp_transcript.$$	
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nEncryption error on Alaska to Cobra $datafile,
+	notify Systems Management during normal business hours\n"
+	cat pgp_transcript.$$
+	rm -f pgp_transcript.$$
+	exit 4
+	fi
+
+#ftp_vendor $ftp_host $outfilename $outfilename bin 
+
+securezip $datafile outbound
+
+#rm -fv $filename $outfile $datafile
+
+done
+
+archive_clean $outbound_archive $file_prefix $FileAge
+
+}
+
+
+
+

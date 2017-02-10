@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Fetch visa check card data from Bank of America,
+# then submit a piece of mainframe JCL to trigger file pickup
+
+# Set the environment variables
+. $HOME/bin/boa-vcc_environment
+
+cd $inbound_dir
+rm ~/.netrc
+ln -s ~/.netrc.inbound ~/.netrc
+
+echo -e "\ncheck for file "$data_file" at $ftp_host" 
+	ftp -v $ftp_host <<EOF1 >ftp_results.$$ 2>&1
+	passive
+        dir
+	quit
+EOF1
+
+data_ready=`grep -c -e "-AR-.*$data_file" ftp_results.$$`
+
+	if [ $data_ready -eq 0 ]; then
+echo -e "\n	Expected file $data_file not found.  Contact
+	the Bank of America data transfer helpdesk at 
+	(888) 269-5266 and ask them if the data file 
+	for ID ALASKAAO and batchid BCBOADEBITPIT.txt 
+	is ready for pick up.  Rerun this job when the 
+	file has been placed on the Banks server\n"
+
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+rm -f ftp_results.$$
+	
+	if [ $data_ready -ne 1 ]; then 
+	echo -e "\nthere is more than 1 file in BOA mailbox, notify Production Services.\n"
+	exit 4
+	fi	
+
+ftp_vendor_get $ftp_host $data_file $boa_file passive bin
+
+echo -e "\nDecrypt file $boa_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --decrypt --output $data_file $boa_file
+
+	result=$?
+	
+	if [ $result -ne 0 ]; then
+echo -e "\ninbound $data_file decrypt problem.  Notify Production support.\n"
+	exit 8
+	fi
+
+ftp_solar_in $ftp_local_host $data_file
+
+mv $data_file $inbound_archive/$data_file.$datestamp.asc
+
+rm -f $data_file $boa_file
+
+archive_clean $inbound_archive $data_file $FileAge

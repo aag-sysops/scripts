@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Encrypt the AS data file to ftp to/from alpa
+# Set the environment variables
+. $HOME/bin/alpa_environment
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_alpa_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+
+	IN)
+export remotefile=ICO_ALA.PGP
+export localfile=ICO_ALA.txt
+export tagfile=ICO_ALA.TAG
+export hcmdir=$hcmdir_in
+export localtag=ICO_ALA.TAG
+echo -e "\nbegin processing inbound  file  for `whoami` $localfile"		
+inproc 
+	;;
+
+	OUT)
+export datafile=ICO_ALA.IN
+export pgpfile=${datafile}.pgp
+export hcmdir=$hcmdir_out
+export tagfile=ICO_ALA.tag
+outproc 
+
+export datafile=ICO_ALA_RPT.RPT
+export pgpfile=${datafile}.pgp
+export hcmdir=$hcmdir_out
+export tagfile=ICO_ALA_RPT.tag
+outproc 
+	;;
+
+*)
+
+echo -e "\nargument is missing or invalid, 
+need to pass argument of IN or OUT"
+exit 4
+
+;;
+esac

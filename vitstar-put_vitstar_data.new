@@ -1,0 +1,103 @@
+#!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export ftp_host=sgftp.sabre.com
+export ftp_local_host=asprodftp
+#export data_file=MHRPTS.MHR010.AST.XML
+#export remote_file_out=$data_file_out.gz
+export filepref=MHRPTS.MHR010.AST
+export trig_file=upload.AS.xml.trigger
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export sourcedir=mpprod/vitstar
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="dean.liebrich@alaskaair.com,production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=7
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\nget $filepref files on asprodftp"
+        ftp -v -i  asprodftp <<GETDATA >ftp_results.$$
+        cd "$sourcedir"
+        mget $filepref*
+        bye
+GETDATA
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo "get files from asprodftp failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+	fi
+
+rm -fv ftp_results.$$
+
+	ls -1 $filepref* | while read FILE1
+		do
+
+export data_file=$FILE1
+export cutamt=`echo $data_file | cut -c19`
+export vitstar_file=upload_as_xml_$cutamt
+export zip_file=$vitstar_file.gz
+
+securezip $data_file outbound
+
+mv $data_file $vitstar_file
+
+gzip $vitstar_file
+
+#ftp_vendor $ftp_host $zip_file_out $zip_file_out bin
+
+echo -e "\nmove $data_file on asprodftp" 
+	ftp -v asprodftp <<GETDATA >ftp_results.$$
+	cd "$sourcedir/Archive"
+        put $data_file $data_file.$datestamp
+        dir
+	cd ..
+        delete $data_file
+	bye
+GETDATA
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "move to archive and delete step failed"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+	exit 4
+	fi
+
+	done
+
+touch $trig_file
+
+echo -e "\nFTP gzip files to $ftp_host"
+        ftp -i -v $ftp_host <<PUTDATA >ftp_results.$$
+	bin
+        mput upload_as_xml*gz
+	put $trig_file
+        dir
+        bye
+PUTDATA
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo "FTP $filepref* files to $ftp_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+echo -e "\nremove upload_as_xml* files"
+rm -fv upload_as_xml* $trig_file
+
+archive_clean $outbound_archive $filepref $FileAge
+

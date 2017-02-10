@@ -1,0 +1,18 @@
+#!/bin/bash
+
+export maillist="dean.liebrich@alaskaair.com"
+
+cd /ftphome/portfeeds/sea/archive
+
+export filecnt=`ls -1 | wc | awk '{print $1}'`
+echo -e "`date +%Y%m%d.%H%M%S` file count is $filecnt" >> /ftphome/portfeeds/sea/filecount.log
+
+	if  [ $filecnt -ge  700 ]; then
+sleep 210
+	export filecnt=`ls -1 | wc | awk '{print $1}'`	
+		if [ $filecnt -ge 900 ];then
+echo "Number of SEA fids files is at $filecnt, which is more than expected, possible connectivity issue to SEA" |Mail -s "SEA FIDS" $maillist
+		fi
+	fi
+
+

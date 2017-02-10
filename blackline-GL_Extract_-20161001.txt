@@ -1,0 +1,1142 @@
+﻿Business Unit	Account	Key3	Key4	Key5	Key6	Key7	Key8	Key9	Key10	Descr	Acct Ref	Financial Statement	Account Type	Active Account	Activity in Period	Alt Cur	Account Currency	Period End Date	GL Reporting Bal	GL Alt Bal	GL Account Balance
+AAG	01000									Cash - Main Concentration		A	Asset	TRUE	TRUE		USD	09/30/2016			-98377.68
+AAG	01290									Bank Of America Overdraft Recl		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+AAG	02000									Notes Receivable - QX		A	Asset	TRUE	TRUE		USD	09/30/2016			7624407.98
+AAG	02020									Income Tax Received QX		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	02030									Current Year Tax Due From As		A	Asset	TRUE	FALSE		USD	09/30/2016			971177468.29
+AAG	02040									Intercompany Clearing AP Syste		A	Asset	TRUE	TRUE		USD	09/30/2016			-130130652.17
+AAG	02050									Receivable From AAG		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	02085									Receivable Alpine Merger Corp		A	Asset	TRUE	FALSE		USD	09/30/2016			40380.00
+AAG	02090									Interest Receivable AS		A	Asset	TRUE	FALSE		USD	09/30/2016			1572755.37
+AAG	02100									Receivable from QX - Intercomp		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	02170									A/R - ASA		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	02870									A/R - Cad GST Tax Refundable		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	02880									Due From State		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	02885									Due From Federal Government		A	Asset	TRUE	FALSE		USD	09/30/2016			2925873.00
+AAG	04230									Ppd  Insurance - Genl Liab		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+AAG	04690									Directors/Officer Insurance		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	05450									Construction In Progress		A	Asset	TRUE	FALSE		USD	09/30/2016			59391.25
+AAG	09000									Deposits - Misc		A	Asset	TRUE	FALSE		USD	09/30/2016			6188.00
+AAG	09800									Investment Acquisition-ASA		A	Asset	TRUE	FALSE		USD	09/30/2016			414553808.74
+AAG	09810									Investment Earnings-ASA		A	Asset	TRUE	TRUE		USD	09/30/2016			3949235635.81
+AAG	09820									Investment Acquisition-QX		A	Asset	TRUE	FALSE		USD	09/30/2016			102860670.48
+AAG	09830									Investment Earnings-QX		A	Asset	TRUE	TRUE		USD	09/30/2016			88054491.28
+AAG	09835									Investment Earnings-AMC		A	Asset	TRUE	FALSE		USD	09/30/2016			-22710973.94
+AAG	09840									Investment Acquisition-AGL		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	09845									Investment Acquisition-AAI		A	Asset	TRUE	FALSE		USD	09/30/2016			3885000.00
+AAG	09850									Investment Earnings-AGL		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	09855									Investment Earnings-AAI		A	Asset	TRUE	FALSE		USD	09/30/2016			215178.00
+AAG	09860									Investment Acquisition-AGF		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	09880									Investment Acquisition-Jet Amr		A	Asset	FALSE	FALSE		USD	09/30/2016			33902760.92
+AAG	09890									Investment Earnings-Jet Amr		A	Asset	TRUE	FALSE		USD	09/30/2016			-10308000.00
+AAG	10070									Notes Payable to ASA		A	Liability	TRUE	TRUE		USD	09/30/2016			-2643362479.62
+AAG	10160									Payable To ASA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	10170									Payable to AGL		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	10180									Payable to AAG		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	11020									Vouchers Payable - PeopleSoft		A	Liability	TRUE	TRUE		USD	09/30/2016			-4240.02
+AAG	11105									ESPP Accrued Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-645351.32
+AAG	11250									Misc Current Liabilities		A	Liability	TRUE	FALSE		USD	09/30/2016			-16500.00
+AAG	11260									Misc A/P Accruals		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	11600									Delaware Tax Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-27260.78
+AAG	11610									Legal Fee Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	11900									Cash Overdraft		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+AAG	14040									Accrued Taxes-Payable to ASA		A	Liability	TRUE	FALSE		USD	09/30/2016			-2925872.32
+AAG	14060									Accrued Taxes Payable To QX		A	Liability	TRUE	FALSE		USD	09/30/2016			-123402302.56
+AAG	14200									Acc'd Taxes-WA Business		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	14210									Acc'd Taxes-WA Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	14404									Acc'd Tax - AK Property		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+AAG	15165									Currt Liab-Federal Income Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			91999999.00
+AAG	15600									Escheatment Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-1417.60
+AAG	17750									LT Other Liabilities		A	Liability	TRUE	FALSE		USD	09/30/2016			-1570961.75
+AAG	18000									Deferred Tax Liab - NC		A	Liability	TRUE	FALSE		USD	09/30/2016			675937.31
+AAG	18010									Deferred Tax Liab - NC-Curr Yr		A	Liability	TRUE	FALSE		USD	09/30/2016			90470864.00
+AAG	18950									Redeemable Preferred Par Value		A	Liability	TRUE	FALSE		USD	09/30/2016			-10.00
+AAG	19050									Common Stock-Par Value		A	Equity	TRUE	FALSE		USD	09/30/2016			-1291123.69
+AAG	19150									Common Stock-Paid In Capital		A	Equity	TRUE	TRUE		USD	09/30/2016			-103002618.14
+AAG	19200									Treasury Stock $1 Par Value		A	Equity	TRUE	FALSE		USD	09/30/2016			58615.83
+AAG	19210									Treasury Stock Paid In Capital		A	Equity	TRUE	FALSE		USD	09/30/2016			443509269.82
+AAG	19300									Def Comp Orig Loan As Esop		A	Equity	TRUE	FALSE		USD	09/30/2016			10000000.00
+AAG	19310									Def Comp Prin Repay AS ESOP		A	Equity	TRUE	FALSE		USD	09/30/2016			-10000000.00
+AAG	19315									Accum OCI OSRP		A	Equity	TRUE	TRUE		USD	09/30/2016			6645635.11
+AAG	19335									Unrealized Gain/Loss Mkt Sec		A	Equity	TRUE	TRUE		USD	09/30/2016			0.03
+AAG	19338									Accum OCI - Int Rate Swap		A	Equity	TRUE	TRUE		USD	09/30/2016			0.00
+AAG	19340									Tax Effect on OCI		A	Equity	TRUE	FALSE		USD	09/30/2016			-164656149.32
+AAG	19345									Accum OCI- Retiree Medical		A	Equity	TRUE	TRUE		USD	09/30/2016			-38719568.75
+AAG	19350									OCI-Pension		A	Equity	TRUE	TRUE		USD	09/30/2016			469617331.28
+AAG	19360									Def Comp Restricted Stock_AAG		A	Equity	FALSE	FALSE		USD	09/30/2016			0.00
+AAG	19400									Retained Earnings-Asa		A	Equity	TRUE	FALSE		USD	09/30/2016			-3994585387.74
+AAG	19410									Retained Earnings-Aag		A	Equity	TRUE	TRUE		USD	09/30/2016			414127210.73
+AAG	19420									Retained Earnings-Aag L		A	Equity	TRUE	FALSE		USD	09/30/2016			3215379.16
+AAG	19430									Retained Earnings-Jet Am		A	Equity	TRUE	FALSE		USD	09/30/2016			10308000.00
+AAG	19435									Retained Earnings-AMC		A	Equity	TRUE	FALSE		USD	09/30/2016			22710973.94
+AAG	19440									Retained Earnings-Horizon		A	Equity	TRUE	FALSE		USD	09/30/2016			-38981338.00
+AAG	19450									Retained Earnings-Aagf S		A	Equity	TRUE	FALSE		USD	09/30/2016			-45639.94
+AAG	19455									Retained Earnings-AAI		A	Equity	TRUE	FALSE		USD	09/30/2016			-215178.00
+AAG	19460									Common Dividends Accrued		A	Equity	TRUE	FALSE		USD	09/30/2016			7296722.45
+AAG	19470									Preferred Divideds Accrued		A	Equity	TRUE	FALSE		USD	09/30/2016			20966896.57
+AAG	19480									Retained Earnings Cpp Offset		A	Equity	TRUE	FALSE		USD	09/30/2016			1936000.00
+ASA	01000									Cash - Main Concentration		A	Asset	TRUE	TRUE		USD	09/30/2016			-2740470.52
+ASA	01001									Cash - Payroll		A	Asset	TRUE	TRUE		USD	09/30/2016			-53878971.82
+ASA	01002									Cash - Accounts Payable		A	Asset	TRUE	TRUE		USD	09/30/2016			-23181776.06
+ASA	01003									Cash - Workers Comp		A	Asset	TRUE	FALSE		USD	09/30/2016			-184720.01
+ASA	01004									Cash - Refunds		A	Asset	TRUE	TRUE		USD	09/30/2016			-123413.61
+ASA	01005									Cash - Vacations Depository		A	Asset	TRUE	FALSE		USD	09/30/2016			3000.00
+ASA	01006									Cash - Citibank Wires		A	Asset	TRUE	FALSE		USD	09/30/2016			15001.00
+ASA	01007									Cash-Credit Card Settlement		A	Asset	TRUE	FALSE		USD	09/30/2016			49999.99
+ASA	01010									Refund A/P Checks Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			26453.17
+ASA	01030									Petty Cash Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			21483.87
+ASA	01040									Change Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			55065.00
+ASA	01070									Mkt Sec less than 3 Mths		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	01200									Citibank Money Market		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01290									Bank Of America Overdraft Recl		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	01300									Canada-Bank Of Montreal Cash		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01305									Canada - Concentration		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01310									Canada-Royal Bank Cash		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	01315									Canada-Bank of NovaScotia		A	Asset	TRUE	TRUE		USD	09/30/2016			126418.47
+ASA	01320									MX-Cash Disbursement HSBC		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01321									Mexico-Cash Deposit HSBC		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01322									Mexico-Cash Dep HSBC in USD		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01330									MX-Cash Deposits-Santander Ser		A	Asset	TRUE	FALSE		USD	09/30/2016			63930.71
+ASA	01335									BBVA Bancomer - MX - LTO		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01400									MX-Cash Disbursement BANAMEX		A	Asset	TRUE	TRUE		USD	09/30/2016			512141.67
+ASA	01401									MX- BANAMEX Payroll Acct		A	Asset	TRUE	FALSE		USD	09/30/2016			307.70
+ASA	01402									Mexico-Cash Deposit BANAMEX		A	Asset	TRUE	FALSE		USD	09/30/2016			16776.72
+ASA	01403									Mexico-Cash Dep BANAMEX in USD		A	Asset	TRUE	FALSE		USD	09/30/2016			44720.68
+ASA	01404									Mexico-Station Refunds BANAMEX		A	Asset	TRUE	TRUE		USD	09/30/2016			1288.82
+ASA	01410									Mexico-Station Refunds		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	01412									Costa Rica-Cash Dep SCOTIA Col		A	Asset	TRUE	TRUE		USD	09/30/2016			-14744.96
+ASA	01413									Costa Rica-Cash Dep SCOTIA USD		A	Asset	TRUE	FALSE		USD	09/30/2016			37831.97
+ASA	01420									Mexico- Petty Cash Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			4926.16
+ASA	01430									Mexico-Change Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			1290.05
+ASA	01900									USB Marketable Securities		A	Asset	TRUE	TRUE		USD	09/30/2016			1752033860.72
+ASA	01905									USB Allowance for Chg in Value		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02000									Notes Receivable - QX		A	Asset	TRUE	TRUE		USD	09/30/2016			52720648.44
+ASA	02040									Intercompany Clearing AP Syste		A	Asset	TRUE	TRUE		USD	09/30/2016			130507676.31
+ASA	02050									Receivable From AAG		A	Asset	TRUE	TRUE		USD	09/30/2016			2641531249.08
+ASA	02070									Receivable from AAG - Taxes		A	Asset	TRUE	FALSE		USD	09/30/2016			2925873.32
+ASA	02080									Receivable From McGee Air Serv		A	Asset	TRUE	TRUE		USD	09/30/2016			1514583.47
+ASA	02085									Receivable Alpine Merger Corp		A	Asset	TRUE	TRUE		USD	09/30/2016			25104225.74
+ASA	02100									Receivable from QX - Intercomp		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	02120									Receivable from QX  - Interest		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02130									A/R-Qx Refunds Clearing Acct		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02161									Recv from QXA-Lost Bags		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02163									Recv from QXA-Damaged Bags		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02165									Recv from QXA-PAX Inter Trip		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02167									Recv from QXA-PAX Denied Board		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02169									Recv from QXA-Over/Short		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02170									A/R - ASA		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02179									AS A/R Misc Revenue		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.02
+ASA	02200									Debit Memo Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			362.77
+ASA	02205									DM Payment Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			-18336.79
+ASA	02208									A/R - CRC Station Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02209									A/R - BSP Costa Rica Net Remit		A	Asset	TRUE	TRUE		USD	09/30/2016			4383.26
+ASA	02210									A/R - BSP Australia		A	Asset	TRUE	TRUE		USD	09/30/2016			194144.88
+ASA	02220									A/R - BSP Germany		A	Asset	TRUE	TRUE		USD	09/30/2016			206247.48
+ASA	02230									A/R - BSP New Zealand		A	Asset	TRUE	TRUE		USD	09/30/2016			41147.26
+ASA	02240									A/R - BSP UK		A	Asset	TRUE	TRUE		USD	09/30/2016			304396.95
+ASA	02250									A/R - BSP Net Remittance		A	Asset	TRUE	FALSE		USD	09/30/2016			325489.26
+ASA	02260									A/R - General Traffic		A	Asset	TRUE	TRUE		USD	09/30/2016			9345402.98
+ASA	02270									A/R - American Express		A	Asset	TRUE	FALSE		USD	09/30/2016			10219382.20
+ASA	02275									AR American Express - TA ARC		A	Asset	TRUE	FALSE		USD	09/30/2016			4702614.17
+ASA	02280									A/R - Diners Club		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02290									A/R - Discover Card		A	Asset	TRUE	FALSE		USD	09/30/2016			425655.74
+ASA	02295									AR Discover - TA ARC		A	Asset	TRUE	FALSE		USD	09/30/2016			3487.21
+ASA	02305									AR VISA/MC Suspense - TA		A	Asset	TRUE	FALSE		USD	09/30/2016			-3308625.28
+ASA	02320									A/R - Visa/MC Suspense		A	Asset	TRUE	FALSE		USD	09/30/2016			31280151.30
+ASA	02325									A/R - Credit Card Rebate		A	Asset	TRUE	FALSE		USD	09/30/2016			2989443.11
+ASA	02330									A/R - ASP Sales-Net Remittance		A	Asset	TRUE	FALSE		USD	09/30/2016			3017391.55
+ASA	02340									A/R - Interline -UATP		A	Asset	TRUE	TRUE		USD	09/30/2016			-732341.83
+ASA	02350									A/R - Intline-Frt/Gldstrk(ACH)		A	Asset	TRUE	TRUE		USD	09/30/2016			-484.94
+ASA	02360									A/R - Interline-Pax ACH		A	Asset	TRUE	TRUE		USD	09/30/2016			-9588556.36
+ASA	02361									AR-Intrln ACH Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02370									A/R - I'line IATA Pax,Frt,UATP		A	Asset	TRUE	TRUE		USD	09/30/2016			-1280665.61
+ASA	02371									AR-Intrln IATA Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02375									Interline Miscellaneous Receiv		A	Asset	TRUE	TRUE		USD	09/30/2016			298521.42
+ASA	02400									A/R - MX T/A Credit Card Clrg		A	Asset	TRUE	FALSE		USD	09/30/2016			92297.76
+ASA	02405									A/R - MX Debit/Credit Memo		A	Asset	TRUE	FALSE		USD	09/30/2016			21660.99
+ASA	02410									A/R - MX Station Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			1117.34
+ASA	02430									A/R - MX TA Amex		A	Asset	TRUE	FALSE		USD	09/30/2016			-17126.87
+ASA	02450									A/R - MX BSP -  Net Remit		A	Asset	TRUE	TRUE		USD	09/30/2016			153793.31
+ASA	02505									A/R-Cargo Credit Card Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			832084.18
+ASA	02510									A/R - CAD Loc Cc Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			3193.09
+ASA	02515									A/R - Misc Cc Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			-854.08
+ASA	02520									A/R - Location Cc Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			6065.16
+ASA	02530									A/R-Transport Cr Recvbl-Padre		A	Asset	TRUE	FALSE		USD	09/30/2016			119710.35
+ASA	02550									A/R - TA Sales-Receivable-Est		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02560									A/R - Fed Alaska		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02570									A/R - Reclaim Commission - T/A		A	Asset	TRUE	FALSE		USD	09/30/2016			0.49
+ASA	02580									A/R - Debit Memos Receivable		A	Asset	TRUE	FALSE		USD	09/30/2016			317145.20
+ASA	02582									AR-DM Location Chargeback		A	Asset	TRUE	FALSE		USD	09/30/2016			173939.50
+ASA	02590									A/R - Other Airline Reissues		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02610									A/R - AS Rejects-Interline Pay		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.48
+ASA	02640									A/R - Other Airline Refunds		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02700									A/R - Employees		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02705									A/R Employee Uniforms		A	Asset	TRUE	TRUE		USD	09/30/2016			3285.85
+ASA	02710									A/R - Service Sales		A	Asset	TRUE	TRUE		USD	09/30/2016			9415908.67
+ASA	02717									Gift Card Receivable Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02720									A/R - Checks Returned		A	Asset	TRUE	FALSE		USD	09/30/2016			2215.80
+ASA	02730									BSP Germany TA CC Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			46544.06
+ASA	02740									BSP UK TA CC Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			85280.32
+ASA	02750									Fuel Hedge Receivable		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02752									A/R- Fuel Sales Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			85016.23
+ASA	02753									Misc Rec - Airport Ops&Other		A	Asset	TRUE	TRUE		USD	09/30/2016			4761203.09
+ASA	02755									Due from Insurance-Flt261		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02757									A/R - GDS Other Airlines Rec		A	Asset	TRUE	TRUE		USD	09/30/2016			7890.36
+ASA	02760									A/R - Mileage Plan Revenue		A	Asset	TRUE	TRUE		USD	09/30/2016			63006536.88
+ASA	02770									A/R - Customer Work In Process		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02780									A/R - Accrued Interest		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	02790									A/R - QX Returned Checks		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02800									A/R - Employee Advances		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02810									A/R - MX  Employee  Advances		A	Asset	TRUE	TRUE		USD	09/30/2016			177922.68
+ASA	02820									A/R - Travel Advances		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02840									A/R - TA - Misc Chg Clearing		A	Asset	TRUE	TRUE		USD	09/30/2016			170943.13
+ASA	02850									A/R - MX IVA - Refundable		A	Asset	TRUE	TRUE		USD	09/30/2016			338501.41
+ASA	02851									MX IDE Tax Refundable		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+ASA	02852									A/R - MX IVA  Paid on Fuel		A	Asset	TRUE	FALSE		USD	09/30/2016			4278764.95
+ASA	02853									A/R - MX IVA ¿ Pending Fuel pm		A	Asset	TRUE	FALSE		USD	09/30/2016			45217.88
+ASA	02854									A/R - MX IVA Filed for Refund		A	Asset	TRUE	FALSE		USD	09/30/2016			2698441.23
+ASA	02860									A/R - MX 1996 Payroll Refund		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02870									A/R - Cad GST Tax Refundable		A	Asset	TRUE	TRUE		USD	09/30/2016			19734.64
+ASA	02875									A/R - BC HST Receivable		A	Asset	TRUE	TRUE		USD	09/30/2016			21463.21
+ASA	02880									Due From State		A	Asset	TRUE	FALSE		USD	09/30/2016			30150925.61
+ASA	02881									Misc Tax Receivable		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02882									A/R Federal Fuel Tax		A	Asset	TRUE	TRUE		USD	09/30/2016			2068534.18
+ASA	02883									720 Tax Receivable		A	Asset	TRUE	FALSE		USD	09/30/2016			916615.31
+ASA	02884									Texas State Jet Fuel Tax Recv		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02885									Due From Federal Government		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	02900									A/R - Government		A	Asset	TRUE	TRUE		USD	09/30/2016			345035.13
+ASA	02910									A/R - IAM Union Business		A	Asset	TRUE	FALSE		USD	09/30/2016			59291.64
+ASA	02914									A/R State Tax Refunds Mt,Ut		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02920									A/R Credit Union Wages		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02930									Allowance - Alaska Accts		A	Asset	TRUE	FALSE		USD	09/30/2016			1163.86
+ASA	02940									Allowance - NSF Checks		A	Asset	TRUE	FALSE		USD	09/30/2016			3410.68
+ASA	02950									Allowance - Ticket Fraud		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	02970									Allowance - Travel Agents		A	Asset	TRUE	FALSE		USD	09/30/2016			-11064.25
+ASA	02980									Allowance - Credit Card Fraud		A	Asset	TRUE	FALSE		USD	09/30/2016			406110.06
+ASA	02990									Allowance-Uncollectable Accts		A	Asset	TRUE	FALSE		USD	09/30/2016			-964802.62
+ASA	03000									Inventory-Surplus Consignment		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03010									Inventory- Airframe		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03020									Inventory-Repairable Airframe		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03040									Inventory-Rep Parts Engine		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03070									Inventory-Repairable Oth Fe		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03075									Inventory-Repairable at Vendor		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03077									Inventory Repairables - 400's		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03078									Inventory Repairables - 800's		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03079									Inventory Repairables - 700's		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03081									Inventory Repairables - 900's		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03101									737-200 Seat Cover Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03104									737-400 Seat Cover Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03108									MD80 Seat Cover Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03150									Expendable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			47601208.94
+ASA	03151									Expendable Inv Non Stock Loc		A	Asset	TRUE	FALSE		USD	09/30/2016			686240.02
+ASA	03500									Inventory-Fuel-Aviation		A	Asset	TRUE	FALSE		USD	09/30/2016			10528049.59
+ASA	03510									Inventory-Matl & Misc Supply		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03525									Inventory-Glycol		A	Asset	TRUE	TRUE		USD	09/30/2016			484969.06
+ASA	03535									Workflow One Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			1298138.34
+ASA	03555									Picnic Pack Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03560									Food and Beverage Inventory		A	Asset	TRUE	FALSE		USD	09/30/2016			651607.39
+ASA	03575									Uniforms Inventory		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	03640									Company Store Inv - Seatac		A	Asset	TRUE	TRUE		USD	09/30/2016			460211.00
+ASA	03641									Company Store Inv-Lynnwood		A	Asset	TRUE	TRUE		USD	09/30/2016			-882.39
+ASA	03910									Obsol Resrv; Exp-737-400		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03930									Obsol Resrv; Exp-New Gen		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	03950									Obsol Resrv; Exp Misc Fleet		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03960									Obsol Resrv; Rep 737-200		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03965									Obsol Resrv Expendables		A	Asset	TRUE	FALSE		USD	09/30/2016			-23012834.99
+ASA	03970									Obsol Resrv; Rep 737-400		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03980									Obsol Resrv; Rep Next Gen		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	03990									Obsol Resrv; Rep Misc Fleet		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04000									Ppd Travel Agency Commission		A	Asset	TRUE	TRUE		USD	09/30/2016			2856755.78
+ASA	04010									Ppd  Credit Card Commission		A	Asset	TRUE	TRUE		USD	09/30/2016			9276683.31
+ASA	04100									Ppd  Fuel - Arco		A	Asset	TRUE	TRUE		USD	09/30/2016			32149550.07
+ASA	04120									Ppd Fuel - World Fuel Svc		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04130									Ppd Fuel - Global Fuel		A	Asset	TRUE	TRUE		USD	09/30/2016			4646400.00
+ASA	04140									Ppd  Fuel - Flint Hills		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04150									Ppd  Fuel Exp -Tesoro		A	Asset	TRUE	TRUE		USD	09/30/2016			17615039.30
+ASA	04160									Ppd  Fuel - Shell		A	Asset	TRUE	TRUE		USD	09/30/2016			19892121.98
+ASA	04170									Ppd  Fuel - Chevron		A	Asset	TRUE	TRUE		USD	09/30/2016			2253091.67
+ASA	04175									PPD Fuel VALERO		A	Asset	TRUE	TRUE		USD	09/30/2016			644339.39
+ASA	04180									PpdFuel - Exxon/Mobil		A	Asset	TRUE	TRUE		USD	09/30/2016			521064.74
+ASA	04182									PPD Fuel EPIC Aviation		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04183									PPD Fuel AVFUEL		A	Asset	TRUE	TRUE		USD	09/30/2016			113616.92
+ASA	04185									Fuel Hedge-Fair Mkt Value Cap		A	Asset	TRUE	TRUE		USD	09/30/2016			11714829.23
+ASA	04186									Fuel Hdg-Fair Mkt Value Swap		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04190									PpdFuel Conoco/Phillips		A	Asset	TRUE	TRUE		USD	09/30/2016			723342.04
+ASA	04193									PpdFuel Frontier Alaska		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04200									Ppd  Insurance - Brokerage		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04210									Ppd  Insurance - Fidel/Fiduc		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04220									Ppd  Insurance - Property		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04230									Ppd  Insurance - Genl Liab		A	Asset	TRUE	TRUE		USD	09/30/2016			1036556.08
+ASA	04240									Ppd  Ins - A/C Hull & Pax Liab		A	Asset	TRUE	TRUE		USD	09/30/2016			2137532.99
+ASA	04250									Ppd  Insurance - War Risk		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.01
+ASA	04300									Ppd Facility Rent		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04310									Ppd  Aircraft Rent		A	Asset	TRUE	TRUE		USD	09/30/2016			375683.20
+ASA	04330									Prd AP Expenses Month 2		A	Asset	TRUE	TRUE		USD	09/30/2016			0.01
+ASA	04500									Ppd  Property Tax - CA		A	Asset	TRUE	TRUE		USD	09/30/2016			1465160.00
+ASA	04501									Ppd Property Tax - CA Cnty CR		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04520									Ppd Property Tax - WA		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04530									Trax Inv PPD Tax		A	Asset	TRUE	TRUE		USD	09/30/2016			144759.72
+ASA	04540									Deferred Tax Asset - Current		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	04600									Ppd  Assets Held For Resale		A	Asset	TRUE	FALSE		USD	09/30/2016			104842.91
+ASA	04650									Ppd  VEBA		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04680									Ppd  Misc - Other		A	Asset	TRUE	TRUE		USD	09/30/2016			24516315.96
+ASA	04682									Ppd Avista Utility Payments		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	04900									Ppd Mktg & Advertising		A	Asset	TRUE	TRUE		USD	09/30/2016			4885123.26
+ASA	04905									ST Hedge Collateral Dep		A	Asset	TRUE	FALSE		USD	09/30/2016			1255862.89
+ASA	04910									Prepaid Delta MCPH		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+ASA	05000									Aircraft Airframes		A	Asset	TRUE	FALSE		USD	09/30/2016			4157141408.64
+ASA	05015									Flight Equipment CIP		A	Asset	TRUE	TRUE		USD	09/30/2016			26415252.93
+ASA	05016									TRAX JE CLEARING		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05020									Airframe Overhauls		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05050									Airframe Overhauls - A/A		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05100									Aircraft Engines		A	Asset	TRUE	FALSE		USD	09/30/2016			1070564350.36
+ASA	05120									Engine Overhauls		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05150									Engine Overhauls - A/A		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	05170									Leased Aircraft Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			30075931.29
+ASA	05200									Rotables - Airframe		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05220									Rotables - Engine		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05240									Flight Equipment-Other		A	Asset	TRUE	FALSE		USD	09/30/2016			8785503.39
+ASA	05250									Repairable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			58229288.67
+ASA	05252									Repairable Inv Non Stock Loc		A	Asset	TRUE	FALSE		USD	09/30/2016			695385.42
+ASA	05255									Obsol Resrv Repairables		A	Asset	TRUE	FALSE		USD	09/30/2016			-23884313.52
+ASA	05260									Rotable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			114017417.13
+ASA	05265									Contra Asset Rotable Spares		A	Asset	TRUE	FALSE		USD	09/30/2016			-2270586.97
+ASA	05300									Non-Op A/C Leased To Others		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	05400									Buildings & Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			69057911.45
+ASA	05450									Construction In Progress		A	Asset	TRUE	TRUE		USD	09/30/2016			44623319.69
+ASA	05460									Software Work In Progress		A	Asset	TRUE	TRUE		USD	09/30/2016			2821838.12
+ASA	05500									Furniture & Office Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			22575741.57
+ASA	05510									Information Systems Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			83701962.80
+ASA	05515									Computer Software		A	Asset	TRUE	FALSE		USD	09/30/2016			70444248.81
+ASA	05516									Software Dev. In-house		A	Asset	TRUE	FALSE		USD	09/30/2016			26884123.87
+ASA	05600									Passenger Service Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	05620									Ramp Service Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			93699364.92
+ASA	05630									Grd Communications Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			13827537.58
+ASA	05640									Maintenance Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			18135205.46
+ASA	05650									Tooling		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	05660									Vehicles		A	Asset	TRUE	FALSE		USD	09/30/2016			9946794.23
+ASA	05680									Misc Ground Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			64707554.97
+ASA	05700									Leased Maint Build Improvement		A	Asset	TRUE	FALSE		USD	09/30/2016			46784056.41
+ASA	05710									Leased Other Build Improvement		A	Asset	TRUE	FALSE		USD	09/30/2016			167881750.07
+ASA	05730									Land		A	Asset	TRUE	FALSE		USD	09/30/2016			4054253.62
+ASA	05900									Aircraft Purchase Deposits		A	Asset	TRUE	TRUE		USD	09/30/2016			497505272.71
+ASA	05910									Capd Int - A/C Purchase Deps		A	Asset	TRUE	FALSE		USD	09/30/2016			25462218.58
+ASA	05950									Cost of Capital-Purch Deposits		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	06000									A/D - Aircraft Airframes		A	Asset	TRUE	FALSE		USD	09/30/2016			-1460491808.42
+ASA	06100									A/D - Aircraft Engines		A	Asset	TRUE	FALSE		USD	09/30/2016			-317371701.04
+ASA	06170									A/D - Leased A/C Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			-18409946.02
+ASA	06173									Accum Depr Seats & Bins		A	Asset	TRUE	FALSE		USD	09/30/2016			-6382235.33
+ASA	06200									A/D - Rotables - Airframe		A	Asset	TRUE	FALSE		USD	09/30/2016			8.96
+ASA	06220									A/D - Rotables - Engine		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	06240									A/D - Flight Equipment - Other		A	Asset	TRUE	FALSE		USD	09/30/2016			-7797743.83
+ASA	06260									Accum Depr Rotable Spares		A	Asset	TRUE	FALSE		USD	09/30/2016			-47261652.17
+ASA	06262									Contra Depreciation Rotable Sp		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	06300									A/D - Non-Op Aircraft		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	06400									A/D - Buildings & Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			-37846903.10
+ASA	06500									A/D - Furniture & Office Equip		A	Asset	TRUE	FALSE		USD	09/30/2016			-19848970.46
+ASA	06510									A/D - Info Systems Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-59959901.37
+ASA	06515									A/D - Computer Software		A	Asset	TRUE	FALSE		USD	09/30/2016			-60378191.86
+ASA	06516									Accum Depn - InHouse Software		A	Asset	TRUE	FALSE		USD	09/30/2016			-23915680.49
+ASA	06620									A/D - Ramp Service Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-54740926.90
+ASA	06625									A/D - Ramp Maintenance Equip		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	06630									A/D - Grd Communications Equip		A	Asset	TRUE	FALSE		USD	09/30/2016			-13341199.57
+ASA	06640									A/D - Maintenance Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-14963132.68
+ASA	06660									A/D - Vehicles		A	Asset	TRUE	FALSE		USD	09/30/2016			-7474987.10
+ASA	06680									A/D - Misc. Grd Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-41776262.56
+ASA	06700									A/D - Leased Bldg Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			-39186453.01
+ASA	06710									A/D - Leased Equipment Imp's		A	Asset	TRUE	FALSE		USD	09/30/2016			-131584575.67
+ASA	06760									A/D - Non-Op Misc Grd Equip		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	07130									Facility Capital Leases		A	Asset	TRUE	FALSE		USD	09/30/2016			1121000.00
+ASA	07140									T6 Reimbursable Asset		A	Asset	TRUE	FALSE		USD	09/30/2016			198268785.89
+ASA	07510									A/A - Aircraft Capital Leases		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	07630									A/A - Facility Capital Leases		A	Asset	TRUE	FALSE		USD	09/30/2016			-1120999.93
+ASA	07640									A/D - T6 Reimbursable Asset		A	Asset	TRUE	FALSE		USD	09/30/2016			-33266452.81
+ASA	09000									Deposits - Misc		A	Asset	TRUE	FALSE		USD	09/30/2016			1115985.52
+ASA	09040									Deposits - Mexico		A	Asset	TRUE	FALSE		USD	09/30/2016			1313147.13
+ASA	09050									Deposits - Costa Rica		A	Asset	TRUE	FALSE		USD	09/30/2016			47770.24
+ASA	09210									Invest - Aero Radio		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09220									Invest - ACH		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09226									Hawaii Vac Intangible Asset		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09230									Invest - Air Cargo		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09340									Invest - Fuel Consortiums		A	Asset	TRUE	FALSE		USD	09/30/2016			2007836.84
+ASA	09360									Invest - Laxtec		A	Asset	TRUE	FALSE		USD	09/30/2016			15000.00
+ASA	09410									SITA Investment Certs		A	Asset	TRUE	FALSE		USD	09/30/2016			37145.90
+ASA	09420									Art Collection		A	Asset	TRUE	FALSE		USD	09/30/2016			442524.00
+ASA	09500									Financing Costs - Net		A	Asset	TRUE	FALSE		USD	09/30/2016			337019.62
+ASA	09510									Non-SEADH Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09515									Cash Clearing Acct		A	Asset	TRUE	TRUE		USD	09/30/2016			8800.00
+ASA	09520									Special Handling		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09530									Other Freight Charges		A	Asset	TRUE	TRUE		USD	09/30/2016			45696.00
+ASA	09540									Bank Recon Clearing Account		A	Asset	TRUE	TRUE		USD	09/30/2016			1.00
+ASA	09550									Other Deferred Charges		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	09605									LT Note Receivable		A	Asset	TRUE	TRUE		USD	09/30/2016			177992.19
+ASA	09607									LT Note Rec - Frontier Alaska		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09610									LT Prepaid Rent		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09615									Lt Portion PPD Aircraft Rent		A	Asset	TRUE	TRUE		USD	09/30/2016			2289122.47
+ASA	09618									LT Receivable - LAX T6		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09630									LT Leasehold Rights		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09640									A/A - LT Leasehold Rights		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	09670									Lt Workers Comp Investments		A	Asset	TRUE	FALSE		USD	09/30/2016			6572858.40
+ASA	09675									Workers Comp Claims Loss Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			541071.33
+ASA	09690									LT Deposits In Escrow		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09700									LT Restricted Investments		A	Asset	TRUE	FALSE		USD	09/30/2016			5481757.69
+ASA	09710									LT Lease Deposits		A	Asset	TRUE	FALSE		USD	09/30/2016			1593988.12
+ASA	09720									LT Receivable - ANC Tanks		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	09750									LT Fuel Hedge-FMV Cap		A	Asset	TRUE	FALSE		USD	09/30/2016			1599415.00
+ASA	09815									Investment Earnings-MAS		A	Asset	TRUE	FALSE		USD	09/30/2016			-822404.10
+ASA	09901									Defined Benefit Pension Asset		A	Asset	TRUE	FALSE		USD	09/30/2016			12252957.00
+ASA	10000									Accrued Interest Due AAG		A	Liability	TRUE	FALSE		USD	09/30/2016			-1572755.37
+ASA	10030									QX Interline Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	10070									Notes Payable to ASA		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	10080									Concession Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	10100									Goldstreak/Frt Payable to QX		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	10120									Insurance Payable to AAI		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	10150									Payable to McGee		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	10160									Payable To ASA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	10170									Payable to AGL		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	10180									Payable to AAG		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	11000									Expense Report Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			5673.91
+ASA	11010									Vouchers Payment VCA Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			-2109121.46
+ASA	11015									Mex Vouchers Payable - PS		A	Liability	TRUE	TRUE		USD	09/30/2016			77044.44
+ASA	11020									Vouchers Payable - PeopleSoft		A	Liability	TRUE	TRUE		USD	09/30/2016			-22068931.55
+ASA	11030									PO/Receipt Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11035									TRAX AP Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	11100									Ground Handling Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			515205.27
+ASA	11101									Security Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11102									Misc Terminal Expense Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-498758.23
+ASA	11103									Sabre Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	11105									ESPP Accrued Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	11110									Mexico Ramp Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-282950.46
+ASA	11111									Mexico Aircares  Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-10463.46
+ASA	11112									Mexico Security Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-82073.28
+ASA	11113									Mexico Landing Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			86566.03
+ASA	11114									Mexico Parking Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-418689.00
+ASA	11115									Accrued Rent-MX		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	11130									Facilities Rent-Fixed Use Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			3981923.93
+ASA	11131									Facilities Rent-Joint Use Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			-2547839.00
+ASA	11132									Facilities Rent-Other Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11150									GDS Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11180									M&E Accruals		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11185									Heavy Maintenance Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11210									Landing Fee Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-2896028.64
+ASA	11220									Flight Training Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11223									Accrued Crew Hotel		A	Liability	TRUE	TRUE		USD	09/30/2016			3780.00
+ASA	11230									Incentive Commission Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-30000.00
+ASA	11231									Credit Card Commission Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-10136863.33
+ASA	11240									Inventory Goods Recd, Not Invd		A	Liability	TRUE	TRUE		USD	09/30/2016			-4149532.82
+ASA	11250									Misc Current Liabilities		A	Liability	TRUE	TRUE		USD	09/30/2016			-19643499.96
+ASA	11260									Misc A/P Accruals		A	Liability	TRUE	TRUE		USD	09/30/2016			1429682.36
+ASA	11300									Vacation Protection Plan CR Vo		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	11600									Delaware Tax Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			18670.29
+ASA	11610									Legal Fee Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-2341903.37
+ASA	11620									QX Stock Accrual		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	11700									Aviation Fuel/Oil Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-28285196.09
+ASA	11705									Into-Plane/Consortium Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11720									Mexico Aircraft Fuel Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	11740									Catering Accrual		A	Liability	FALSE	FALSE		USD	09/30/2016			-0.00
+ASA	11750									Misc Food Cost Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	11790									ACH - Non Trans Clearing-Other		A	Liability	TRUE	TRUE		USD	09/30/2016			-8.27
+ASA	11800									ACH/ICH Non Trans Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-39762.54
+ASA	11810									IATA Non-Trans Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			4.50
+ASA	11820									ACH -DAL Global Services		A	Liability	TRUE	FALSE		USD	09/30/2016			-0.17
+ASA	11830									ACH Non-Trans Clearing - AA		A	Liability	TRUE	TRUE		USD	09/30/2016			1261.20
+ASA	11840									ACH Non-Trans Clearing - NW		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	11850									ACH Non-Trans Clearing - DL		A	Liability	TRUE	TRUE		USD	09/30/2016			4.37
+ASA	11860									ACH Non-Trans Clearing - UA		A	Liability	TRUE	TRUE		USD	09/30/2016			3966.89
+ASA	11870									ACH - Non Trans Clearing-Sabre		A	Liability	TRUE	TRUE		USD	09/30/2016			0.52
+ASA	11880									ACH Non-Trans Clearing - CO		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	11890									ACH-Non Trans Clearing Galileo		A	Liability	TRUE	TRUE		USD	09/30/2016			0.57
+ASA	11900									Cash Overdraft		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	12000									Aircraft Rent Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	13000									Accd Wages-Hourly/Salary		A	Liability	TRUE	TRUE		USD	09/30/2016			-6970501.44
+ASA	13005									Accrued Payroll Other		A	Liability	TRUE	TRUE		USD	09/30/2016			-5500.00
+ASA	13010									Accd Wages-Mexico		A	Liability	TRUE	TRUE		USD	09/30/2016			-15536.28
+ASA	13020									Accd Wages-Flight Crews		A	Liability	TRUE	TRUE		USD	09/30/2016			42867815.38
+ASA	13030									Accd Wages-Pilot Bank Time		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13040									Accd Wages-F/A  Advance		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13050									Accd Wages - PBP		A	Liability	TRUE	FALSE		USD	09/30/2016			-63627201.14
+ASA	13051									Accrued OPR		A	Liability	TRUE	FALSE		USD	09/30/2016			-2528183.13
+ASA	13055									B of A Visa Incentive Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-8284.70
+ASA	13060									Accd Wages-Profit Sharing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13081									Payroll Suspense		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13120									PR Dedn-Loss Of License Ins		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13130									PR Dedn-Cancer Insurance		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13140									PR Ded'n Empl Ins Colonial		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13145									PR Dedn Empl Ins Continental		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13150									PR Dedn TPA Insur Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-54935.22
+ASA	13160									Accr PR Deduct-ALPA ICO Ins		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13270									EE/ER SSP Payable		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	13273									Roth 401(k)		A	Liability	TRUE	TRUE		USD	09/30/2016			-72.52
+ASA	13275									EE/ER 401k Payable To Trustee		A	Liability	TRUE	TRUE		USD	09/30/2016			5558.90
+ASA	13310									Accr Pr Ded Savings Plan Colle		A	Liability	TRUE	FALSE		USD	09/30/2016			-114310.77
+ASA	13320									PR Ded'n-Savings Bonds		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13330									PR Ded'n-United Way		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13340									PR Dedn-Union Dues-IAM		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13350									PR Dedn-Union Dues-Cops		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13360									PR Dedn-Union Dues-AFA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13365									PR Dedn-Union Dues		A	Liability	TRUE	TRUE		USD	09/30/2016			-893430.94
+ASA	13370									PR Dedn-Misc		A	Liability	TRUE	TRUE		USD	09/30/2016			689717.73
+ASA	13372									PR Dedn-PAC Donations		A	Liability	TRUE	TRUE		USD	09/30/2016			-13753.65
+ASA	13373									Dispatch Union Dues Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13375									PR Dedn-Union Dues AMFA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13380									PR Dedn-Dep Care Reimb Acct		A	Liability	TRUE	TRUE		USD	09/30/2016			-272050.52
+ASA	13390									PRDedn-Hlthcare Spnd Act HCRA		A	Liability	TRUE	TRUE		USD	09/30/2016			-233027.60
+ASA	13391									PRDedn-Hlthcare Svg Act (HSA)		A	Liability	TRUE	TRUE		USD	09/30/2016			1426.44
+ASA	13410									PR Dedn-Emergency Assist Fund		A	Liability	TRUE	TRUE		USD	09/30/2016			-30307.75
+ASA	13415									PR Ded'n - FA Pegasus Fund		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13420									PR Dedn-401(k) Loan		A	Liability	TRUE	TRUE		USD	09/30/2016			-2882.91
+ASA	13430									PR Dedn-Mgmt 401(k) Loan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13440									PR Dedn-COPS/MRP 401(k) Loan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13450									Accd PR Dedn-Pilot 401(k) Ln		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13470									PR Dedn-EE Charitable		A	Liability	TRUE	TRUE		USD	09/30/2016			-19293.31
+ASA	13476									Thompson/Tansky Scholarship		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13500									Perodic PR Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-2758879.58
+ASA	13510									PR Ded'n-FICA Withheld		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13520									PR Ded'n-Mex Inc Tax Withheld		A	Liability	TRUE	TRUE		USD	09/30/2016			-24317.17
+ASA	13521									PR Dedn - CRC Inc Tax Withheld		A	Liability	TRUE	FALSE		USD	09/30/2016			-9804.53
+ASA	13530									PR Ded'n-Mex Soc Sec Withheld		A	Liability	TRUE	TRUE		USD	09/30/2016			29755.93
+ASA	13531									PR Dedn - CRC Soc Sec Withheld		A	Liability	TRUE	FALSE		USD	09/30/2016			-3312.66
+ASA	13640									PR Ded'n-OR Inc Tax Withheld		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13650									PR Ded'n-Mex ST Tax Withheld		A	Liability	TRUE	TRUE		USD	09/30/2016			86.44
+ASA	13651									IVA Tax on Profesional Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-199.50
+ASA	13660									Quarterly PR Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-60958.32
+ASA	13710									Accd PR Taxes - FICA (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			2780908.86
+ASA	13720									Acc'd PR Taxes - Mexico (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			-89420.22
+ASA	13721									INFONAVIT Withheld		A	Liability	TRUE	TRUE		USD	09/30/2016			-45484.04
+ASA	13800									Accd PR Taxes-SUTA (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			322109.87
+ASA	13857									OR Tri-Met (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			79789.57
+ASA	13900									Accrued Vacation/PTO		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	13920									Acc'd Vacation-Flt Attendants		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13940									Acc'd Vacation-Pilots		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13950									Accd Vacation Advance		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	13987									Helping Hands Vacation Liabili		A	Liability	TRUE	FALSE		USD	09/30/2016			-21773.10
+ASA	14010									Accr'd Taxes-FIT due to AAG		A	Liability	TRUE	FALSE		USD	09/30/2016			-971177470.29
+ASA	14030									Taxes Due to State		A	Liability	TRUE	FALSE		USD	09/30/2016			-483730.45
+ASA	14040									Accrued Taxes-Payable to ASA		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14060									Accrued Taxes Payable To QX		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14100									APHIS Aircraft Clearance Fee		A	Liability	TRUE	FALSE		USD	09/30/2016			-274500.00
+ASA	14110									Accr Taxes-City Of Cdv-Sales T		A	Liability	TRUE	FALSE		USD	09/30/2016			-618.12
+ASA	14114									Accrued Sales Tax - Louisiana		A	Liability	TRUE	TRUE		USD	09/30/2016			-168.91
+ASA	14115									Accrued Sales Tax - Michigan		A	Liability	TRUE	TRUE		USD	09/30/2016			-223.50
+ASA	14116									Accrued Sales Tax - New Mexico		A	Liability	TRUE	FALSE		USD	09/30/2016			-111.52
+ASA	14117									Accrued Sales Tax - Maryland		A	Liability	TRUE	TRUE		USD	09/30/2016			-3.44
+ASA	14120									Acc'd Taxes-NV Sales		A	Liability	TRUE	TRUE		USD	09/30/2016			-57.18
+ASA	14124									Accrued Sales Tax - Missouri		A	Liability	TRUE	TRUE		USD	09/30/2016			-857.94
+ASA	14128									Acc'd taxes - PA Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			-118.68
+ASA	14140									Accr Sales Tax-Adak		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	14160									Accrued Sales & Use Tax		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14170									Chandler, AZ - City Tax		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14180									Steamboat Spr, CO - City Tax		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14185									Accd Sales Tax - Gunnison, CO		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14190									Colorado Springs CO - City Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-58.71
+ASA	14200									Acc'd Taxes-WA Business		A	Liability	TRUE	TRUE		USD	09/30/2016			-14290.48
+ASA	14210									Acc'd Taxes-WA Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-107148.02
+ASA	14212									Acc'd Taxes - Colorado Sales		A	Liability	TRUE	TRUE		USD	09/30/2016			-471.42
+ASA	14213									Acc'd Taxes - Denver Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14215									Acc'd Taxes - Dallas Sales		A	Liability	TRUE	TRUE		USD	09/30/2016			-5.74
+ASA	14220									Acc'd Taxes-Juneau Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			186.20
+ASA	14231									Acc'd Taxes-Dillingham Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14240									Acc'd Taxes-Nome Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			19.49
+ASA	14250									Acc'd Taxes-Sitka Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			-15.57
+ASA	14260									Acc'd Taxes-Ketchikan Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			24.59
+ASA	14270									Acc'd Taxes-Wrangell Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			-24.93
+ASA	14280									Acc'd Taxes-Petersburg Sales		A	Liability	TRUE	TRUE		USD	09/30/2016			-2.16
+ASA	14290									Acc'd Taxes-Bethel Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			-83.78
+ASA	14300									Acc'd Taxes-AZ Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-147.04
+ASA	14305									Acc'd Taxes-NE Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			-500.97
+ASA	14310									Acc'd Taxes-CA Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-4349.29
+ASA	14312									Acc'd Taxes-MN Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-262.91
+ASA	14313									Acc'd Taxes-GA Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-186.39
+ASA	14315									Accrued Taxes - NJ		A	Liability	TRUE	FALSE		USD	09/30/2016			-144.58
+ASA	14316									Accr'd Taxes-NJ Fuel Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	14320									Accr Taxes-Idaho Sales & Use T		A	Liability	TRUE	TRUE		USD	09/30/2016			-181.63
+ASA	14321									Accd Taxes-NC Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			607.06
+ASA	14322									Accd Taxes-TN Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			-75.54
+ASA	14323									Accd Taxes-SC Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			-57.69
+ASA	14324									Accd Taxes-NY Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-8.01
+ASA	14325									Accd Taxes-CR Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14330									Acc'd Taxes-Kotzebue Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14335									Accrued Taxes - Florida		A	Liability	TRUE	TRUE		USD	09/30/2016			-44.55
+ASA	14340									Accr Taxes-Yakutat Sales		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14350									Acc'd Taxes-BC Provincial		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14355									Accd Taxes-WI Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-1052.16
+ASA	14360									Acc'd Taxes IL Sales & Use Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			10607.12
+ASA	14370									Acc'd Chicago Use Tax		A	Liability	TRUE	FALSE		USD	09/30/2016			-31.71
+ASA	14375									Acc'd Taxes - Massachusetts		A	Liability	TRUE	TRUE		USD	09/30/2016			-2.39
+ASA	14380									Acc'd Taxes VA - Reagan Intl		A	Liability	TRUE	TRUE		USD	09/30/2016			-64.58
+ASA	14385									Accd Taxes - Virginia Fuel		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14390									Acc'd Taxes-Hawaii		A	Liability	TRUE	TRUE		USD	09/30/2016			-10.44
+ASA	14395									Acc'd Taxes-UT Sales & Use		A	Liability	TRUE	TRUE		USD	09/30/2016			-1362.28
+ASA	14400									Acc'd Taxes-OR Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-3986400.00
+ASA	14404									Acc'd Tax - AK Property		A	Liability	TRUE	TRUE		USD	09/30/2016			188886.50
+ASA	14407									Acc'd Tax - NV Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-615033.95
+ASA	14408									Acc'd Tax - AZ Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-664399.99
+ASA	14410									Acc'd Taxes-WA Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-8326800.00
+ASA	14412									Acc'd Taxes-UT Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-445200.00
+ASA	14413									Acc'd Tax - ID Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-9600.00
+ASA	14414									Acc'd Tax - TX Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-188799.98
+ASA	14420									Accr Taxes-Wa Real Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-130423.37
+ASA	14430									Acc'd Taxes-CA Property		A	Liability	TRUE	FALSE		USD	09/30/2016			-1045734.90
+ASA	14435									Acc'd Taxes-CO Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-200000.00
+ASA	14440									Acc'd Taxes Various Ppty		A	Liability	TRUE	TRUE		USD	09/30/2016			-381533.86
+ASA	14500									Accd Interest-Notes Payable		A	Liability	TRUE	TRUE		USD	09/30/2016			-1844511.80
+ASA	14510									Acc'd Interest-Cap Leases		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14540									C/P Post Retirement Ins Accrul		A	Liability	TRUE	FALSE		USD	09/30/2016			-2728317.03
+ASA	14550									Benefit Insurance Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-15040592.88
+ASA	14551									ERRP Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			-0.01
+ASA	14553									Pilot Ltd Liab Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14560									Workers Compensation Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-7734078.47
+ASA	14570									Workers Comp Accrual Offset		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14610									Co Match-401(k) Plan		A	Liability	TRUE	TRUE		USD	09/30/2016			2486372.45
+ASA	14620									Co Match-FA 401(k) Plan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14640									Co Match-Mgmt 401(k) Plan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14650									OSRP Liability-Current		A	Liability	TRUE	FALSE		USD	09/30/2016			-2406212.09
+ASA	14677									Co-Match COPS 401(k) Plan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14680									Pension Plan Trustee Fee Acc'l		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	14695									Mexico Retirement Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-298545.72
+ASA	14750									MP Flown Miles Liability - AS		A	Liability	TRUE	TRUE		USD	09/30/2016			-15236108.00
+ASA	14755									MP Flown Miles Liability - OA		A	Liability	TRUE	TRUE		USD	09/30/2016			-11450607.00
+ASA	14760									MP Defer Rev - Miles Sold		A	Liability	TRUE	TRUE		USD	09/30/2016			-643313903.00
+ASA	14770									MP Defer Rev - Miles Sold (AS)		A	Liability	TRUE	TRUE		USD	09/30/2016			-21453000.00
+ASA	14773									MP Fuel Charge Payable-BA		A	Liability	TRUE	FALSE		USD	09/30/2016			-482808.52
+ASA	14775									MP Def Rev - OA Award Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-951916.10
+ASA	14780									MP Defer Rev - Miles Sold (OA)		A	Liability	TRUE	TRUE		USD	09/30/2016			-5454000.00
+ASA	14790									MP Est Awards Payable-OA		A	Liability	TRUE	TRUE		USD	09/30/2016			-5025599.70
+ASA	14795									MP Bank Comp Cert Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-113157000.00
+ASA	14796									MP Defer Rev - Comp Cert		A	Liability	TRUE	TRUE		USD	09/30/2016			-18321000.00
+ASA	14799									MP LT Miles Reclass		A	Liability	TRUE	TRUE		USD	09/30/2016			460200000.00
+ASA	14820									Curr Liab-Sales Cl'g-Era		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14860									Curr Liab-Sales Clr'g-Misc		A	Liability	TRUE	TRUE		USD	09/30/2016			-195575.76
+ASA	14865									Curr Liab-DigEplayer Rentals		A	Liability	TRUE	TRUE		USD	09/30/2016			34771.69
+ASA	14870									Fixed Assets - Proceeds Clr'g		A	Liability	TRUE	FALSE		USD	09/30/2016			-23238.00
+ASA	14875									A/P WIRE/ACH CLEARING		A	Liability	TRUE	TRUE		USD	09/30/2016			-499392419.44
+ASA	14878									Cargo Cash Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	14900									Curr Liab-Fed Alaska Dist		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14910									Curr Liab-Advance Charges		A	Liability	TRUE	TRUE		USD	09/30/2016			-9424.20
+ASA	14920									Curr Liab-CODs		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	14930									Curr Liab-Pickup/Delivery		A	Liability	TRUE	FALSE		USD	09/30/2016			-6.48
+ASA	15000									Curr Liab-Mileage Plan Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			1030000.00
+ASA	15010									Curr Liab-Fed Trans Tax-Frt		A	Liability	TRUE	TRUE		USD	09/30/2016			140000.00
+ASA	15020									Curr Liab-Fed Trans Tax-Gtwy		A	Liability	TRUE	TRUE		USD	09/30/2016			2299961.07
+ASA	15030									Curr Liab-Fed Trans Tax-7.5%		A	Liability	TRUE	TRUE		USD	09/30/2016			8099767.41
+ASA	15040									Curr Liab-Canadian Domestic 9%		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	15050									Curr Liab-Custom User Fee Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-1142320.93
+ASA	15070									Curr Liab-Us Immigration Fee		A	Liability	TRUE	TRUE		USD	09/30/2016			-51.66
+ASA	15080									Curr Liab-CAD GST Collected		A	Liability	TRUE	TRUE		USD	09/30/2016			31465.49
+ASA	15085									BC HST Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	15090									Curr Liab-APHIS		A	Liability	TRUE	TRUE		USD	09/30/2016			-822439.48
+ASA	15110									Curr Liab-MEX IVA Collected		A	Liability	TRUE	TRUE		USD	09/30/2016			-98198.27
+ASA	15120									MEX TUA Collected		A	Liability	TRUE	TRUE		USD	09/30/2016			-6549596.64
+ASA	15121									Mexico TUA Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			-2318798.19
+ASA	15122									Curr-Liab-MEX TUA Migration		A	Liability	TRUE	TRUE		USD	09/30/2016			-223338.51
+ASA	15123									MEX UK Visitor Tax Collected		A	Liability	TRUE	TRUE		USD	09/30/2016			-3169062.95
+ASA	15124									MX Visitor Tax Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			-983316.97
+ASA	15130									Curr Liab-Federal Jet Fuel Tax		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	15140									Curr Liab-PFCs		A	Liability	TRUE	TRUE		USD	09/30/2016			251600.25
+ASA	15150									Canadian Airport Impvmt Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-1165827.42
+ASA	15160									Curr Liab-Federal Segment Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			3799956.41
+ASA	15165									Currt Liab-Federal Income Tax		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	15170									Intern'l Transp Tax Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			-2909807.42
+ASA	15180									Taxes Payable Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			685323.99
+ASA	15200									U.S. Security Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-113.76
+ASA	15210									Canadian Security Charges		A	Liability	TRUE	TRUE		USD	09/30/2016			-77.54
+ASA	15310									CR - Trans Tax (CR) 5%		A	Liability	TRUE	TRUE		USD	09/30/2016			433.18
+ASA	15320									CR - Trans Tax (OU) 5%		A	Liability	TRUE	TRUE		USD	09/30/2016			18518.76
+ASA	15330									CR-Common Area User Charge(FS)		A	Liability	TRUE	TRUE		USD	09/30/2016			-63794.37
+ASA	15331									CRC FS Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			-40040.67
+ASA	15340									CR - Sec Fee - Intl (IK)		A	Liability	TRUE	TRUE		USD	09/30/2016			-55351.44
+ASA	15341									CRC IK Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			-21242.83
+ASA	15350									CR - Tourism Arrival Tax (NW)		A	Liability	TRUE	TRUE		USD	09/30/2016			-163607.15
+ASA	15360									CR-Baggage Inspection Fee (A1)		A	Liability	TRUE	TRUE		USD	09/30/2016			-35284.89
+ASA	15361									CR - A1 tax- Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			4894.00
+ASA	15370									CR - Boarding Tax (B1)		A	Liability	TRUE	TRUE		USD	09/30/2016			-400374.93
+ASA	15371									CR - B1 tax- Boarded		A	Liability	TRUE	TRUE		USD	09/30/2016			45657.00
+ASA	15400									Curr Liab-Mail Handling		A	Liability	TRUE	TRUE		USD	09/30/2016			-304443.91
+ASA	15500									Curr Liab-Treasury Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	15520									Curr Liab-Audit Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-125000.00
+ASA	15530									Curr Liab-Fuel Fed Tax Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-1821304.84
+ASA	15540									Curr Liab-Litigation Reserve		A	Liability	TRUE	FALSE		USD	09/30/2016			-1284700.00
+ASA	15545									Curr Liab Lease Deposits		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	15550									Lease Return Prov - Current		A	Liability	TRUE	TRUE		USD	09/30/2016			-3501302.16
+ASA	15570									Curr Liab-Garnishments		A	Liability	TRUE	TRUE		USD	09/30/2016			-42258.05
+ASA	15600									Escheatment Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-41329.80
+ASA	15610									Curr Liab-R/A Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			-4262.00
+ASA	15615									Fuel Hdg-Fair Mkt Value Swap		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	15616									Interest Rate Swap Current		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	15630									MP Def Rev - Misc Current		A	Liability	TRUE	TRUE		USD	09/30/2016			-51935.00
+ASA	15680									Curr Liab - DM Unclaimed Funds		A	Liability	TRUE	TRUE		USD	09/30/2016			-14816.62
+ASA	15695									Accrued Utilities Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			1686214.83
+ASA	15705									Pz Card Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16000									ATL-Unearned Charter Revenue		A	Liability	TRUE	TRUE		USD	09/30/2016			-1266898.11
+ASA	16005									Hawaii Vacations Liability		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16010									ATL-Unbilled I/L Airbills		A	Liability	TRUE	FALSE		USD	09/30/2016			-87609.83
+ASA	16020									ATL-Audited Frt I/L Invoices		A	Liability	TRUE	TRUE		USD	09/30/2016			72196.04
+ASA	16035									ATL-Currt Airbills in Transit		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16040									Cargo Transport Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-819674.17
+ASA	16046									Cargo CRAF (Military) Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			0.01
+ASA	16050									Cargo Refunds Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			-55655.76
+ASA	16060									ATL-Audited Pax I/L Invoices		A	Liability	TRUE	TRUE		USD	09/30/2016			36674401.88
+ASA	16070									ATL-Provision-OAL Rejects		A	Liability	TRUE	FALSE		USD	09/30/2016			-1241842.17
+ASA	16100									ATL-Sample Eval'n Clr'g SC54		A	Liability	TRUE	TRUE		USD	09/30/2016			1.00
+ASA	16110									ATL-Trans Cr Payable-TKTP		A	Liability	TRUE	TRUE		USD	09/30/2016			-14731.11
+ASA	16115									Authority To Debit Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16120									ATL-AS Refund W/Reissue-Clr'g		A	Liability	TRUE	TRUE		USD	09/30/2016			-2920.60
+ASA	16125									eWallet Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			427.60
+ASA	16130									ATL-Debit Memo Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			-190886.26
+ASA	16135									Unreported Sales DM Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	16140									ATL-TA Sales Estimate		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	16145									RV Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			544450.17
+ASA	16150									ATL-Coupons Not Set Up		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	16160									ATL-Match Use Exceptions		A	Liability	TRUE	FALSE		USD	09/30/2016			389214.43
+ASA	16165									ILP - Match Use Exceptions		A	Liability	TRUE	FALSE		USD	09/30/2016			88391.08
+ASA	16170									ATL-Ticket Differences		A	Liability	TRUE	FALSE		USD	09/30/2016			-1244000.00
+ASA	16180									Interline Payable Variance		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16181									I/L Payable Tkt-P Control		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	16182									ILP - MCO/Non-members		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	16195									ATL - Vacation Deposit		A	Liability	TRUE	TRUE		USD	09/30/2016			-2024277.29
+ASA	16200									ATL-Tech 7 Unearned Revenue		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	16210									ATL-Refund/Reissue Usage Clg		A	Liability	TRUE	TRUE		USD	09/30/2016			123523.71
+ASA	16220									ATL-Refund/Reissue MatchUse Ex		A	Liability	TRUE	FALSE		USD	09/30/2016			27656.99
+ASA	16230									ATL-Sales Clearing		A	Liability	TRUE	FALSE		USD	09/30/2016			19280548.00
+ASA	16240									ATL-Coupons >= 13 Mos Old		A	Liability	TRUE	FALSE		USD	09/30/2016			45459548.90
+ASA	16250									ATL-TKTP Control		A	Liability	TRUE	FALSE		USD	09/30/2016			-767108724.23
+ASA	16255									ATL-Deferred Ancillary Svc Rev		A	Liability	TRUE	FALSE		USD	09/30/2016			-35020.00
+ASA	16260									ATL-Deferred Fee Revenue		A	Liability	TRUE	TRUE		USD	09/30/2016			-650013.47
+ASA	16265									ATL-Unearned Sales Pricing Dif		A	Liability	TRUE	TRUE		USD	09/30/2016			1484677.53
+ASA	16266									ATL CAD Bank Comp Cert Def Rev		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	16270									Gift Certificate Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-4452971.96
+ASA	16272									Breakage on Non_Expiring GC		A	Liability	TRUE	FALSE		USD	09/30/2016			1436289.07
+ASA	16275									eWallet Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-29964441.26
+ASA	16276									BTC Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-2404005.23
+ASA	16277									DB/Voucher Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-9109895.00
+ASA	16278									Gift Card Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-150618.25
+ASA	17010									N/P Potomac Short-Term		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	17200									Cap Lease Oblig - AC - Curr		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	17400									LT Debt - Current Portion		A	Liability	TRUE	TRUE		USD	09/30/2016			-66211055.74
+ASA	17410									Deferred Issuance Cost - Curr		A	Liability	TRUE	FALSE		USD	09/30/2016			472096.68
+ASA	17500									LT A/C Debt		A	Liability	TRUE	FALSE		USD	09/30/2016			-308123726.89
+ASA	17600									Deferred Issuance Cost - LT		A	Liability	TRUE	TRUE		USD	09/30/2016			5019019.02
+ASA	17750									LT Other Liabilities		A	Liability	TRUE	FALSE		USD	09/30/2016			-5854619.00
+ASA	18000									Deferred Tax Liab - NC		A	Liability	TRUE	FALSE		USD	09/30/2016			-538130122.49
+ASA	18010									Deferred Tax Liab - NC-Curr Yr		A	Liability	TRUE	TRUE		USD	09/30/2016			-242316309.18
+ASA	18255									Deferred Gain-Aircraft Sale/Le		A	Liability	TRUE	TRUE		USD	09/30/2016			-8737596.55
+ASA	18290									T6 Deferred Credits		A	Liability	TRUE	FALSE		USD	09/30/2016			-163172544.37
+ASA	18300									T6 Deferred Interest Income		A	Liability	TRUE	FALSE		USD	09/30/2016			-8352788.03
+ASA	18310									MP Def Rev - Sold Mile LT Recl		A	Liability	TRUE	TRUE		USD	09/30/2016			-441400000.00
+ASA	18320									MP Def Rev - Misc LT		A	Liability	TRUE	TRUE		USD	09/30/2016			-43586548.02
+ASA	18520									Lsd A/F Rtn Provn		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	18570									FIN48 Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-31848200.00
+ASA	18640									PBP Earnings Deferral		A	Liability	TRUE	FALSE		USD	09/30/2016			-3908474.36
+ASA	18645									LT Aircraft Rent Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	18646									LT Workers Comp Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			-21431543.00
+ASA	18648									LT Interest Rate Swap Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	18650									OSRP - LT Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-34874148.26
+ASA	18660									Post Retirement Ins Accl		A	Liability	TRUE	TRUE		USD	09/30/2016			-63213562.82
+ASA	18665									Accrued Sick Leave		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	18670									Pilots Excess Disability Accl		A	Liability	TRUE	FALSE		USD	09/30/2016			-558501.50
+ASA	18672									Pilot Disability Accd-LT		A	Liability	TRUE	TRUE		USD	09/30/2016			-22614907.00
+ASA	18680									MP Liab - Flown Mile LT Recl		A	Liability	TRUE	TRUE		USD	09/30/2016			-18800000.00
+ASA	18684									Other Defer Credits & Deposits		A	Liability	TRUE	TRUE		USD	09/30/2016			-137583.65
+ASA	18685									Aircraft Purchase Credits		A	Liability	TRUE	FALSE		USD	09/30/2016			-49489.20
+ASA	18690									Addl Minimum Liab-Pension		A	Liability	TRUE	TRUE		USD	09/30/2016			-173820556.78
+ASA	19050									Common Stock-Par Value		A	Equity	TRUE	FALSE		USD	09/30/2016			-1599.26
+ASA	19110									Additional Paid In Capital		A	Equity	TRUE	FALSE		USD	09/30/2016			-526941357.79
+ASA	19150									Common Stock-Paid In Capital		A	Equity	TRUE	FALSE		USD	09/30/2016			-3039456.48
+ASA	19190									Capital Contribution		A	Equity	TRUE	FALSE		USD	09/30/2016			-223437887.07
+ASA	19200									Treasury Stock $1 Par Value		A	Equity	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	19210									Treasury Stock Paid In Capital		A	Equity	TRUE	FALSE		USD	09/30/2016			0.00
+ASA	19315									Accum OCI OSRP		A	Equity	TRUE	TRUE		USD	09/30/2016			6645634.97
+ASA	19335									Unrealized Gain/Loss Mkt Sec		A	Equity	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	19338									Accum OCI - Int Rate Swap		A	Equity	TRUE	TRUE		USD	09/30/2016			0.00
+ASA	19340									Tax Effect on OCI		A	Equity	TRUE	FALSE		USD	09/30/2016			-164664428.00
+ASA	19345									Accum OCI- Retiree Medical		A	Equity	TRUE	TRUE		USD	09/30/2016			-38719565.75
+ASA	19350									OCI-Pension		A	Equity	TRUE	TRUE		USD	09/30/2016			469617331.28
+ASA	19365									Def Comp Restricted Stock_ASA		A	Equity	FALSE	FALSE		USD	09/30/2016			0.00
+ASA	19400									Retained Earnings-Asa		A	Equity	TRUE	FALSE		USD	09/30/2016			-3124850015.14
+ASA	19415									Retained Earnings-MAS		A	Equity	TRUE	FALSE		USD	09/30/2016			822404.10
+QXA	01000									Cash - Main Concentration		A	Asset	TRUE	FALSE		USD	09/30/2016			240.11
+QXA	01001									Cash - Payroll		A	Asset	TRUE	TRUE		USD	09/30/2016			-11162705.80
+QXA	01002									Cash - Accounts Payable		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	01003									Cash - Workers Comp		A	Asset	TRUE	FALSE		USD	09/30/2016			-19361.90
+QXA	01006									Cash - Citibank Wires		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	01030									Petty Cash Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			6275.91
+QXA	01040									Change Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			12606.90
+QXA	01041									Freight Cash Drawer		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01210									Bank Of America General Acct		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+QXA	01220									Bank Of America A/P Acct		A	Asset	TRUE	TRUE		USD	09/30/2016			-4100922.47
+QXA	01230									Bank Of America Payroll Acct		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01253									Chase Bank ACH/IATA Acct		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01254									U.S. Bank PDX Acct		A	Asset	TRUE	FALSE		USD	09/30/2016			38990.34
+QXA	01260									Bank Of America Insurance Acct		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01280									Bank Of America Wa L&I		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01290									Bank Of America Overdraft Recl		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	01420									Mexico- Petty Cash Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	01660									Royal Bank Of Canada A/P Acct		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	01665									Scotia Bank A/P Acct		A	Asset	TRUE	TRUE		USD	09/30/2016			-601624.11
+QXA	01675									Scotia Bank Payroll		A	Asset	TRUE	TRUE		USD	09/30/2016			-128019.03
+QXA	02000									Notes Receivable - QX		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02040									Intercompany Clearing AP Syste		A	Asset	TRUE	TRUE		USD	09/30/2016			-377024.14
+QXA	02050									Receivable From AAG		A	Asset	TRUE	TRUE		USD	09/30/2016			-7849974.86
+QXA	02070									Receivable from AAG - Taxes		A	Asset	TRUE	FALSE		USD	09/30/2016			123402302.56
+QXA	02100									Receivable from QX - Intercomp		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02170									A/R - ASA		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02173									AS A/R Misc Billing		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02176									AS A/R Qx Gsx & Directional Fr		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02179									AS A/R Misc Revenue		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02184									AS A/R Ik Cc Clrg-(Mastercard)		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02188									AS Cnd Pr Pmts By Qx 4 AS		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+QXA	02360									A/R - Interline-Pax ACH		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02501									Canadian Vacation Receivable		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02570									A/R - Reclaim Commission - T/A		A	Asset	TRUE	FALSE		USD	09/30/2016			5.59
+QXA	02700									A/R - Employees		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02705									A/R Employee Uniforms		A	Asset	TRUE	TRUE		USD	09/30/2016			84274.97
+QXA	02715									A/R Miscellaneous		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02750									Fuel Hedge Receivable		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02752									A/R- Fuel Sales Clearing		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02753									Misc Rec - Airport Ops&Other		A	Asset	TRUE	TRUE		USD	09/30/2016			4759.26
+QXA	02771									A/R Mtx Warranty		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	02774									A/R Insurance Claims		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02777									A/R Brad Delivery Guarantee &		A	Asset	TRUE	FALSE		USD	09/30/2016			5392.78
+QXA	02779									A/R Other		A	Asset	TRUE	TRUE		USD	09/30/2016			-0.37
+QXA	02780									A/R - Accrued Interest		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02790									A/R - QX Returned Checks		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02801									A/R Employee Flt Train		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02802									A/R Contra Employee Flt Trng		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02820									A/R - Travel Advances		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02850									A/R - MX IVA - Refundable		A	Asset	TRUE	FALSE		USD	09/30/2016			367.50
+QXA	02870									A/R - Cad GST Tax Refundable		A	Asset	TRUE	TRUE		USD	09/30/2016			286252.46
+QXA	02875									A/R - BC HST Receivable		A	Asset	TRUE	TRUE		USD	09/30/2016			230851.50
+QXA	02880									Due From State		A	Asset	TRUE	FALSE		USD	09/30/2016			353931.30
+QXA	02882									A/R Federal Fuel Tax		A	Asset	TRUE	TRUE		USD	09/30/2016			243688.90
+QXA	02883									720 Tax Receivable		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02902									A/R Canadian Mail		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02903									A/R Public Serv Subsidy		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02905									A/R Gtr's		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02911									A/R State Fuel Tax		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	02912									A/R Montana Fuel Tax		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02914									A/R State Tax Refunds Mt,Ut		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02916									A/R Telephone Tax Refund		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	02990									Allowance-Uncollectable Accts		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	03050									Inventory-Lot Sale		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03150									Expendable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			16595393.96
+QXA	03155									Contra Dispatch Reliab Grntee		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03160									Non-Stock Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03165									Non-Stock Parts @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03170									Expendable Unserviceable Resrv		A	Asset	TRUE	FALSE		USD	09/30/2016			-371355.01
+QXA	03175									Expendables @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03500									Inventory-Fuel-Aviation		A	Asset	TRUE	FALSE		USD	09/30/2016			2024991.42
+QXA	03501									Inventory-Fuel-Aviation-QX		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03510									Inventory-Matl & Misc Supply		A	Asset	FALSE	FALSE		USD	09/30/2016			0.01
+QXA	03525									Inventory-Glycol		A	Asset	TRUE	FALSE		USD	09/30/2016			439793.17
+QXA	03530									Inventory-Stationary		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03535									Workflow One Inventory		A	Asset	TRUE	FALSE		USD	09/30/2016			-29.50
+QXA	03555									Picnic Pack Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03560									Food and Beverage Inventory		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+QXA	03575									Uniforms Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			361267.02
+QXA	03670									Glycol Inventory		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03965									Obsol Resrv Expendables		A	Asset	TRUE	FALSE		USD	09/30/2016			-12271961.25
+QXA	03966									Obsol Resrv Nonstock Parts		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03967									Obsol Reserve Exp @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	03970									Obsol Resrv; Rep 737-400		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04100									Ppd  Fuel - Arco		A	Asset	TRUE	TRUE		USD	09/30/2016			5480290.97
+QXA	04110									PpdFuel - Conoco		A	Asset	TRUE	TRUE		USD	09/30/2016			548819.94
+QXA	04120									Ppd Fuel - World Fuel Svc		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04150									Ppd  Fuel Exp -Tesoro		A	Asset	TRUE	TRUE		USD	09/30/2016			1705609.74
+QXA	04160									Ppd  Fuel - Shell		A	Asset	TRUE	TRUE		USD	09/30/2016			4200106.22
+QXA	04166									PPD Fuel Eastern Aviation		A	Asset	TRUE	FALSE		USD	09/30/2016			3000.00
+QXA	04170									Ppd  Fuel - Chevron		A	Asset	TRUE	TRUE		USD	09/30/2016			1853216.25
+QXA	04180									PpdFuel - Exxon/Mobil		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	04182									PPD Fuel EPIC Aviation		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04183									PPD Fuel AVFUEL		A	Asset	TRUE	TRUE		USD	09/30/2016			284978.92
+QXA	04185									Fuel Hedge-Fair Mkt Value Cap		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04186									Fuel Hdg-Fair Mkt Value Swap		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04188									PPD Fuel - Petro Canada		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04189									PPD Fuel - Walla Walla		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04200									Ppd  Insurance - Brokerage		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04230									Ppd  Insurance - Genl Liab		A	Asset	TRUE	TRUE		USD	09/30/2016			299255.96
+QXA	04240									Ppd  Ins - A/C Hull & Pax Liab		A	Asset	TRUE	TRUE		USD	09/30/2016			313838.94
+QXA	04250									Ppd  Insurance - War Risk		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+QXA	04300									Ppd Facility Rent		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04310									Ppd  Aircraft Rent		A	Asset	TRUE	TRUE		USD	09/30/2016			30893064.65
+QXA	04330									Prd AP Expenses Month 2		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	04500									Ppd  Property Tax - CA		A	Asset	TRUE	TRUE		USD	09/30/2016			131077.22
+QXA	04510									Ppd Property Tax - OR		A	Asset	TRUE	FALSE		USD	09/30/2016			0.10
+QXA	04520									Ppd Property Tax - WA		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04540									Deferred Tax Asset - Current		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	04680									Ppd  Misc - Other		A	Asset	TRUE	FALSE		USD	09/30/2016			213649.60
+QXA	04700									Deposit Port		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04703									Deposit- Jeppesen Sanderson		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04719									PPD Trade-Cougar Sports Proper		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04720									PPD Trade-Jeff Sanders		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04725									PPD PDX Bond Admin Fee		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04726									PPD Rockwell Phone Switch Supp		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04728									PPD Aspect Communications		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04735									PPD AOS Tech Support		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04738									PPD Planet Route 4cast System		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04741									PPD Engineering Pubs		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04744									PPD Trax Tech Support		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	04745									PPD Workers Comp		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	05000									Aircraft Airframes		A	Asset	TRUE	FALSE		USD	09/30/2016			639193981.33
+QXA	05005									Aircraft Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05015									Flight Equipment CIP		A	Asset	TRUE	FALSE		USD	09/30/2016			3755688.17
+QXA	05100									Aircraft Engines		A	Asset	TRUE	FALSE		USD	09/30/2016			156510807.52
+QXA	05105									Engine Clearing Owned Spares		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05171									BFE New Aircraft		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05180									Fleet Conformance		A	Asset	TRUE	FALSE		USD	09/30/2016			7851344.58
+QXA	05181									Fleet Conformance Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05194									Lshld Imp EGPWS (Enhanced GPWS		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05195									Lshld Imp EGPWS Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05250									Repairable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			6779525.61
+QXA	05251									Repairables @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05255									Obsol Resrv Repairables		A	Asset	TRUE	FALSE		USD	09/30/2016			-2210041.01
+QXA	05256									Obsol Reserve Rep @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05260									Rotable Spares Inventory		A	Asset	TRUE	TRUE		USD	09/30/2016			44756072.10
+QXA	05265									Contra Asset Rotable Spares		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	05270									Rotable Spares Clearing		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05275									Rotables @ Surplus		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05280									Obsolescence Reserve Rotables		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05285									Obsol Reserve Rotable @ Surplu		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05410									Bldg SEAGO		A	Asset	TRUE	FALSE		USD	09/30/2016			6107384.62
+QXA	05411									Bldg Imp SEAGO		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05412									Bldg SUN Condo		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05450									Construction In Progress		A	Asset	TRUE	TRUE		USD	09/30/2016			1299741.85
+QXA	05456									Cap Int PDX Ops Center Cip		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05500									Furniture & Office Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			964375.41
+QXA	05510									Information Systems Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			2718282.10
+QXA	05511									Equip PDX Mtx Sys Hdwr		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05513									Equip Network		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05514									Equip Image Hdwr		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05515									Computer Software		A	Asset	TRUE	FALSE		USD	09/30/2016			3782085.21
+QXA	05517									PDX Mtx System Software IDS		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05518									Gateplan/Airflite Software		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05600									Passenger Service Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			31995106.93
+QXA	05620									Ramp Service Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	05635									Equip Air To Ground Radio		A	Asset	TRUE	FALSE		USD	09/30/2016			140386.68
+QXA	05640									Maintenance Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			3576210.20
+QXA	05660									Vehicles		A	Asset	TRUE	FALSE		USD	09/30/2016			3018481.45
+QXA	05685									HGS DH8 Simulator		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05710									Leased Other Build Improvement		A	Asset	TRUE	FALSE		USD	09/30/2016			19516653.36
+QXA	05711									Lshld Imp PDX Terminal		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05712									Lshld Imp SEA C Concourse		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05713									Lshld Imp 1998 SEA C Concourse		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05714									Lshld Imp PDX Ops Ctr		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05730									Land		A	Asset	TRUE	FALSE		USD	09/30/2016			1379974.83
+QXA	05731									Land Improvements SEAGO Parkin		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05900									Aircraft Purchase Deposits		A	Asset	TRUE	TRUE		USD	09/30/2016			39555067.29
+QXA	05901									Purch Dep F28-4000		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05903									Purch Dep DH8 200		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05904									Purch Dep DH8 400		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05905									Purch Dep CRJ 700		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	05910									Capd Int - A/C Purchase Deps		A	Asset	TRUE	FALSE		USD	09/30/2016			500375.45
+QXA	05912									Cap Int DH8 400		A	Asset	FALSE	FALSE		USD	09/30/2016			-0.00
+QXA	06000									A/D - Aircraft Airframes		A	Asset	TRUE	FALSE		USD	09/30/2016			-264645141.08
+QXA	06100									A/D - Aircraft Engines		A	Asset	TRUE	FALSE		USD	09/30/2016			-66161652.21
+QXA	06180									Accum Depr Fleet Conformance		A	Asset	TRUE	FALSE		USD	09/30/2016			-6715042.45
+QXA	06194									Accum Depr EGPWS		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06260									Accum Depr Rotable Spares		A	Asset	TRUE	FALSE		USD	09/30/2016			-23918596.50
+QXA	06262									Contra Depreciation Rotable Sp		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06265									Impairment Rsv Rotable		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06410									Accum Depr SEAGO		A	Asset	TRUE	FALSE		USD	09/30/2016			-4470225.76
+QXA	06411									Accum Depr-SEAGO Parking Impr.		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06412									Accum Depr Sun Condo		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06500									A/D - Furniture & Office Equip		A	Asset	TRUE	FALSE		USD	09/30/2016			-848785.96
+QXA	06510									A/D - Info Systems Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-2572814.03
+QXA	06514									Accum Depr - Image		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	06515									A/D - Computer Software		A	Asset	TRUE	FALSE		USD	09/30/2016			-3735510.21
+QXA	06600									A/D - Passenger Service Equip		A	Asset	TRUE	FALSE		USD	09/30/2016			-24417672.95
+QXA	06630									A/D - Grd Communications Equip		A	Asset	TRUE	FALSE		USD	09/30/2016			-138975.90
+QXA	06640									A/D - Maintenance Equipment		A	Asset	TRUE	FALSE		USD	09/30/2016			-3112959.33
+QXA	06660									A/D - Vehicles		A	Asset	TRUE	FALSE		USD	09/30/2016			-2144724.95
+QXA	06700									A/D - Leased Bldg Improvements		A	Asset	TRUE	FALSE		USD	09/30/2016			-19066996.86
+QXA	06705									Accum Depr PDX Terminal/Flt Op		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09000									Deposits - Misc		A	Asset	TRUE	FALSE		USD	09/30/2016			34000.00
+QXA	09040									Deposits - Mexico		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+QXA	09230									Invest - Air Cargo		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09340									Invest - Fuel Consortiums		A	Asset	TRUE	TRUE		USD	09/30/2016			137902.39
+QXA	09341									Ref Dep PLH Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09343									Ref Dep Fuel Farm		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09345									Ref Dep PDX Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09346									Ref Dep LAX Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09347									Ref Dep SFO Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09348									Ref Dep SJC Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09349									Ref Dep SMF Fuel Consortium		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09502									Debt Financing Fees		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	09506									Deferred Rent Aircraft Sale/Le		A	Asset	TRUE	FALSE		USD	09/30/2016			224636.88
+QXA	09508									Bank Of America Loc/PDX Bond		A	Asset	FALSE	FALSE		USD	09/30/2016			17533195.00
+QXA	09509									Pilot Retiree Medical Plan		A	Asset	TRUE	FALSE		USD	09/30/2016			8634.23
+QXA	09515									Cash Clearing Acct		A	Asset	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	09530									Other Freight Charges		A	Asset	TRUE	TRUE		USD	09/30/2016			15450.55
+QXA	09550									Other Deferred Charges		A	Asset	TRUE	FALSE		USD	09/30/2016			310.36
+QXA	09585									CummutAir Mtx Reserves		A	Asset	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	09615									Lt Portion PPD Aircraft Rent		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	09635									CRJ Sublease		A	Asset	TRUE	FALSE		USD	09/30/2016			-0.00
+QXA	09670									Lt Workers Comp Investments		A	Asset	TRUE	FALSE		USD	09/30/2016			1696749.17
+QXA	09675									Workers Comp Claims Loss Funds		A	Asset	TRUE	FALSE		USD	09/30/2016			615357.68
+QXA	09750									LT Fuel Hedge-FMV Cap		A	Asset	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	09905									Lt Investment - SSP		A	Asset	TRUE	FALSE		USD	09/30/2016			1711756.75
+QXA	10005									Interest Payable To AS		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	10060									Notes Payable to Horizon		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	10070									Notes Payable to ASA		A	Liability	TRUE	TRUE		USD	09/30/2016			-52720136.51
+QXA	10100									Goldstreak/Frt Payable to QX		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10120									Insurance Payable to AAI		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	10130									AS Pass Cnd Customs Fee		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10132									AS $3 Segment Tax Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10133									AS $2.50 Security Tax Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10134									AS Cnd Security Tax Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10160									Payable To ASA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10161									Accrued AS Pass-Thru Crs		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10170									Payable to AGL		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	10180									Payable to AAG		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	11000									Expense Report Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			7056.32
+QXA	11010									Vouchers Payment VCA Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			-455970.26
+QXA	11020									Vouchers Payable - PeopleSoft		A	Liability	TRUE	TRUE		USD	09/30/2016			-736659.94
+QXA	11025									Accounts Payable - Trade		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	11030									PO/Receipt Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	11035									TRAX AP Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			-20153.48
+QXA	11040									Accrued Repair Order Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-1064217.87
+QXA	11100									Ground Handling Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			39769.66
+QXA	11101									Security Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	11130									Facilities Rent-Fixed Use Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			75836.88
+QXA	11131									Facilities Rent-Joint Use Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			-4279586.86
+QXA	11132									Facilities Rent-Other Liab		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	11185									Heavy Maintenance Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	11210									Landing Fee Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-319472.04
+QXA	11223									Accrued Crew Hotel		A	Liability	TRUE	TRUE		USD	09/30/2016			-635926.20
+QXA	11240									Inventory Goods Recd, Not Invd		A	Liability	TRUE	TRUE		USD	09/30/2016			-523926.64
+QXA	11250									Misc Current Liabilities		A	Liability	TRUE	TRUE		USD	09/30/2016			-15822.17
+QXA	11260									Misc A/P Accruals		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	11610									Legal Fee Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			-54000.00
+QXA	11700									Aviation Fuel/Oil Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-5842920.38
+QXA	11705									Into-Plane/Consortium Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	11790									ACH - Non Trans Clearing-Other		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	11805									ACH/IATA Payable Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	11900									Cash Overdraft		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	12000									Aircraft Rent Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-6321032.44
+QXA	12005									Sublease Liability - Current		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13000									Accd Wages-Hourly/Salary		A	Liability	TRUE	TRUE		USD	09/30/2016			-2626818.29
+QXA	13015									Canadian Payroll Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-50879.00
+QXA	13050									Accd Wages - PBP		A	Liability	TRUE	FALSE		USD	09/30/2016			-9626408.52
+QXA	13051									Accrued OPR		A	Liability	TRUE	FALSE		USD	09/30/2016			-180888.35
+QXA	13055									B of A Visa Incentive Fees		A	Liability	TRUE	TRUE		USD	09/30/2016			-5596.07
+QXA	13140									PR Ded'n Empl Ins Colonial		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13145									PR Dedn Empl Ins Continental		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13150									PR Dedn TPA Insur Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-4148.65
+QXA	13270									EE/ER SSP Payable		A	Liability	TRUE	TRUE		USD	09/30/2016			-12730.84
+QXA	13273									Roth 401(k)		A	Liability	TRUE	TRUE		USD	09/30/2016			-28021.58
+QXA	13275									EE/ER 401k Payable To Trustee		A	Liability	TRUE	TRUE		USD	09/30/2016			72171.29
+QXA	13280									EE Rrsp Payable		A	Liability	TRUE	TRUE		USD	09/30/2016			19.04
+QXA	13330									PR Ded'n-United Way		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13360									PR Dedn-Union Dues-AFA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13365									PR Dedn-Union Dues		A	Liability	TRUE	TRUE		USD	09/30/2016			-120804.95
+QXA	13370									PR Dedn-Misc		A	Liability	TRUE	TRUE		USD	09/30/2016			26246.49
+QXA	13372									PR Dedn-PAC Donations		A	Liability	TRUE	TRUE		USD	09/30/2016			-404.00
+QXA	13373									Dispatch Union Dues Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13375									PR Dedn-Union Dues AMFA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13376									Canadian Union Dues Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13380									PR Dedn-Dep Care Reimb Acct		A	Liability	TRUE	TRUE		USD	09/30/2016			-31149.13
+QXA	13390									PRDedn-Hlthcare Spnd Act HCRA		A	Liability	TRUE	TRUE		USD	09/30/2016			-38639.51
+QXA	13391									PRDedn-Hlthcare Svg Act (HSA)		A	Liability	TRUE	TRUE		USD	09/30/2016			-110.86
+QXA	13410									PR Dedn-Emergency Assist Fund		A	Liability	TRUE	TRUE		USD	09/30/2016			-2722.33
+QXA	13470									PR Dedn-EE Charitable		A	Liability	TRUE	TRUE		USD	09/30/2016			-2063.22
+QXA	13471									EE Bank Of America Incentive		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13472									EE GO Vending Fund		A	Liability	TRUE	FALSE		USD	09/30/2016			-2387.71
+QXA	13473									RES WWTE Promo Fund		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13474									EE SEA Res Vending Fund		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13475									Maplewood Golf Fund		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13500									Perodic PR Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-932222.07
+QXA	13660									Quarterly PR Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-2073.98
+QXA	13710									Accd PR Taxes - FICA (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			125823.95
+QXA	13800									Accd PR Taxes-SUTA (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			-124836.24
+QXA	13857									OR Tri-Met (ER)		A	Liability	TRUE	TRUE		USD	09/30/2016			27615.84
+QXA	13900									Accrued Vacation/PTO		A	Liability	TRUE	TRUE		USD	09/30/2016			-600998.21
+QXA	13950									Accd Vacation Advance		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	13987									Helping Hands Vacation Liabili		A	Liability	TRUE	FALSE		USD	09/30/2016			-5000.22
+QXA	14010									Accr'd Taxes-FIT due to AAG		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14020									Taxes Payable		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14030									Taxes Due to State		A	Liability	TRUE	FALSE		USD	09/30/2016			-1.00
+QXA	14100									APHIS Aircraft Clearance Fee		A	Liability	TRUE	FALSE		USD	09/30/2016			-199350.00
+QXA	14150									Accrued Sales,B&O,Haz,Pet Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	14160									Accrued Sales & Use Tax		A	Liability	TRUE	TRUE		USD	09/30/2016			-8395.95
+QXA	14210									Acc'd Taxes-WA Sales & Use		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14350									Acc'd Taxes-BC Provincial		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14400									Acc'd Taxes-OR Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-1658000.00
+QXA	14404									Acc'd Tax - AK Property		A	Liability	TRUE	TRUE		USD	09/30/2016			25080.00
+QXA	14407									Acc'd Tax - NV Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-39200.00
+QXA	14408									Acc'd Tax - AZ Property		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14410									Acc'd Taxes-WA Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-926800.00
+QXA	14412									Acc'd Taxes-UT Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-23000.00
+QXA	14413									Acc'd Tax - ID Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-10400.00
+QXA	14418									Acc'd Taxes-MT Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-266400.00
+QXA	14420									Accr Taxes-Wa Real Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-17799.20
+QXA	14430									Acc'd Taxes-CA Property		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14435									Acc'd Taxes-CO Property		A	Liability	TRUE	TRUE		USD	09/30/2016			-3200.00
+QXA	14440									Acc'd Taxes Various Ppty		A	Liability	TRUE	TRUE		USD	09/30/2016			7950.00
+QXA	14450									Accrued Property Taxes		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14500									Accd Interest-Notes Payable		A	Liability	TRUE	TRUE		USD	09/30/2016			-752595.94
+QXA	14550									Benefit Insurance Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-77328.72
+QXA	14551									ERRP Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14552									Canadian Insurance Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14553									Pilot Ltd Liab Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			-203878.10
+QXA	14557									Supplemental Grp Life Payable		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14560									Workers Compensation Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-2067868.73
+QXA	14562									Wa L&I (ER)		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14565									OR Workday Tax		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14566									Accrued Canadian Workers Comp		A	Liability	TRUE	TRUE		USD	09/30/2016			-5517.17
+QXA	14570									Workers Comp Accrual Offset		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14615									Accrued Employer 401k Payable		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	14640									Co Match-Mgmt 401(k) Plan		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14650									OSRP Liability-Current		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	14700									Stock Purchase Plan-Employees		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	14870									Fixed Assets - Proceeds Clr'g		A	Liability	TRUE	FALSE		USD	09/30/2016			129350.00
+QXA	14875									A/P WIRE/ACH CLEARING		A	Liability	TRUE	TRUE		USD	09/30/2016			-34636739.26
+QXA	15140									Curr Liab-PFCs		A	Liability	TRUE	FALSE		USD	09/30/2016			-807.00
+QXA	15520									Curr Liab-Audit Fees		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	15530									Curr Liab-Fuel Fed Tax Accrual		A	Liability	TRUE	TRUE		USD	09/30/2016			-232475.65
+QXA	15570									Curr Liab-Garnishments		A	Liability	TRUE	TRUE		USD	09/30/2016			-26769.09
+QXA	15600									Escheatment Liability		A	Liability	TRUE	TRUE		USD	09/30/2016			-439.90
+QXA	15601									Unclaimed Prop Payroll Acct		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	15684									Security Deposit On Sub-Lease		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	15685									Accrued Mtx Reserve D8-Q200		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	15686									Aircraft/BFE Deposits Payable		A	Liability	TRUE	FALSE		USD	09/30/2016			-0.30
+QXA	15689									Accrued Mtx Reserve CRJ		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	15690									Unearned Fleet Subsidy		A	Liability	TRUE	TRUE		USD	09/30/2016			-3383867.77
+QXA	15695									Accrued Utilities Clearing		A	Liability	TRUE	TRUE		USD	09/30/2016			69378.66
+QXA	15705									Pz Card Clearing		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	15725									Other Deferred Income-Current		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	16070									ATL-Provision-OAL Rejects		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	16100									ATL-Sample Eval'n Clr'g SC54		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	17400									LT Debt - Current Portion		A	Liability	TRUE	TRUE		USD	09/30/2016			-39081928.71
+QXA	17410									Deferred Issuance Cost - Curr		A	Liability	TRUE	FALSE		USD	09/30/2016			319474.07
+QXA	17450									LT Fed Inc Tax Payable to AAG		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	17500									LT A/C Debt		A	Liability	TRUE	FALSE		USD	09/30/2016			-179149956.99
+QXA	17594									N/P USBank/WellsFargo-Edc Debt		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	17597									N/P Nordlb		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	17598									N/P HELABA		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	17599									Current Portion Of Ltd Offset		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	17600									Deferred Issuance Cost - LT		A	Liability	TRUE	FALSE		USD	09/30/2016			1139345.28
+QXA	18000									Deferred Tax Liab - NC		A	Liability	TRUE	FALSE		USD	09/30/2016			-144800192.01
+QXA	18010									Deferred Tax Liab - NC-Curr Yr		A	Liability	TRUE	TRUE		USD	09/30/2016			-1790999.61
+QXA	18230									Deferred Rent Credit-PDX Ops C		A	Liability	TRUE	FALSE		USD	09/30/2016			-263784.08
+QXA	18235									Deferred Bond Interest-PDX Ops		A	Liability	TRUE	FALSE		USD	09/30/2016			310247.94
+QXA	18240									Deferred BFE Sale		A	Liability	TRUE	FALSE		USD	09/30/2016			-161943.75
+QXA	18250									Deferred Gain Trade-Ins		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	18255									Deferred Gain-Aircraft Sale/Le		A	Liability	TRUE	TRUE		USD	09/30/2016			-383875.87
+QXA	18260									Def Credits Aircraft Parts		A	Liability	TRUE	TRUE		USD	09/30/2016			0.00
+QXA	18265									LT Unearned Fleet Subsidy		A	Liability	TRUE	TRUE		USD	09/30/2016			-1663862.73
+QXA	18290									T6 Deferred Credits		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	18551									Lease Return Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	18555									LT Accrued Mtx Reserve-CRJ		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	18560									PDX Ops Cntr Bond Sinking Fund		A	Liability	TRUE	FALSE		USD	09/30/2016			-10818732.47
+QXA	18570									FIN48 Liability		A	Liability	TRUE	FALSE		USD	09/30/2016			-260000.00
+QXA	18640									PBP Earnings Deferral		A	Liability	TRUE	TRUE		USD	09/30/2016			-1579840.08
+QXA	18645									LT Aircraft Rent Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			-19353967.48
+QXA	18646									LT Workers Comp Accrual		A	Liability	TRUE	FALSE		USD	09/30/2016			-1762645.50
+QXA	18651									Supl Retire Pay-Vanguard		A	Liability	TRUE	FALSE		USD	09/30/2016			-1711756.75
+QXA	18684									Other Defer Credits & Deposits		A	Liability	TRUE	TRUE		USD	09/30/2016			-36605.88
+QXA	19050									Common Stock-Par Value		A	Equity	TRUE	FALSE		USD	09/30/2016			-1000.00
+QXA	19110									Additional Paid In Capital		A	Equity	TRUE	FALSE		USD	09/30/2016			-161652038.54
+QXA	19190									Capital Contribution		A	Equity	TRUE	FALSE		USD	09/30/2016			-3093940.09
+QXA	19340									Tax Effect on OCI		A	Equity	TRUE	FALSE		USD	09/30/2016			0.00
+QXA	19365									Def Comp Restricted Stock_ASA		A	Equity	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	19370									Deferred Comp Restricted Stock		A	Liability	FALSE	FALSE		USD	09/30/2016			0.00
+QXA	19440									Retained Earnings-Horizon		A	Equity	TRUE	FALSE		USD	09/30/2016			-20065364.35

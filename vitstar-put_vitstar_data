@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Zip the outbound Vitstar file & FTP to Vitstar (Sabre).
+
+set -x
+
+. $HOME/bin/vitstar_environment
+
+cd $outbound_dir
+
+ftp_vendor_get $ftp_local_host $data_file $data_file "cd mpprod/vitstar"
+
+#count=`wc -l $data_file | awk '{print $1}'`
+
+rm -fv ftp_results.$$
+
+touch $trig_file
+
+# ZIP file for sending to Sabre 
+gzip <$data_file >$remote_file_out
+
+ftp_vendor $ftp_host $remote_file_out $remote_file_out bin
+#ftp_vendor $ftp_host $trig_file $trig_file bin
+
+securezip $data_file outbound
+
+echo -e "\nmove $data_file on asprodftp" 
+	ftp -v asprodftp <<GETDATA >ftp_results.$$
+	cd "mpprod/VitStar/Archive"
+        put $data_file $data_file$datestamp
+        dir
+	cd ..
+        delete $data_file
+	bye
+GETDATA
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "move to archive and delete step failed"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+	exit 4
+	fi
+
+rm -fv ftp_results.$$
+
+archive_clean $outbound_archive $data_file $FileAge
+
+echo -e "\nremove temp files"
+rm -fv $data_file $remote_file_out $trig_file 
+
+#echo -e "\nemail to Deb and Joanne that the vitstar data has been sent"
+#Mail -s "Vitstar file has been sent to Sabre, there are $count records at $datestamp" $wc_mailto </dev/null

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Set up the norwest data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Added comments to make the script read cleaner after researching IM206802. tsonnen.
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="n37alais"
+export ftp_host=mft.delta.com
+#export ftp_host=ftp.nwa.com  changed to above on 2/13
+export paxrecs_file=activ30
+export tier_file=aselite.dat
+export tier_gpg_file=aselite.gpg
+export ftp_local_host=asprodftp
+export lz=mpprod
+export ext=txt
+export paxrecs_gpg_file=${paxrecs_file}.gpg
+export data_file=activ88
+export data_temp_file=${data_file}.tmp
+export data_pgp_file=${data_file}.gpg
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export tagfile=norwest.tag
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="eps@alaskaair.com,production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+
+######################################################################
+
+function inproc {
+
+cd $inbound_dir
+
+#call function to check connectivity $local_host (Seavvfile1). 
+ftp_check $ftp_local_host
+
+export local_file=$datafile.$datestamp.$ext
+
+#decrypt file
+echo -e "\ndecrypt file $gpgfile"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $gpgfile
+
+#ftp received file from inbound dir to SEAVVFILE1
+echo -e "\nCall function to push $local_file to $ftp_local_host (SEAVVFILE1)"
+ftp_file $ftp_local_host $local_file $local_file "cd scheduling/rm/ssimupld"
+
+#clean up inbound dir
+echo -e "\nMove $gpgfile to $inbound_archive/$gpgfile.$datestamp and remove $local_file"
+mv $gpgfile $inbound_archive/$gpgfile.$datestamp
+rm $local_file
+
+# Call function 'archive_clean' to delete old archived files.
+archive_clean $inbound_archive $gpgfile $FileAge
+
+}

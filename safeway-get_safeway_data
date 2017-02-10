@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# Process data from SAFEWAY 
+
+
+# Set the environment variables
+. $HOME/bin/safeway_environment
+
+cd $inbound_dir
+
+echo -e "\ndelete last weeks file at Safeway"
+	ftp $ftp_host <<DELETE
+	delete AlaskaAirlinesAwards.txt.asc.done
+	quit
+DELETE
+
+echo -e "\ncheck for current file at Safeway"
+	ftp $ftp_host <<CHECK >ftp_results.$$
+	dir
+	quit
+CHECK
+ 
+echo -e "\nftp results:"
+cat ftp_results.$$
+
+data_ready=`grep -c -e "AlaskaAirlinesAwards.txt.asc" ftp_results.$$`
+	               
+	if [ $data_ready -eq 0 ]; then
+	echo -e "\nIncoming Safeway file expected; not found"
+	cat ftp_results.$$
+	rm -f ftp_results.$$
+	exit 4
+	fi
+
+rm -f ftp_results.$$
+
+echo -e "\ngetting encrypted file from Safeway"
+	ftp -v $ftp_host <<GETDATA >ftp_results.$$
+	get $safeway_pgp_file
+	quit  
+GETDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nFTP get of $safeway_pgp_file from Safeway failed."
+	echo "Contact EPS"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+rm -f ftp_results.$$
+
+echo -e "\nrename $safeway_pgp_file to $safeway_pgp_file.done"
+	ftp -v $ftp_host <<RENAME >ftp_results.$$
+        rename $safeway_pgp_file $safeway_pgp_file.done
+        quit 
+RENAME
+
+result=$?
+
+	if  [ $result -ne 0 ];then
+	echo -e "\nRename of Safeway file failed" | Mail -s "Safeway FTP" $errors_to
+	fi
+
+rm -f ftp_results.$$
+
+echo -e "\ndecrypt $safeway_pgp_file" 
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $safeway_pgp_file
+    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nSafeway inbound file decrypt problem."
+	exit 8
+	fi
+
+echo -e "\ndate stamp and put safeway_pgp_file in $inbound_archive"
+mv $safeway_pgp_file $inbound_archive/$safeway_pgp_file.$datestamp
+ 
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\nremove temp files"
+rm -f ftp_results.$$ $local_file
+
+archive_clean $inbound_archive $safeway_pgp_file $FileAge  

@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# Set up the Vanguard data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/vanguard_environment"
+
+export PGPPASS=seavvdmzftp
+export vanguard_indir="cd inbound"
+export gpg_remote_signature="Vanguard2020DH"
+export sftp_host=zzaa@srtran.vanguard.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export hcmdir_in=/home/hcmprod/inbound/vanguard
+export hcmdir_out=/home/hcmprod/outbound/vanguard
+export datestamp=`date +%m%d%y.%H%M`
+export procdate=`date "+%A, %B %d, %Y."`
+export info_to="joanne.gies@alaskaair.com"
+export ops=/opt/local/ops_scripts
+export FileAge=60
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+echo -e "get $filename from $hcmdir_out"
+cp $hcmdir_out/$filename $outbound_dir
+
+echo -e "\nencrypt outgoing file $filename"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --sign -r "$gpg_remote_signature" --output $gpgfile --encrypt $filename >gpg_transcript.$$
+	
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $gpgfile ]; then
+	echo -e "\nencrypt of file $filename failed"
+	cat gpg_transcript.$$
+	rm -fv gpg_transcript.$$
+	exit 4
+	fi
+
+echo $gpgfile is $gpgfile
+rm -fv gpg_transcript.$$
+
+echo -e "\nput $gpgfile to $sftp_host"
+     	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd inbound
+     	put $gpgfile
+     	ls -l
+	quit
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $gpgfile to vanguard"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$ $gpgfile
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nmove $gpgfile to $outbound_archive/$gpgfile.$datestamp"
+mv -v $gpgfile $outbound_archive/$gpgfile.$datestamp
+
+echo -e "\ncleanup $hcmdir_out"
+rm -fv $tagfile $filename $hcmdir_out/$filename
+
+#Using the archive_clean function - Remove any archived AAGBN009 or AAGBN025 files older than 30 days.
+archive_clean $outbound_archive $gpgfile $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+
+echo -e "\nget $remotefile from $sftp_host"
+     	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd outbound
+     	mget $remotefile
+     	ls -l
+	quit
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP get of $remotefile from vanguard"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+ls -1 $remotefile* | 
+	while read FILE1 
+	do
+	localfile=`echo $FILE1 | sed -e 's/.pgp//'`
+	tagfile=`echo $localfile | sed -e 's/.txt/.tag/'`
+
+echo -e "\ndecrypting file $FILE1"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $localfile --decrypt $FILE1 >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nVanguard data file encryption failure, contact Production Services.\n"
+	cat gpg_transcript.$$
+	rm -fv gpg_transcript.$$
+#  	exit 8
+	fi
+
+rm -fv gpg_transcript.$$
+
+echo -e "\nMove $localfile to $hcmdir_in and create $tagfile"
+mv $localfile $hcmdir_in
+touch $hcmdir_in/$tagfile
+
+echo -e "\nMove encrypted file $FILE1 to the archive directory as $FILE1.$datestamp"
+mv -v $FILE1 $inbound_archive/$FILE1.$datestamp
+
+echo -e "\ndelete $FILE1 to $FILE1.done on $sftp_host"
+	sftp -v $sftp_host <<DATA >ftp_results.$$
+	cd outbound
+	rm -fv $FILE1 
+	dir
+	quit
+DATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+	done
+
+#Using the archive_clean function - Remove any archived VGI_09385* files older than 30 days.
+archive_clean $inbound_archive $remotefile $FileAge
+
+}

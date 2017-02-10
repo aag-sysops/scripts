@@ -1,0 +1,149 @@
+#!/bin/bash
+
+# Set up the cartera data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/cartera_acc_environment"
+
+export PGPPASS=seavvdmzftp
+export ftp_local_host=asprodftp
+export sftp_host=alaskaairlines@ftp03.cartera.com
+export pgp_remote_signature="Mall Networks Data Exchange"
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=production.services@alaskaair.com
+export datestamp=`/bin/date +%Y%m%d%H%M%S`
+export local_file=CACARTERAPIT.TXT
+export outfile_prefix=CACARTERAPIT
+export pgp_data_file=ACCRUALRESPONSE_ALASKAAIRLINES_$datestamp.pgp
+export out_data_file=ACCRUALRESPONSE_ALASKAAIRLINES
+export info_to="joanne.gies@alaskaair.com"
+export errors_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+#export MAILLST="ftp.partner.alerts@alaskaair.com"
+export MAILLIST="joanne.gies@alaskaair.com"
+#export mail_to="xxxxxx"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+echo -e "\nget file on cartera server" 
+	sftp -v $sftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "outgoing"
+       	mget ACCRUAL_CARTERA_ALASKAAIRLINES*.pgp
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+
+export rem_file=`ls -1 ACCRUAL_CARTERA*.pgp`
+echo -e "\nthis is the Cartera Accural file: $rem_file"
+
+
+echo -e "decrypt $data_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $rem_file    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "${program}: inbound results file decrypt problem.  Call Ops Analyst."
+        exit 8
+	fi
+
+records=`wc $local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="cartera accural file for date $rundate is empty."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "e-rewards Mileage Plan data" $MAILLIST
+	mv $local_file $inbound_archive/$local_file.MT.$datestamp
+	exit 0
+	fi
+
+echo -e "\n$local_file file ($records records) received at `date`"
+
+echo -e "\nget file on cartera server" 
+	sftp -v $sftp_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "outgoing"
+       	rename $rem_file Accrual_picked_up_on_$datestamp
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+
+rm -fv pgp_transcript.$$
+
+securezip $local_file inbound
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file $rem_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+echo -e "\nmake record length 152 for all records"
+$HOME/bin/152.pl $solar_file >$out_data_file
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e  "\nchange record length failed, contact EPS"
+	exit 4
+	fi
+
+securezip $out_data_file outbound
+
+echo -e "\nencrypt $out_data_file (output to $out_pgp_file)"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output $pgp_data_file --encrypt $out_data_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s $pgp_data_file -o $result -ne 0 ]; then
+	echo -e "\n$solar_file encryption failure, contact Production Analyst" 
+	cat pgp_transcript.$$
+	rm -fv pgp_transcript.$$
+	exit 4
+	fi
+
+rm -fv pgp_transcript.$$
+
+echo -e "\nput file on cartera server" 
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$ 2>&1
+        cd "incoming"
+       	put $pgp_data_file
+        quit
+PUTDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+rm -f $solar_file  $pgp_data_file 
+
+archive_clean $outbound_archive $out_data_file $FileAge
+
+}

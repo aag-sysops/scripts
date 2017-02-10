@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Encrypt the AS data file and push to BofA for Visa Business Card
+
+# Set the environment variables
+. $HOME/bin/boa-vbc_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+echo -e "\nBegin encrypt and push Visa Business Card file to BofA"
+
+rm ~/.netrc
+ln -s ~/.netrc.outbound ~/.netrc
+
+echo -e "\nencrypt outgoing handback file $handback_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r $pgp_remote_signature --output $handback_asc_file --encrypt $handback_file >pgp_transcript.$$ 2>&1
+	result=$?
+
+echo -e "\nencryption ended with a return code of $result"
+
+	if [ $result -ne 0 ]; then
+echo -e "\nBofA VBC handback file encryption failure, contact EPS during normal business hours.\n"
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+  	exit 8
+	fi
+
+cat pgp_transcript.$$
+rm -f pgp_transcript.$$
+
+ftp_vendor $ftp_host $handback_asc_file "$boa_handback_file" passive ascii
+
+output_records=`wc -l $handback_file`
+echo -e "\n$output_records records sent to $ftp_host" 
+
+#echo -e "\nsend email notification"
+#Mail -s "BofA Visa Business Card handback file sent `date`" $info_to </dev/null
+
+echo -e "\nmove $handback_asc_file $outbound_archive/$handback_asc_file.$datestamp"
+mv $handback_asc_file $outbound_archive/$handback_asc_file.$datestamp
+
+echo -e "\nclean up the outbound directory"
+rm -f $handback_file $tagfile $handback_asc_file
+
+echo -e "\nremove old files from archive directory" 
+	cd $outbound_archive
+	find $handback_file.* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+echo -e "\nEnd encrypt and push Visa Business Card file to BofA"

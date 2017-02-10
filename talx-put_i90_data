@@ -1,0 +1,48 @@
+#!/bin/bash
+
+program=`basename $0`
+
+. $HOME/bin/talx_environment
+
+export airline=$1
+
+#make sure airline parm was passed as first arg
+ if [ -z $airline ]; then
+echo -e "\n Missing airline parm.  Proper syntax
+ is put_talx_i90_data XX, where airline
+ is equal to as or qx."
+ exit 4
+ fi
+
+case "$airline" in
+ as)
+	export basename=agbn0086
+	export datafile=${basename}.txt 
+	export pgpfile=11971_i9prod_$i90datestamp.i9
+	export hcmdir=$ashcmdir
+	export tagfile=$hcmdir/${basename}.tag
+
+
+mainproc
+
+echo -e "\nTalx Service Plan data transfer for Alaska Air complete"
+
+;;
+
+ qx)
+	basename=agbn0086
+ 	export datafile=${basename}.txt 
+      	export pgpfile=13995_i9prod_$i90datestamp.i9
+      	export hcmdir=$qxhcmdir
+      	export tagfile=$hcmdir/${basename}.tag
+mainproc
+
+
+
+echo -e "\nTalx Service Plan data transfer for Horizon Air complete"
+
+;;
+
+esac
+
+#Mail -s "Talx data file sent to $ftp_host at `date`" $talx_mailto </dev/null

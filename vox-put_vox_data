@@ -1,0 +1,62 @@
+#!/bin/bash
+
+#this is a stand alone script
+
+export sftp_host=aag@ftp2.voxmobile.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_out=/home/hcmprod/outbound/vox
+export datestamp=`/bin/date +%m%d%Y%H%M%S`
+export out_file=AlaskaAirGroup_Userfile.csv
+export tag_file=AlaskaAirGroup_Userfile.tag
+export alert_recipient=joanne.gies@alaskaair.com
+export errors_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\nprocessing $whoami $out_file"
+
+cp $hcmdir_out/$out_file $outbound_dir
+
+securezip $out_file outbound
+
+echo -e "\nput $out_file to $sftp_host"
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd incoming	
+         put $out_file
+        dir
+	bye
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $out_file to vox failed, contact SysOps"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+echo -e "\nRemove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+data_records=`wc -l $out_file | awk '{print $1}'`
+echo -e "\n$datestamp: there were $data_records records sent to vox" 
+
+echo -e "\nRemove temp files"
+rm -fv $out_file $hcmdir_out/$out_file
+rm -fv $hcmdir_out/$tag_file

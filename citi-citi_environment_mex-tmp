@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# Set up the Citi data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/citi_environment"
+
+export PGPPASS=seavvdmzftp
+export remote_sig="GXS_PROD"
+#export remote_sig=GXS_CTE
+#export sftp_host=ALASKACTESFTP@csftp-citi.ms.gxs.com
+export sftp_host=ALASKAPRODSFTP@psftp-citi.ms.gxs.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export DT=`date '+%c'`
+export datestamp=`/bin/date '+%b%d%Y.%H%M'`
+export outdate=`/bin/date '+%Y%m%d'`
+export dom=alaskaair.com
+#export infor_to="joanne.gies@$dom,steve.mcintyre@$dom"
+export infor_to="accountspayable@$dom,Treasury@$dom,joanne.gies@$dom"
+export logfile=$HOME/transfer_log
+export FileAge=40
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+cp $findir/$basename*.txt $outbound_dir
+
+export data_file=`ls -1 $basename*`
+export tag_file=`echo $data_file | sed -e 's/.txt/.tag/'`
+export pgp_file=`echo $data_file | sed -e 's/.txt//'`
+
+securezip $data_file outbound
+
+echo -e "\nencrypting file $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r "$remote_sig" --output $pgp_file --encrypt $data_file >pgp_transcript.$$ 2>&1	
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $pgp_file ]; then
+	echo "Alaska Citi file $data_file encryption failure"
+	cat pgp_transcript.$$
+	rm -f pgp_transcript.$$
+	exit 8
+	fi
+
+cat pgp_transcript.$$
+rm -fv pgp_transcript.$$
+
+echo -e "\nput $pgp_file to $sftp_host"
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd PROD
+    	put $pgp_file $pgp_file
+	ls -l
+	quit
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $citi_pgp_file to citi"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+echo -e "\nremoving temporary files"
+rm -fv $data_file $tag_file $findir/$tag_file $findir/$data_file
+rm -fv $data_file $pgp_file
+
+archive_clean $outbound_archive $basename $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+pgpfile=`ls -1 $basename*` 
+
+localfile=`echo $pgpfile | sed -e 's/./.txt/'`
+
+echo -e "\ndecrypting file $pgpfile"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $localfile --decrypt $pgpfile >gpg_transcript.$$ 2>&1
+
+result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nCiti data file encryption failure, contact Systems Management Services.\n"
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -fv gpg_transcript.$$
+
+echo "Send mail notification to $infor_to"
+Mail -s "CITI ACH - $Citiirlne - File confirmation at `date`" $infor_to < $localfile
+
+echo -e "\nmove $local_pgp_file to archive directory and timestamp"
+mv $pgpfile $inbound_archive
+
+echo "remove temp files"
+rm -fv $localfile
+
+archive_clean $inbound_archive $basename $FileAge
+
+}

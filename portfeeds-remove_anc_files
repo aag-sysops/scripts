@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd $HOME/anc
+
+rm -f F_ASANC*
+
+exit

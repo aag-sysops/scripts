@@ -1,0 +1,39 @@
+#!/bin/bash
+
+. $HOME/bin/iceland_environment
+program=`basename $0`
+
+direction=$1
+
+#make sure direction parm was passed in as first arg
+
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_iceland_data direction where
+        direction equals in or out\n"
+        exit 4
+        fi
+
+case "$direction" in
+
+        in)
+
+export file_name=icelandair.txt
+
+echo -e "\nBegin processing for `whoami` inbound processing"
+inbound
+echo -e "\nEnd of `whoami` inbound processing"
+
+        ;;
+
+        out)
+
+export file_name=alaskaair.txt
+
+echo -e "\nBegin processing for `whoami` outbound processing"
+outbound
+echo -e "\nEnd of `whoami` outbound processing"
+
+        ;;
+
+esac

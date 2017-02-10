@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Process APG data for Outbound.
+
+# Set the environment variables
+. $HOME/bin/apg_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_apg_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	IN)
+
+inproc
+
+       ;;
+
+esac
+
+
+
+
+
+
+

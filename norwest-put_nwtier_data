@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# FTP inbound Northwest Tier
+. $HOME/bin/norwest_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+echo -e "\nftp file from ASPRODFTP"
+	ftp -v asprodftp <<PUTDATA >ftp_results.$$
+	cd MPPROD/WORLDSPAN
+	get $tier_file
+	dir
+	quit  
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP of NW Tier files failed."
+	echo "Contact Production Services"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+echo -e "\nencrypt file $tier_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r $pgp_remote_signature --output $tier_gpg_file --encrypt $tier_file
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\ntier_file encryption failure, assign ticket to Prod. Svcs.\n"
+	exit 8
+	fi
+
+ftp_vendor $ftp_host $tier_gpg_file $tier_gpg_file bin
+
+securezip $tier_file outbound
+
+archive_clean $outbound_archive $tier_file $FileAge
+
+count=`wc -l $tier_file | awk '{print $1}'`
+echo "$count records were sent to Northwest Air"
+
+echo -e "\nremove temp files"
+rm -f $tier_file $tier_gpg_file $tagfile 
+
+ftp_delete $ftp_local_host $tier_file "cd MPPROD/Worldspan"

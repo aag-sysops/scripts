@@ -1,0 +1,152 @@
+#!/bin/bash
+
+export PATH=/usr/local/TDAccess3.2:$PATH
+export RUNTIMEPATH=/usr/local/TDAccess3.2
+export LD_LIBRARY_PATH=/usr/local/TDAccess3.2
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export target_ftpdir="Rev_Acctg/pdifiles/inbound"
+export target_archdir="Rev_Acctg/pdifiles/Archive"
+export base_pref=sabre_as_pdi
+export dcmppref=MHVPH.MVP047.E02
+export airfacts_dir=/ftphome/airfacts/outbound
+export maildom=alaskaair.com
+export tagfile_sabre=sabrefile.tag
+export FileAge=45
+
+# Dates
+# `date +%y%m%d%H%M%S`      #Date Format 131216202227
+# `date +%b%d%Y.%H%M`       #Date Format: Dec162013.2021
+# `date '+%Y%m%d_%H%M%S'`   #Date Format: 20131216_202247
+export xmitdate=`date '+%Y%m%d_%H%M%S'`
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+
+. /opt/local/ops_scripts/function_lib
+
+export mode=$1
+echo "Script Parm(1) Mode Value: $mode"
+
+if [ -z $mode ]; then
+  export ftp_host=asprodftp
+  export mail_list="RevAcctg.PNR.System.Msg@alaskaair.com"
+
+else
+  export ftp_host=ftp${mode}
+  export mail_list="revacctg_pnr.system.msg.test@$maildom"
+fi
+
+################################################################################
+function mainproc {
+    cd $inbound_dir
+
+    echo -e "\nContents of directory ${inbound_dir}"
+    ls -l
+
+    echo -e "\nCmp files - Sabre Compressed Files detected in directory ${inbound_dir}"
+    FILECOUNT=`ls -l $base_pref*.cmp | wc -l`
+
+    if [[ $FILECOUNT -gt 0 ]]; then
+      echo -e "Total cmp files found $FILECOUNT"
+      ls -lh $base_pref*.cmp
+
+	echo -e "\nProcessing date: ${xmitdate}" > $indir/$tagfile
+
+      ls -1 $base_pref*.cmp | while read FILE1
+          do
+	    size_check $FILE1
+	    export file_tag=$FILE1.done
+
+#	    echo -e "\ncopy $FILE1 to $airfacts_dir"
+#           cp -p $FILE1 $airfacts_dir
+#           errorchk $? "copy $FILE1 to $airfacts_dir"
+
+	    echo -e "\ncreate $file_tag"
+            touch $file_tag
+            errorchk $? "create $file_tag"
+
+	echo -e "\nProcessing file $FILE1"
+	echo -e "\nProcessing file $FILE1" >> $indir/$tagfile
+
+            echo -e "\nDecompress file $FILE1"
+            export infile=`echo $FILE1 | sed -e 's/cmp/pdi/'`
+	    export tagfile=`echo $FILE1 | sed -e 's/cmp/tag/'`
+            echo $FILE1 | decompx
+            errorchk $? "decompress file $FILE1"
+	    
+	    echo -e "Contents of decompress log:"
+  	    cat decomp.log
+
+            export dcmpfile=`ls -1 $dcmppref*`
+            export begdt=`grep DT= $dcmpfile | grep "ALASKA AIRLINES" | cut -c6-13 | head -1 | sed -e 's/\///g'`
+            export enddt=`grep DT= $dcmpfile | grep "ALASKA AIRLINES" | cut -c6-13 | tail -1 | sed -e 's/\///g'`
+  
+            if [[ -z "${begdt}" || -z "${enddt}" ]]; then
+                errorchk 5 "Unable to determine date range by parsing file $dcmpfile"
+            else
+                echo "......Sabre $FILE1 processed" >> $tagfile
+                echo "Date range is ${begdt}-${enddt}" >> $tagfile
+                ls -lh $FILE1 >> $tagfile
+                wc -l $FILE1 >> $tagfile
+            fi
+  
+            echo -e "\nrename $dcmpfile to $infile"
+	    touch -r $FILE1 $dcmpfile
+            mv -fv $dcmpfile $infile
+            errorchk $? "rename $dcmpfile to $infile"
+
+           export zipfile=$infile.zip
+           echo -e "\nzip $infile file into $zipfile"
+           zip $zipfile $infile
+	   touch -r $FILE1 $zipfile
+           errorchk $? "zip file $infile"
+
+          echo -e "\nStart FTP.  Connecting to $ftp_host to transfer file $zipfile"
+          echo -e "\nFTP Target Directory:  ${target_ftpdir}"
+          ftp_file $ftp_host $zipfile $zipfile bin "cd ${target_ftpdir}"
+          ftp_file $ftp_host $tagfile $tagfile "cd ${target_ftpdir}"
+	  ftp_file $ftp_host $zipfile $zipfile "cd ${target_archdir}"
+
+	  echo -e "\nmove $FILE1 to $inbound_archive"
+          mv -fv $FILE1 $inbound_archive
+          errorchk $? "move $FILE1 to $inbound_archive"
+
+          rm -fv $infile $tagfile decomp.log $zipfile 
+
+          done
+
+          rm -fv $tagfile_sabre
+
+    else
+      echo -e "\n No cmp files detected"
+      errorchk 5 "No cmp files detected"
+    fi
+
+    echo -e "\nContents of Archive directory ${inbound_archive}"
+    ls -lh ${inbound_archive}
+    
+    echo -e "\nCleanup Archive directory ${inbound_archive}.  Remove files older than $FileAge"
+    archive_clean $inbound_archive $base_pref $FileAge
+
+    mail -s $UNISON_JOB $mail_list < $UNISON_STDLIST
+
+}
+
+################################################################################
+# Mainline
+################################################################################
+
+echo -e "\nbeginning processing of incoming pdi files at `date`"
+
+echo -e "Trigger Tag information"
+ls -l $tagfile_sabre
+echo -e "Trigger Tag Contents"
+cat $tagfile_sabre
+
+ftp_check $ftp_host
+
+echo -e "\n Call mainproc subroutine to process files"
+mainproc  #Call Subroutine
+echo -e "\nend processing of incoming pdi files at `date`"
+

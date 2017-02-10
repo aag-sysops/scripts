@@ -1,0 +1,139 @@
+#!/bin/bash
+
+export local_host=asprodftp
+export remote_host=ftp.customerville.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export vendor_out_dir=flightschedule
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=15
+export ops=/opt/local/ops_scripts
+export dom=alaskaair.com
+export mail_to="dean.liebrich@$dom"
+
+. /opt/local/ops_scripts/function_lib
+
+export direction=$1
+
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_airfacts_data direction
+        where direction equals in or out\n"
+        exit 4
+        fi
+
+function ftpproc {
+
+        ftp -v -i $local_host <<PUT >ftp_results.$$ 2>&1
+        cd $lz
+        mput ${filepref}*
+        quit
+PUT
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+echo -e "\nFTP of Customerville files to $local_host failed\n"
+cat ftp_results.$$
+rm -v ftp_results.$$
+exit 4
+        fi
+
+cat ftp_results.$$
+rm -v ftp_results.$$
+
+}
+
+function inproc {
+
+echo -e "\nBegin processing for incoming Customerville files at `date`"
+ftp_check $local_host
+
+cd $inbound_dir
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+ls -1 $filepref* | while read FILE1
+	do
+size_check $FILE1
+securezip $FILE1 inbound
+	done
+
+ftpproc
+
+echo -e "\nremove incoming Customerville files"
+rm -v $filepref*
+
+archive_clean $inbound_archive $filepref $FileAge
+
+}
+
+function outproc {
+
+cd $outbound_dir
+
+ftp_check $local_host
+ftp_vendor_chk $remote_host
+
+echo -e "\nFTP get $filepref file from $local_host\n"
+        ftp -v -i $local_host <<DATA >ftp_results.$$ 2>&1
+	cd $lz
+	mget ${filepref}*.csv
+        quit
+DATA
+
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nFTP get of $filepref from $local_host failed\n"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+        exit 8
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+export data_file=`ls -1 ${filepref}*.csv`
+echo -e "\nprocessing outgoing flight schedule file $data_file\n"
+
+securezip $data_file outbound
+
+ftp_file $remote_host $data_file $data_file "cd $vendor_out_dir"
+
+ftp_rename $local_host $data_file processed_${data_file} "cd $lz"
+
+archive_clean $outbound_archive $filepref $FileAge
+
+echo -e "\nremove file $data_file"
+rm -fv $data_file
+
+}
+
+case "$direction" in
+
+        in)
+export filepref=AlaskaListens
+export lz=bi/customer/survey
+inproc
+       ;;
+
+	out)
+export filepref=FlightSchedule
+export lz=bi/customer/survey/outbound
+outproc
+	;;
+
+*)
+
+echo -e "\nargument is missing or invalid,
+need to pass one of the following arguments:
+in or out"
+
+exit 4
+        ;;
+
+esac

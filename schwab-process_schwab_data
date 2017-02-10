@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -x
+
+# Determine file direction for schwab then process
+# Set the environment variables
+
+. $HOME/bin/schwab_environment
+
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_schwab_data direction
+	where direction equals in or outEV or OutEmpC\n"
+	exit 4
+	fi
+
+case "$direction" in 
+	in)
+
+export pgp_infile=ALK_Change_WD.txt.pgp
+export local_file=AGBN0012.txt
+export local_tagfile=AGBN0012.tag
+
+echo -e "\nbegin processing for `whoami` Input file"		
+inproc 
+echo -e "\nend processing for `whoami` Input file"
+	;;
+
+	inAon)
+
+export pgp_infile=SCHWABSTOCK.TXT.pgp
+export local_file=SCHWABSTOCK.TXT
+export local_tagfile=SCHWABSTOCK.TAG
+inAon
+
+echo -e "\nend processing for `whoami` $EvPerson File"
+       ;;
+
+
+	outEV)
+
+export data_file_pref=EVperson
+getname
+export outfile=EVPerson_.txt.pgp
+outproc 
+
+echo -e "\nend processing for `whoami` $EvPerson File"
+       ;;
+
+        outEmpC)
+
+export data_file_pref=EVContribActivity
+getname
+outfile=${data_file}.pgp
+outproc
+
+echo -e "\nend processing for `whoami` $EmpC File"
+      ;;
+esac

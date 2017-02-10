@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Process Marriott data for Inbound file.
+
+# Set the environment variables
+. $HOME/bin/marriott_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_arc_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	IN)
+
+inproc
+
+	;;
+
+esac

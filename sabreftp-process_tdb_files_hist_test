@@ -1,0 +1,114 @@
+#!/bin/bash
+
+#export local_host=asprodftp
+export local_host=ftpqa
+export RUNTIMEPATH=/usr/local/TDAccess2.2
+export LD_LIBRARY_PATH=/usr/local/TDAccess2.2
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=/ftphome/trax/travel_data_batch
+export sourcedir=/ftphome/trax/travel_data_batch/batchtemp
+export lz=TravelDataBatch
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=7
+export ops=/opt/local/ops_scripts
+export dom=alaskaair.com
+export mail_to="dean.liebrich@$dom,judy.kullman@$dom"
+
+. /opt/local/ops_scripts/function_lib
+
+function ftpproc {
+
+	ftp -v -i $local_host <<PUT >ftp_results.$$
+	cd $lz
+	mput *.dat
+PUT
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+echo -e "\nFTP .dat files to $local_host failed"
+	cat ftp_results.$$
+	rm -v ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+}
+
+function batchproc {
+
+cd $inbound_dir
+
+mv -v $sourcedir/$file_pref* $inbound_dir
+
+echo -e "\nBegin processing for incoming TDB files from Sabre at `date`"
+ftp_check $local_host
+
+cd $inbound_dir
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+export encfile=`ls -1 $file_pref*.enc`
+export zipfile=`echo $encfile | sed -e 's/enc/zip/'`
+export donefile=`echo $encfile | sed -e 's/enc/done/'`
+export donefile1=`echo $encfile | sed -e 's/enc/done.pnr/'`
+export donefile2=`echo $encfile | sed -e 's/enc/done.vcr/'`
+
+echo -e "\nprocessing encrypted TDB batch file $encfile"
+
+echo -e "\ndecompress $encfile at `date`"
+echo $encfile | decompx $zipfile 
+errorchk $? "decompress $encfile"
+
+echo -e "\nMove $encfile to $inbound_archive at `date`"
+mv -v $encfile $inbound_archive
+errorchk $? "Move $encfile to $inbound_archive"
+
+echo -e "\nunzip $zipfile at `date`"
+unzip $zipfile
+errorchk $? "unzip $zipfile"
+
+echo -e "remove $zipfile at `date`"
+rm -v $zipfile
+errorchk $? "remove $zipfile"
+
+echo -e "\nremove potential credit card data at `date`"
+$HOME/bin/remove_potential_cc_data.ksh 
+errorchk $? "remove potential credit card data"
+
+echo -e "\nFTP the following TDB files to $local_host at `date`"
+ls -1 *.dat
+ftpproc
+
+echo "The following TDB files have placed on $local_host:" > mail_msg
+ls -1 *.dat >> mail_msg
+Mail -s "TDB files" $mail_to < mail_msg
+rm -v mail_msg
+
+echo -e "\nremove .dat files at `date`"
+rm -v *.dat
+errorchk $? "remove .dat files"
+
+ftp_file $local_host $donefile $donefile1 "cd $lz"
+ftp_file $local_host $donefile $donefile2 "cd $lz"
+
+echo -e "\nmove $donefile to $inbound_archive at `date`"
+mv -v $donefile $inbound_archive
+errorchk $? "move $donefile to $inbound_archive"
+
+# need to create archive clean step
+
+echo -e"\nProcessing of incoming TDB files complete at `date`"
+
+}
+
+export file_pref=as_batch_20140304_5_special
+batchproc
+
+#export file_pref=as_batch_20140304_6_special
+#batchproc

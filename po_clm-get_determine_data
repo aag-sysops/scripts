@@ -1,0 +1,109 @@
+#!/bin/bash
+
+#this is a stand alone script
+
+export PGPPASS=seavvdmzftp
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export sftp_host=alaskaair@clm-integration.selectica.com
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export findir_out=/home/finprod/outbound/po_clm
+export datestamp=`/bin/date +%m%d%Y%H%M%S`
+export alert_recipient=joanne.gies@alaskaair.com
+export info_to="joanne.gies@alaskaair.com"
+export errors_to="joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+echo -e "\nprocessing `whoami` file in"
+
+cd  $inbound_dir
+
+echo -e "\nget SLTCAlaska*.gpg to $sftp_host"
+	sftp -v -o port=10022 $sftp_host <<GETDATA >ftp_results.$$
+        cd outgoing/extract
+	mget SLTCAlaska*.gpg
+        dir
+	bye
+GETDATA
+	
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP get of weekly files attachement and weekly file from po_clm failed, contact SysOps"
+	cat ftp_results.$$
+	rm -v ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -v ftp_results.$$
+
+ls -1 SLTCAlaska* | while read FILE1 
+	do
+	zipfile=`echo $FILE1 | sed -e 's/.gpg//'`
+
+echo -e "\nThis is zipfile $zipfile"
+echo -e "\nThis is FILE1 $FILE1"
+
+echo -e "\ndecrypting file $FILE1"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --output $zipfile --decrypt $FILE1 >gpg_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nDetermine data file encryption failure, contact Systesm Operations\n"
+	cat gpg_transcript.$$
+	rm -fv gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -fv gpg_transcript.$$
+
+
+
+echo -e "\nFTP $zipfile to seavvfile1/ftpprod/clm"
+
+ftp_file $ftp_local_host $zipfile $zipfile "cd CLM" bin
+
+securezip $zipfile inbound
+
+echo -e "\nThis is FILE1 $FILE1" 
+echo -e "\nThis is zipfile $zipfile" 
+
+      done
+
+echo -e "\ndelete SLT files on $sftp_host"
+	sftp -v -o port=10022 $sftp_host <<GETDATA >ftp_results.$$
+        cd outgoing/extract
+	rm SLTCAlaska*.gpg
+        del SLTAlaska*.gpg
+	bye
+GETDATA
+	
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP delete of weekly files attachement and weekly file from po_clm failed, contact SysOps"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+rm $FILE1
+rm $zipfile
+rm SLT*.*
+
+
+
+archive_clean $inbound_archive SLTCAlaska* $FileAge

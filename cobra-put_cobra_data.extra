@@ -1,0 +1,59 @@
+#!/bin/bash
+
+program=`basename $0`
+
+. $HOME/bin/cobra_environment
+
+export airline=$1
+
+#make sure airline parm was passed as first arg
+	if [ -z $airline ]; then
+echo -e "\n Missing airline parm.  Proper syntax
+is put_cobra_new_data airline, where airline
+is equal to as or qx."
+	exit 4
+	fi
+
+case "$airline" in
+ as)
+	export basename=ASA_OE_Adds
+        export datafile=${basename}.txt  
+        export pgpfile=${basename}.$datestamp
+        export hcmdir=$ashcmdir
+        export tagfile=$hcmdir/${basename}.tag
+cobraproc
+
+	export basename=ASA_OE_Drops
+        export datafile=${basename}.txt 
+        export hcmdir=$ashcmdir 
+        export pgpfile=${basename}.$datestamp
+        export tagfile=$hcmdir/${basename}.tag
+cobraproc
+
+echo -e "\nCobra Service Plan data transfer for Alaska Air complete"
+
+;;
+
+ qx)
+
+	export basename=QXA_OE_Drops
+       	export datafile=${basename}.txt
+        export hcmdir=$qxhcmdir
+       	export pgpfile=${basename}.$datestamp
+       	export tagfile=$hcmdir/${basename}.tag 
+cobraproc
+
+	export basename=QXA_OE_Adds
+       	export datafile=${basename}.txt
+        export hcmdir=$qxhcmdir
+       	export pgpfile=${basename}.$datestamp
+       	export tagfile=$hcmdir/${basename}.tag 
+cobraproc
+
+echo -e "\nCobra Service Plan data transfer for Horizon Air complete"
+
+;;
+
+esac
+
+Mail -s "CMS TEST data files sent to $ftp_host at `date`" $cobra_mailto </dev/null

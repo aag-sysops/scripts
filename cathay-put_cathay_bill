@@ -1,0 +1,77 @@
+#!/bin/bash
+
+. $HOME/bin/cathay_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+#--------------------------------------------------------------------------
+# This script goes out to seavvfile1\ftpprod\mplan\outbound and pulls in a file to place on the Linux server.
+# From the Linux server it is FTP'd to Cathay Pacific. File is deleted from SEAVVFILE1 once it is successfully sent.
+#--------------------------------------------------------------------------
+
+cd $outbound_dir
+
+#get the file
+echo -e "\nget $data file from asprodftp" 
+	ftp -v asprodftp <<GETDATA >ftp_results.$$
+	cd "mpprod\Outbound"
+	get $cxbill_file
+	bye
+GETDATA
+
+result=$?
+
+if [ $result -ne 0 ]; then
+echo "ftp get of $cxbill_file failed"
+cat ftp_results.$$
+exit 4 
+fi
+
+rm -f ftp_results.$$
+
+securezip $cxbill_file outbound
+
+echo -e "\nput $cxbill_file to $sftp_host"
+	sftp $sftp_host <<PUTDATA >ftp_results.$$
+        cd from-AS
+	put $cxbill_file $cxbill_file
+        dir
+	bye
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $solar_file to Cathay failed, contact EPS"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+count_records=`wc -l $cxbill_file | awk '{print $1}'`
+echo -e "\n$count_records records sent to Cathay at $sftp_host"
+
+echo -e "\nmove $data file on asprodftp" 
+	ftp -v asprodftp <<DELDATA >ftp_results.$$
+	cd "mpprod\outbound"
+        del $cxbill_file
+	bye
+DELDATA
+
+ftp_delete $ftp_local_host $cxbill_file "cd mpprod/outbound"
+
+echo -e "\nremove archived files older than $FileAge days"
+find $outbound_archive/* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+echo -e "\nclean up outbound directory"
+rm -f $cxbill_file 
+
+#end of script

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="narnia.epsilon.com"
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export conv_temp_file=as_convmail.tmp
+export conv_file=as_convmail
+export tagfile=as_massmail.tag
+export tagconv=convmail.tag
+export conv_file_pgp=${conv_file}.pgp
+export alert_recipient=dean.liebrich@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export epsilon_mailto="joanne.gies@alaskaair.com"
+export errors_to="joanne.gies.liebrich@alaskaair.com"
+export FileAge=10
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+cd $outbound_dir
+
+# Is there a previous massmail file in outbound dir?
+# If so, datestamp and send email notification to EPS 
+	if [ -s $data_file_pgp ]; then
+	mv $data_file_pgp $outbound_archive/$data_file_pgp.$datestamp
+	#echo "$data_file_pgp left in outbound directory" | Mail -s "Epsilon outbound" $errors_to
+	fi
+
+record_count=`wc -l $data_temp_file | awk '{print $1}'`
+MSG="$data_file record count is $record_count"
+echo -e "\n$MSG"
+
+echo -e "\nmake record length 373 for all records"
+$HOME/bin/373.pl $data_temp_file >$data_file
+
+result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e  "\nchange record length failed, contact EPS"
+	exit 4
+	fi
+
+echo -e "\npgp encrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r $pgp_remote_signature --output $data_file_pgp --encrypt $data_file > pgp.transcript 2>&1
+
+	result=$?	
+
+	if [ $result -ne 0 ]; then
+	echo -e "\n$data_file encryption failure, contact EPS."
+	cat  pgp.transcript
+	rm -fv pgp.transcript
+  	exit 8
+	fi
+
+rm -fv pgp.transcript
+
+securezip $data_file outbound
+
+#echo $MSG | Mail -s "Alaska Air Massmail file" $epsilon_mailto
+
+archive_clean $outbound_archive $data_file $FileAge
+
+echo -e "\nremove temp files"
+rm -fv $data_file $data_temp_file $tagfile
+
+}

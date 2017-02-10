@@ -1,0 +1,27 @@
+#!/bin/bash
+
+. $HOME/bin/sabreftp_environment
+program=`basename $0`
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: put_sabreftp_data direction
+	where direction equals OUT or OUT1\n"
+	exit 4
+	fi
+
+case "$direction" in 
+	IN)
+
+	
+echo -e "\nBegin processing for AS/QX Sabre Accounts file"
+inproc
+echo -e "\nProcessing for AS/QX Sabre Accounts file complete"
+
+	;;
+
+esac
+
+#end of script

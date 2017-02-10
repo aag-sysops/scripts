@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# Set up the laquinta data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/laquinta_environment"
+
+export PGPPASS=seavvdmzftp
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp=`/bin/date +%Y%m%d`
+export nofiledate=`/bin/date "+%A, %D"`
+export local_file=LQLAQUINTAPIT.txt
+export outfile_prefix=LQLAQUINTAPIT
+export mail_to="jcooper@epsilon.com,laquintahd@epsilon.com"
+FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+data_file=`ls -1 AWD_LAQ_ALASKA*.txt`
+echo -e "\nBegin processing file $data_file for `whoami`"
+
+# rename local file for SOLAR conv (see if we can get Vendor to put file as Solar name)
+mv $data_file $local_file
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file $local_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+
+# Is there a previous handback file in outbound dir?
+# If so, datestamp and send email notification to EPS 
+	if [ -s $out_file ]; then
+	mv $out_file $out_file.$datestamp
+	fi
+
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+securezip $solar_file outbound
+
+cp $solar_file $out_file
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "remove local files in outbound"
+rm -f file $solar_file pgp_transcript.$$
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+
+echo -e "\nemail to e-rewards that the handback file is ready, please delete after pickup"
+Mail -s "The LaQuinta Hotels handback file is now on our server, please delete after picking up" $mail_to </dev/null
+
+}

@@ -1,0 +1,53 @@
+#!/bin/bash
+ 
+# Set up the SabrePNR data transfer environment
+# This is stand alone script
+
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export RUNTIMEPATH=/usr/local/TDAccess2.2
+export LD_LIBRARY_PATH=/usr/local/TDAccess2.2
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="joanne.gies@alaskaair.com"
+export basename=sabre_pdi_cd_as
+export FileAge=2
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+ftp_check $ftp_local_host
+
+ls -1 $basename*.cmp | while read FILE1
+	do
+
+size_check $FILE1
+export isoname=`ls -1 $FILE1 | sed -e 's/cmp/iso/'`
+
+echo -e "\ndecompress file $FILE1"
+echo $FILE1 | decompx DIRNAME
+        
+	result=$?
+        
+	if [ $result -ne 0 ]; then
+echo -e "\ndecompress failed, please figure out why\n"
+	exit 4
+	fi
+
+mkisofs -o $isoname CDimage
+
+cd $inbound_dir
+ftp_file $ftp_local_host $isoname $isoname bin "cd rev_acctg/Sabre_pnr"
+
+mv -v $FILE1 $inbound_archive
+
+rm -rf CDimage decomp.log
+
+	done
+
+archive_clean $inbound_archive $basename $FileAge

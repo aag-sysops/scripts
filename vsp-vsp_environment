@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Set up the Vison Service Plan data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="VSP Enterprise"
+export ftp_host=ftp.vsp.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export hcmdir=/home/hcmprod/outbound/vsp
+export alert_recipient=dean.liebrich@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export debug_to="dean.liebrich@alaskaair.com"
+export info_to="dean.liebrich@alaskaair.com"
+export errors_to="eps@alaskaair.com"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+export FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function vspproc {
+
+cd $outbound_dir
+
+	if [ -f lockfile ]; then
+	echo -e "\n	lockfle detected in `pwd`, check
+	for problems with previous VSP run cycles.  Lockfile
+	must be removed before restarting."
+	echo -e "\ncontents of `pwd`:"
+	ls -l 
+	exit 8
+	fi
+
+touch lockfile
+
+echo -e "\nget $data_file from $hcmdir"
+cp $hcmdir/$data_file $outbound_dir/$vsp_file
+
+	result=$?
+	
+	if [ $result -ne 0 ]; then
+	echo -e "\ncopy of $data_file to $outbound_dir failed\n"
+	echo "contents of $hcmdir:"
+	ls -l $hcmdir
+        exit 4
+        fi
+
+echo -e "\nencrypt outgoing file $vsp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --sign -r "$pgp_remote_signature" --output $pgp_file --encrypt $vsp_file >pgp_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+echo -e "\n$airline VSP encryption failure, contact EPS\n"
+	cat pgp_transcript.$$
+	exit 8
+	fi
+
+rm -f pgp_transcript.$$
+
+ftp_vendor $ftp_host $pgp_file $pgp_file "cd /pgp"
+
+securezip $vsp_file outbound
+
+echo -e "\nclean up inbound directory"
+rm -f lockfile $vsp_file $tagfile $pgp_file ftp_results.$$ $hcmdir/$data_file
+
+archive_clean $outbound_archive $vsp_file $FileAge
+
+}

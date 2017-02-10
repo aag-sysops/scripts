@@ -1,0 +1,175 @@
+#!/bin/bash
+
+#This script is for Bank of America TrueUp open file and the BOA closed file.
+
+#Job names are: MPBOACLOSED_GET, MPBOACLOSED_HB_PUT
+
+set -x
+export pgppass=seavvdmzftp
+export sftp_host=jgalaska@b2b22.bankofamerica.com
+#export sftp_host=jgalaska@b2b02u.bankofamerica.com
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp1=`/bin/date +%b%d%Y`
+export indate=`date +%Y%m%d%H%M`
+export outdate=`date +%y%m%d`
+export info_to="joanne.gies@alaskaair.com"
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+direction=$1
+#make sure direction parm was passed in as first arg
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_boaaccrual_data direction where
+        direction equals accr_in or accr_out\n"
+        exit 4
+        fi
+
+function outproc {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+
+
+echo -e "\nget file on $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "mpprod/BankCardUpdate/Handback"
+	dir
+      	mget $remote_file
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+securezip $remote_file outbound
+
+echo $remote_file
+
+
+echo -e "\nsftp data files to $sftp_host"
+	sftp -v $sftp_host <<PUT >ftp_results.$$
+	cd incoming
+       	put $remote_file
+        dir
+	bye
+PUT
+errorchk $? "ftp data files to $sftp_host"
+
+ftp_delete $ftp_local_host $remote_file "cd mpprod/bankcardupdate/handback"
+
+echo -e "\nremove $remote file from $outbound_dir"
+rm -fv $remote_file 
+errorchk $? "remove $remote_file from $outbound_dir"
+
+archive_clean $outbound_archive $remote_file $FileAge
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+ftp_check $ftp_local_host
+
+echo -e "\nConnect to BOA and get $basename file"
+	sftp -v $sftp_host <<PUT >>ftp_results.$$
+	cd outgoing
+	get $basename
+        dir
+	quit
+PUT
+	result=$?
+
+     	if [ $result -ne 0 ]; then
+	echo -e "\nget $basename file from $sftp_host failed"
+	echo "contents of outgoing"
+	ls -l outgoing
+	exit 4
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+local_file=`ls -1 $basename`
+
+mv -v $local_file $data_file
+
+echo -e "\nprocessing incoming file $data_file"
+securezip $date_file inbound
+
+ftp_file $ftp_local_host $data_file $data_file "cd MPPROD/BankCardUpdate/Input"
+
+echo -e "remove file from BOA server"
+
+echo -e "\nConnect to BOA and delete $basename file"
+	sftp -v $sftp_host <<PUT >>ftp_results.$$
+	cd outgoing
+	rm $local_file
+        dir
+	quit
+PUT
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\ndeleted $local_file from $sftp_host failed"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+ 	exit 4
+      	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+#echo -e "send confirmation email to BOA"
+#echo -e "$remote_data_in file has been received by Alaska Airlines.
+#Thank You." | mutt -s "$remote_data_in Received $datestamp" $info_to
+
+rm -fv $local_file 
+errorchk $? "remove temp files from $inbound_dir"
+
+archive_clean $inbound_archive $basename $FileAge
+
+}
+
+case "$direction" in 
+
+	open_in)
+basename=BOAACCTOPEN*
+export Data_file=BCBANKCARD_CLOSED.txt
+echo -e "\nBegin processing for Accural in file"
+inproc
+echo -e "\nProcessing for BOA Accrual Consumer TSYS file 'in' complete"
+	;;
+
+        open_hb_out)
+export out_file_prefix=xxxxx
+echo -e "\nBegin processing for Accrual handback BOA file"
+outproc
+echo -e "\nProcessing for BOA accrual handback 'out' is complete"
+	;;
+
+	closed_in)
+basename=BOAACCTCLOSE*
+export data_file=BCBANKCARD_CLOSED.txt
+echo -e "\nBegin processing for BOA CLOSE 'get file"
+inproc
+echo -e "\nProcessing for BOA CLOSE 'get'file 'in' complete"
+	;;
+
+	closed_hb_put)
+remote_file=BCBANKCARD_CLOSED_HB.txt
+echo -e "\nBegin processing for BOA CLOSE handback file"
+outproc
+echo -e "\nProcessing for BOA CLOSE handback file is complete"
+	;;
+esac

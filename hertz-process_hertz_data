@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Check for, upload to windows and then archive the hertz data file
+
+# Set environment values
+. $HOME/bin/hertz_environment
+program=`basename $0`
+
+cd $HOME/inbound
+
+
+echo -e "\nfile $remote_file ($records records) received at `date`"
+
+mv $remote_file $local_file
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\nmove $local_file to $inbound_archive/$local_file.$datestamp"
+mv $local_file $inbound_archive/$local_file.$datestamp
+
+echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ $local_file 
+
+archive_clean $inbound_archive $remote_file $FileAge

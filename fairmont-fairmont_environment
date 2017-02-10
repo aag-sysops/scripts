@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# Set up the Fairmont data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/fairmont_environment"
+
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=production.services@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export outfile_prefix=FMFAIRMONTHOTELSPIT
+export local_file=${outfile_prefix}.txt
+export info_to="production.services@alaskaair.com"
+export errors_to="production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export last_file_received=$HOME/last_file_received
+export MAILLST="ftp.partner.alerts@alaskaair.com"
+export mail_to="susan.moritz@frhi.com"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+	if [ ! -s $file_name ]; then
+	MSG="No Fairmont file to process for $nofiledate"
+	echo -e "\n$MSG"
+	echo $MSG | Mail -s "Fairmont" $MAILLST
+	exit 0
+	fi
+
+records=`wc $file_name | awk '{print $2}'`
+
+echo -e "\nFairmont file $file_name ($records records) received at `date`"
+
+# rename local filel for SOLAR conv.
+mv $file_name $local_file
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\nclean up inbound directory"
+rm -f ftp_results.$$ $local_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+# Is there a previous handback file in outbound dir?
+# If so, datestamp and send email notification to Fairmont
+
+	if [ -s $file_name ]; then
+	rm -fv $data_file /ftphome/fairmont/outbound.archive/$data_file.$datestamp
+	fi
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+echo -e "\nrename $solar_file to $file_name"
+mv -v $solar_file $file_name
+
+securezip $file_name outbound
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+archive_clean $outbound_archive $file_name $FileAge
+
+#echo -e "\nemail to fairmont that the handback file is ready"
+#Mail -s "Handback file is now on our server, please delete after picking up $datestamp" $mail_to </dev/null
+
+}

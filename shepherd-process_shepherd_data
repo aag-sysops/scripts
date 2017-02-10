@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Process Shepherd data for PSMC.
+
+# Set the environment variables
+
+. $HOME/bin/shepherd_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_shepherd_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	OUT)
+
+outproc
+
+       ;;
+
+esac
+
+
+
+
+
+

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+export sftp_host=alaskaair@216.127.152.39
+export tag_file=XL.SABRE.PROD.TAG   
+export FileAge=5
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export sentdate=`/bin/date "+%Y%m%d"`
+export mail_to="ysapir@airfacts.com"
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+export data_file=`ls -1 *.XL.SABRE.PROD.TXT`
+echo $data_file
+
+records=`wc $data_file | awk '{print $2}'`
+echo -e "\n$data_file file ($records records) received at `date`"
+
+securezip $data_file outbound
+
+echo -e "\nput $data_file to $sftp_host"
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd incoming
+  	put $data_file $sentdate.$data_file
+	ls -l
+	quit
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $data_file to Airfacts"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+rm $data_file $tag_file
+
+echo -e "\nemail to Airfacts that the XL Sabre file is ready"
+Mail -s "XL sabre file for $sentdate is now on your server" $mail_to </dev/null
+
+archive_clean $outbound_archive *XL.SABRE.PROD.TXT $FileAge
+
+#that's all folks
+

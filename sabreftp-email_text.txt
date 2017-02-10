@@ -1,0 +1,6 @@
+The monthly file which contains all the Sabre accounts used by Alaska Airlines
+and Horizon Air has been received.  The file is located on SEAVVFILE1 in the
+grndops/Sabre/inbound folder.
+
+Do not reply to this email.  If you have questions regarding this process
+contact the Ground Ops development team.

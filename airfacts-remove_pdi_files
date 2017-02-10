@@ -1,0 +1,20 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export file_pref=sabre_as_pdi
+
+cd $outbound_dir
+
+ls -lrt $file_pref*
+
+ls -1 $file_pref*.cmp | while read FILE1
+	do
+export tagfile=$FILE1.done
+
+	if [ ! -s $tagfile ]; then
+	echo -e "\nremoving file $FILE1"
+	rm -v $FILE1
+	fi
+
+	done
+

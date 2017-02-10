@@ -1,0 +1,186 @@
+#!/bin/bash
+
+# ftp jcl to mvs internal reader to post dataset 
+# dependencies for ca7 jobs requiring eds file
+# transfers.
+
+. /opt/local/ops_scripts/function_lib
+
+export job=$1
+export filedate=$2
+export jcl=$HOME/bin/${job}.jcl
+export ftphost=mvs
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export datestamp=`date +%m%d%y.%H%M`
+export dcbparms=""
+export fileage=20
+
+
+function putdsn {
+
+cd $inbound_dir
+
+echo -e "\ncontents of inbound dir:"
+ls -1
+
+dsn_2mvs $ftphost $data_file "'$dsn'" bin
+#ftp_jcl $jcl $ftphost
+
+#echo -e "\ndatestamp tag file(s) and put in archive dir"
+#mv $tagfile $inbound_archive/$tagfile.$datestamp
+
+#echo -e "\nremove previous version from $inbound_archive"
+#rm -f $inbound_archive/$data_file
+
+echo -e "\nmove $data_file to $inbound_archive"
+mv $data_file $inbound_archive
+
+echo -e "\nremove tagfiles older than $fileage days"
+find $inbound_archive/*.tag* -mtime +$fileage -print |
+        while read FILE1
+        do
+        echo "removing file $FILE1"
+        rm -f $FILE1
+        done
+}
+
+case "$job" in
+ 	
+	ffftct63-tst)
+	export tagfile=ffcrt63.tag
+	export data_file=test_receive_ffcrt63_fltdata_sabre.comp
+	export dsn=PROG.RECEIVE.FFCRT63.FLTDATA.SABRE.COMP
+putdsn
+
+	;;
+
+	fffterad-tst)
+        export tagfile=ffcrtera.tag
+	export data_file=test_receive_ffcrtera_fltdata_sabre.comp
+	export dsn=PROG.RECEIVE.FFCRTERA.FLTDATA.SABRE.COMP
+putdsn
+
+        ;;
+
+	ffftfltd-tst)
+	export tagfile=ffrecflt.tag
+#	export data_file=test_receive_ffrecflt_fltdata.comp
+	export data_file=prod_receive_ffrecflt_fltdata_${filedate}.comp
+	export dsn=PROG.RECEIVE.FFRECFLT.FLTDATA.COMP
+putdsn
+
+	;;
+
+	ffftpdid-tst)
+	export tagfile=ffrecpdi.tag
+	export data_file=test_receive_ffrecpdi_pdidata_sabre.comp
+	export dsn=PROG.RECEIVE.FFRECPDI.PDIDATA.SABRE.COMP
+putdsn
+
+	;;
+
+	raftdcn1-tst)
+	export tagfile=rarecdcn_err.tag
+	export data_file=test_ra_dconnect_crs_audit_report.comp
+	export dsn=PROG.RA.DCONNECT.CRS.AUDIT.REPORT.COMP
+tagonly
+
+	;;
+
+	raftdcn2-tst)
+	export tagfile=rarecdcn_aud.tag
+	export data_file=test_ra_dconnect_crs_error_report.comp
+	export dsn=PROG.RA.DCONNECT.CRS.ERROR.REPORT.COMP
+tagonly
+
+	;;
+
+	raftdomd-tst)
+	export tagfile=raveratp_dom.tag
+	export data_file=test_rerecatp_domestic_fares.comp
+	export dsn=PROG.RERECATP.DOMESTIC.FARES.COMP
+tagonly
+
+	;;
+	
+	raftftnd-tst)
+	export tagfile=raveratp_foot.tag
+	export data_file=test_rerecatp_footnote.comp
+	export dsn=PROG.RERECATP.FOOTNOTE.COMP
+tagonly
+
+	;;
+
+	raftintd-tst)
+	export tagfile=raveratp_int.tag
+	export data_file=test_rerecatp_intrntl_fares.comp
+	export dsn=PROG.RERECATP.INTRNTL.FARES.COMP
+tagonly
+
+	;;
+
+	raftjntd-tst)
+	export tagfile=raveratp_jnt.tag
+	export data_file=test_rarecatp_joint_fares.comp
+	export dsn=PROG.RERECATP.JOINT.FARES.COMP
+tagonly
+	
+	;;
+
+	raftxlsd-tst)
+	export tagfile=raxlrecv.tag
+	export data_file=test_ra_xl_sabre_data.comp
+	export dsn=PROG.RA.XL.SABRE.DATA.COMP
+tagonly
+
+	;;
+
+	raftvcrd-tst)
+	export tagfile=rarecvcr.tag
+	export data_file=test_rarecvcr_sabre_et_usage.comp
+	export dsn=PROG.RARECVCR.SABRE.ET.USAGE.COMP
+tagonly
+
+	;;
+
+	srftatcd-tst)
+	export tagfile=srrecatc_atac.tag
+	export data_file=test_sr_amris_receive_atac.comp
+	export dsn=PROG.SR.AMRIS.RECEIVE.ATAC.COMP
+tagonly
+
+	;;
+
+	stftfrdd-tst)
+	export tagfile=strecfrd.tag
+	export data_file=test_sdreceiv_frddata.comp
+	export dsn=PROG.SDRECEIV.FRDDATA.COMP
+tagonly
+
+	;;
+
+	srftps2d-tst)
+	export tagfile=srrecps2.tag
+	export data_file=test_sr_ps2000_receive_data.comp
+	export dsn=PROG.SR.PS2000.RECEIVE.DATA.COMP
+tagonly
+	
+	;;
+
+	srfttc4d-tst)
+	export tagfile=srrecatc_tcn4.tag
+	export data_file=test_sr_amris_receive_tcn4.comp
+	export dsn=PROG.SR.AMRIS.RECEIVE.TCN4.COMP
+tagonly
+
+	;;
+
+	ymftindd-tst)
+	export tagfile=ymsdtfmt.tag
+	export data_file=test_ymreceiv_receive_ylddata.comp
+	export dsn=PROG.YMRECEIV.RECEIVE.YLDDATA.COMP
+tagonly
+
+	;;
+esac

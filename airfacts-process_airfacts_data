@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Process Airfacts data for PSMC Team.
+
+# Set the environment variables
+. $HOME/bin/airfacts_environment
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_airfacts_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+
+	OUT_T1MQ)
+export filename=o1mq
+outproc
+       ;;
+
+	OUT_T2UW)
+export filename=al_o2uw
+outproc
+	;;
+
+	OUT_MP)
+export filepref=MP_Airfacts_Tierlist
+export lz=mpprod/outbound
+export filecnt=2
+mpout
+	;;
+
+	OUT_WAV_PROD)
+export ftp_host=asprodftp
+export filename=waiver2airfacts
+export ext=.txt
+export tagfile=${filename}${ext}.done
+waiverout
+	;;
+
+	OUT_WAV_TEST)
+export ftp_host=testftp
+export filename=waiver2airfacts
+export ext=.txt
+export tagfile=${filename}${ext}.done
+waiverout
+test_rename
+	;;
+
+	OUT_EW)
+export filepref=Report
+export lz=rev_acctg/airFacts
+export filecnt=1
+ewout
+	;;
+
+	OUT_RC)
+export filepref=recallcomm
+export lz=rev_acctg/airFacts
+export filecnt=1
+ewout
+	;;
+
+	*)
+echo -e "\nargument is missing or invalid, 
+need to pass one of the following arguments:
+OUT_T1MQ, OUT_T2UW, OUT_WAV_PROD, or OUT_WAV_TEST"
+
+exit 4
+	;;
+
+esac

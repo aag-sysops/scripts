@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Set up the American data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/american_environment"
+
+export ftp_host=151.193.132.144
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export data_file=AAMILES.TXT
+export local_file=AAAMERICANAIRPIT.txt
+export outfile_prefix=AAAMERICANAIRPIT
+export autopost_error=american_autopost
+export handback_error=american_handback
+export data_file_out=autopost_out
+export tagfile=american.tag
+export alert_recipient=dean.liebrich@alaskaair.com
+export outdate=`/bin/date +%y%m%d`
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export filedate=`date "+%B.%d.%Y"`
+export info_to="dean.liebricha@alaskaair.com"
+export errors_to="production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=14
+
+. /opt/local/ops_scripts/function_lib

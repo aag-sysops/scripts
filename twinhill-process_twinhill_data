@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Encrypt the AS data file to ftp to Twinhill
+# Set the environment variables
+. $HOME/bin/twinhill_environment
+program=`basename $0`
+
+export direction=$1
+
+        if [ -z $direction ]; then
+echo -e "\n     Missing direction parm.
+        proper syntax is: process_twinhill_data direction
+        where direction equals IN or OUT\n"
+        exit 4
+        fi
+
+case "$direction" in
+        IN)
+
+export data_file=twinhill_invoices_ap.pgp.txt.pgp
+export localfile=twinhill_invoices_ap.dat
+export rtagfile=twinhill_invoices_ap.pgp.txt.tag
+export tagfile=twinhill_invoices.tag
+
+echo -e "\nBegin processing for `whoami` $localfile"
+inproc
+echo -e "\nEnd processing for `whoami` $localfile"
+
+
+        ;;
+
+        OUT)
+
+export basename=aghr_twinhill_ee
+export data_file=${basename}.dat
+export gpgfile=${data_file}.gpg
+tagfile_out=${basename}.tag
+
+
+outproc
+
+        ;;
+esac
+

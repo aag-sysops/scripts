@@ -1,0 +1,33 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export ftp_host=ftp-4.oag.com
+export lz=scheduling/oag_mct
+export data_file=FTP.SEQ.MCTFILAS
+export FileAge=30
+export datestamp=`/bin/date +%b%d%Y`
+export program=`basename $0`
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+ftp_check $ftp_local_host
+ftp_check $ftp_host
+
+ftp_vendor_get $ftp_host $data_file $data_file
+
+securezip $data_file inbound
+
+export in_file=$data_file.`head -1 $data_file | awk -F '-' '{print $3}' |tr -d ' '`.dat
+
+ftp_file $ftp_local_host $data_file $in_file "cd $lz"
+ 
+echo -e "\nclean up inbound directory"
+rm -fv $data_file
+
+archive_clean $outbound_archive $data_file $FileAge

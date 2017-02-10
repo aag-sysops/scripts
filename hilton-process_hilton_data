@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# script to process Hilton Hotels data
+# contact info: TAMMY LAMONS  E
+#	MAIL = TAMMY_LEMONS@HILTON.COM
+#
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export lz=mpprod
+export rem_file=Alaska_hilton
+export local_file=HLHILTONHOTELSPIT.txt
+export export datestamp=`date +%m%d%y.%H%M`
+export FileAge=14
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+echo -e "\nbegin processing for incoming `whoami` MP file"
+
+mv -v $rem_file $local_file
+
+records=`wc $local_file | awk '{print $2}'`
+echo -e "\nHilton file $local_file ($records records) received at `date`"
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\nclean up inbound directory"
+rm -fv ftp_results.$$ $local_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+echo -e "\nprocessing of inbound `whoami` file complete"

@@ -1,0 +1,76 @@
+#!/bin/bash
+
+
+#This is first job in PRBOAVISA_PUT schedule.
+#It does not delete  AAGPY008 because it is used again 
+
+set -x
+#temp PW=vtcM43SK
+
+# Set up the tdbank employee visa incentive data transfer environment
+
+#export sftp_host=XM0FYN01@mfttisa.td.com
+export sftp_host=XM0FYN01@mfttisp.td.com
+export dir=MBIF0FYN
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export hcmdir=/home/hcmprod
+export hcmout_dir=${hcmdir}/outbound/bankofamerica
+export outfile=AAGPY008_VisaIncentElig.txt
+export tagfile=AAGPY008_VisaIncentElig.tag
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+#maillist="joanne.gies@$dom,richard.fulcher@td.com,EstherLuda.Dapar@td.com"
+export nofiledate=`/bin/date "+%A, %D"`
+FileAge=20
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\ncheck for ftp connectivity to $sftp_host"
+	sftp -v -o port=10022 $sftp_host <<TEST >ftp_results.$$
+	pwd
+	bye
+TEST
+
+ftptest=`grep -i -c -e "Remote working directory" ftp_results.$$`
+
+	if [ $ftptest -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN SFTP SESSION TO $sftp_host\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	else
+echo -e "\nconnection to $sftp_host confirmed, processing continues...\n"
+rm ftp_results.$$
+	fi
+rm -fv ftp_results.$$
+
+echo -e "\nget $outfile from $hcmout_dir"
+cp $hcmout_dir/$outfile $outbound_dir
+
+securezip $outfile outbound
+
+#pkzipc -add -cryptalgorithm=AES,256 -passphrase="vbprod$%t" $zipfile $outfile
+
+#mutt -s "email file to Bank $maildate complete" -a "$zipfile"  $maillist
+
+
+echo -e "\nput  $outfile to TDBANK server" 
+        sftp -v -o port=10022 $sftp_host <<GETDATA >ftp_results.$$
+        cd $dir
+       	put $outfile 
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+output_records=`wc -l $outfile`
+echo -e "\n$output_records data records sent to $sftp_host"
+
+
+
+
+
+

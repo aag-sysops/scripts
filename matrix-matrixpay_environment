@@ -1,0 +1,102 @@
+!/bin/bash
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="matrixpay"
+export BATCHMODE=yes          # Turn on non-prompted PGP encrypting
+export ftp_host=ftp.matrixpay.com
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmdir_in=/home/hcmprod/inbound/matrix
+export hcmdir_out=/home/hcmprod/outbound/matrix
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export filedate=`/bin/date +%Y%m%d`
+export data_file=PSF_28542.upd
+export tagfile=PSF_28542.tag
+export pgpfile=PSF_28542_${filedate}_matrixpay.upd.pgp
+export tagin=employee.tag
+export alert_recipient=TS.Production.Operations@alaskaair.com
+export info_to="TS.Production.Operations@alaskaair.com"
+export errors_to="TS.Production.Operations@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=20
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+echo -e "get $data_file from $hcmdir_out"
+cp $hcmdir_out/$data_file $outbound_dir
+
+echo -e "\nencrypt $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r "$pgp_remote_signature" --output $pgpfile --encrypt $data_file >gpg_transcript.$$
+
+result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "matrixpay data file encryption failure, contact Systems Operations."
+	cat gpg_transcript.$$
+	rm -f gpg_transcript.$$
+  	exit 8
+	fi
+
+rm -f gpg_transcript.$$
+
+securezip $data_file outbound
+
+ftp_vendor $ftp_host $pgpfile $pgpfile bin "cd psf"
+
+archive_clean $outbound_archive .upd $FileAge
+
+data_records=`wc -l $data_file | awk '{print $1}'`
+echo -e "\n$datestamp: there were $data_records records sent to matrixpay" 
+
+echo -e "\nRemove temp files"
+rm -f $data_file  $pgpfile $hcmdir_out/$data_file $hcmdir_out/$tagfile
+
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+	ls -1 *.csv | while read File1
+	do
+
+echo -e "\nprocessing matrixpay $File1"
+
+securezip $File1 inbound
+
+echo -e "\nMove $File1 to $hcmdir_in"
+
+set -x
+mv -v $File1 $hcmdir_in/$File1
+scp $hcmdir_in/$File1 seavvftp:$hcmdir_in
+
+touch $hcmdir_in/$tagin
+scp $hcmdir_in/$tagin seavvftp:$hcmdir_in
+set +x
+
+	result=$?
+
+	if [ $result -ne 0 -o -f $File1 ]; then
+	echo -e "\nMove $File1 to $hcmdir_in failed, contact Production Services.\n"
+  	exit 8
+	fi
+
+archive_clean $inbound_archive *.csv $FileAge
+
+echo -e "remove matrixpay $File1 from tukvvftp01"
+
+rm -f $hcmdir_in/$File1
+rm -f $hcmdir_in/$tagin
+rm -f $home/$tagin
+
+done
+
+}

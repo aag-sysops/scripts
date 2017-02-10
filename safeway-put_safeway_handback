@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Encrypt the AS data file.
+# Set the environment variables
+. $HOME/bin/safeway_environment
+program=`basename $0`
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $file_prefix
+
+export solar_file=`ls -1 $file_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+# rename file for sending to safeway
+set -x
+mv $solar_file $handback_error
+
+echo -e "\nencrypt $handback_error file"
+#pgp -esa $handback_error $pgp_remote_signature >pgp_transcript.$$
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor --sign -r "$pgp_remote_sig" --output $handback_pgp_error --encrypt $handback_error
+
+result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "Safeway handback error file encryption failure, contact Systems Mgmt."
+	cat pgp_transcript.$$
+  	exit 8
+	fi
+
+rm -f pgp_transcript.$$
+
+ftp_vendor $ftp_host $handback_pgp_error $handback_pgp_error 
+
+echo -e "\nput copy of $handback_error in $outbound_archive"
+gzip <$handback_error >$outbound_archive/$handback_error.$datestamp.gz
+
+echo -e "\nremove archived files older than $FileAge days"
+find $outbound_archive/safeway* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "\nremove temp files"
+rm -f $handback_pgp_error $handback_error

@@ -1,0 +1,77 @@
+#!/bin/bash
+
+export datestamp=`date +%m%d%y.%H%M`
+export Fileage=30
+export outbound_dir=$HOME/outbound
+export outbound_archive=$HOME/outbound.archive
+export mail_list="Stacey.Smithberg@alaskaair.com"
+#export mail_list="dean.liebrich@alaskaair.com, tom.jowett@alaskaair.com"
+export ops=/opt/local/ops_scripts
+export FileAge=60
+
+cd $outbound_dir
+
+export asinfile=radotsvy_ond_as
+export qxinfile=radotsvy_ond_qx
+export asrptname=`head -1 $asinfile | cut -c1-2,6-7,9`
+export qxrptname=`head -1 $qxinfile | cut -c1-2,6-7,9`
+export asoutfile=${asrptname}.csv
+export qxoutfile=${qxrptname}.csv
+export aszipfile=${asrptname}.zip
+export qxzipfile=AS_${qxrptname}.zip
+export ascntfile=radotsvy_count_as
+export qxcntfile=radotsvy_count_qx
+
+. /opt/local/ops_scripts/function_lib
+
+program=`basename $0`
+
+# start Alaska
+echo -e "\nrename $asinfile to $asoutfile"
+crlf_rem $asinfile $asoutfile
+
+echo -e "\nzip AS DOT origin and destination reports"
+#zip -v -P $password $as_zipfile $as_file
+zip $aszipfile $asoutfile
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "zipping of $asinfile failed"
+	exit 4
+	fi
+
+# start Horizon
+echo -e "\nrename $qxinfile to $qxoutfile"
+crlf_rem $qxinfile $qxoutfile
+
+echo -e "\nzip QX DOT origin and destination reports"
+zip $qxzipfile $qxoutfile
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "zipping of $qxinfile failed"
+	exit 4
+	fi
+
+# start common
+ASCNT="AS: `tail -2 $ascntfile | sed -e 's/0\* \* \* \* \*//' | sed -e 's/\* \* \* \* \*//'`"
+QXCNT="QX: `tail -2 $qxcntfile | sed -e 's/0\* \* \* \* \*//' | sed -e 's/\* \* \* \* \*//'`"
+
+MSG="$ASCNT
+
+$QXCNT"
+
+echo -e "\nsend mail to $mail_list with .zip files attached" 
+echo "$MSG" | mutt -s "$asrptname & $qxrptname O&D Data" -a $aszipfile -a $qxzipfile $mail_list
+
+echo -e "\nmove $aszipfile & $qxzipfile to archive directory"
+mv $aszipfile $outbound_archive/${aszipfile}.$datestamp
+mv $qxzipfile $outbound_archive/${qxzipfile}.$datestamp
+
+echo -e "\nremove temporary files from $outbound_dir"
+rm -fv $asinfile $asoutfile $ascntfile $qxoutfile $qxinfile $qxcntfile
+	
+archive_clean $outbound_archive "AS" $FileAge
+archive_clean $outbound_archive "AS_QX" $FileAge

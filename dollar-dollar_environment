@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# script to process Dollar car rental data
+# contact info: 
+#
+
+export ftp_host=ftp.dollar.com
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export rem_file=dollar.txt
+export rem_old_file=${rem_file}.old
+export outfile_prefix=ZRDOLLARCARRENTALPIT
+export outfile_tag=ffzrhandbk.tag
+#export datestamp=`date +%m%d%y.%H%M`
+export datestamp=`date +%y%m%d`
+export FileAge=14
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+ftp_vendor_chk $ftp_host
+ftp_vendor_get $ftp_host $rem_file $file_name "cd out"
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $file_name
+
+securezip $file_name inbound
+
+echo -e "\nclean up $inbound_dir"
+rm -f $file_name
+
+ftp_delete $ftp_host $rem_old_file "cd out"
+ftp_rename $ftp_host $rem_file $rem_old_file "cd out"
+
+set -x
+archive_clean $inbound_archive $file_name $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\nprocessing outbound file $solar_file"
+
+securezip $solar_file outbound
+
+echo -e "\ncreate tag file"
+echo "tag file" > $outfile_tag
+
+ftp_vendor $ftp_host $solar_file $file_name ascii 
+ftp_vendor $ftp_host $outfile_tag $outfile_tag ascii 
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "\nclean up $outbound_dir"
+rm -f $outfile_tag $solar_file
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+}

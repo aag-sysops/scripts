@@ -1,0 +1,91 @@
+#!/bin/bash
+
+set -x
+
+# Blackline bank recon files data transfer environment
+
+export ftp_local_host=asprodftp
+#export ftp_local_host=testftp
+export sftp_host=Alaskaair@ftp.blackline.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="production.services@alaskaair.com"
+export nofiledate=`/bin/date "+%A, %D"`
+export dir=SNBA
+export dir1=somethingelse
+FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+echo -e "\nget file on $ftp_local_host" 
+	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+        cd "BR_Chesapeake/outgoing/test"
+	dir
+      	mget *.txt
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+rm -fv BRFtp_FileList.txt sftp_commands.txt
+
+	ls -1 *.txt | while read File1
+	do
+
+echo -e "\nprocessing Bank recon files $File1"
+
+securezip $File1 outbound
+
+export file_name=$File1
+
+$HOME/bin/decimal $file_name
+	done
+
+echo -e "\nput bank recon files to $sftp_host"
+	sftp -v $blah <<PUTDATA >ftp_results.$$
+        cd SBNA
+	mput *BANK*.txt
+        dir
+	bye
+PUTDATA
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $GL_File to Blackline failed, contactSystem Operations"
+	cat ftp_results.$$
+	rm -fv ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+
+rm -fv *BANK*.txt
+
+#echo -e "\nArchive file on $ftp_local_host" 
+#	ftp -v -i $ftp_local_host <<GETDATA >ftp_results.$$ 2>&1
+#        cd "BR_Chesapeake/outgoing"
+#        put $File1
+#        cd ..
+#        quit
+#GETDATA
+
+#	result=$?
+
+#	if [ $result -ne 0 ]; then
+#	echo -e "\narchive of file $File1 on $ftp_local_host failed.\n"
+#	cat ftp_results.$$
+#	rm -fv ftp_results.$$
+#	exit 4
+#	fi
+
+#cat ftp_results.$$
+#rm -fv ftp_results.$$
+
+#archive_clean $outbound_archive $GL_file $FileAge

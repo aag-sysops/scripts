@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Set up the norwest data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export PGPPASS=seavvdmzftp
+export ftp_host=sgftp.sabre.com
+export ftp_local_host=asprodftp
+export data_file=MHRPTS.MHR010.AST.XML
+#export data_file=MHRPTS.MHR010.AST_2.XML
+export data_file_out=upload.AS.xml
+#export data_file_out=upload.AS.xml_2
+export remote_file_out=$data_file_out.gz
+export trig_file=upload.AS.xml.trigger
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export alert_recipient=joanne.gies@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export errors_to="eps@alaskaair.com,production.services@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=7
+
+. /opt/local/ops_scripts/function_lib
+
+function delta_out {
+
+cd $outbound_dir
+
+ftp_vendor_chk $ftp_host
+
+ftp_vendor $ftp_host $elite_file $elite_file bin
+
+echo -e "\nclean up outbound directory"
+rm $elite_file
+
+}

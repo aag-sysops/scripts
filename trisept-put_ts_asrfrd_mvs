@@ -1,0 +1,94 @@
+#!/bin/sh
+
+###########################################################
+#  PUT AS RF REDEMPTION FILE (IV06AS) TO MVS DATASET      #
+#  RF.RFASRRCV.AS.REDEEM AND TRIGGER RFASRRCV             #
+###########################################################
+#  This script is trig'd by the existence of file IV06ASDN
+#  which is FTP'd to this server by Trisept and indicates 
+#  a successful xmit of AS ReFunds Redemption data file,
+#  IV06AS.  If the input file is empty, the script will
+#  just exit.  Otherwise the file is ftp'd to MVS dataset
+#  RF.RFASRRCV.AS.REDEEM.  JCL is then submitted to the  
+#  MVS internal reader to trigger CA7 job RFASRRCV.
+#  The input file IV06AS is then timestamped, moved to the  
+#  archive directory, and compressed.
+#########################################################
+   
+INDIR=/ftphome/trisept/inbound
+ARCHDIR=/ftphome/trisept/inbound.archive
+INFIL=IV06AS
+DONFIL=IV06ASDN
+JCL=$HOME/bin/rfasrrcv.jcl
+dataset=rf.rfasrrcv.as.redeem
+datestamp=`date +%m%d%y.%H%M`
+FileAge=14
+
+echo -e "\nremoving done file"
+rm -f $INDIR/$DONFIL
+
+if [ -s $INDIR/$INFIL ]; then
+
+echo -e "\nftp $INFIL to MVS dataset $dataset"
+ftp -v 159.49.42.28 <<EOF >ftp_results.$$
+site recfm=fb lrecl=125 cylinders pri=3 sec=10 blksize=0 unit=prdda
+put $INDIR/$INFIL '$dataset' 
+bye
+EOF
+
+succftp=`grep -c "Transfer complete" ftp_results.$$`
+
+     if [ $succftp -eq 1 ]; then
+echo -e "\nftp of data file successful"
+rm -f ftp_results.$$
+
+echo "submit jcl $JCL to MVS"
+
+ftp -v 159.49.42.28 <<EOF1 >ftp_results.$$
+site file=jes
+put $JCL 
+bye
+EOF1
+
+	else 
+
+echo -e "\nftp of $INFIL to MVS failed\n"
+  cat ftp_results.$$
+exit 8
+     fi
+
+succftp=`grep -c "Transfer complete" ftp_results.$$` 
+
+     if [ $succftp -eq 1 ]; then
+rm -f ftp_results.$$
+
+echo -e "\nmove $INFIL to $ARCHDIR/$INFIL.$datestamp"
+mv $INDIR/$INFIL $ARCHDIR/$INFIL.$datestamp
+gzip $ARCHDIR/$INFIL.$datestamp
+
+echo -e "\ndelete archived files older than $FileAge days"
+
+find $ARCHDIR/$INFIL* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done
+
+	exit 0
+
+       else
+
+echo " ftp submit of job $JCL to MVS failed"
+	exit 8
+
+	fi
+
+	else
+
+echo -e "\nThe $INFIL file received from Trisept was empty removing file"
+rm -f $INDIR/$INFIL
+
+	exit 0
+
+	fi

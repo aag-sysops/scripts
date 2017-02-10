@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# FTP inbound Northwest turbulence plot 
+# data to asprodftp
+
+. $HOME/bin/norwest_environment
+program=`basename $0`
+
+cd $inbound_dir
+
+function mainproc {
+
+echo -e "\nbegin processing for files matching $pattern"
+
+filecheck=`ls -1 $pattern | wc -l`
+
+	if [ $filecheck -ge 1 ]; then
+
+	echo -e "\nftp TP*.gif files to ASPRODFTP"
+	ftp -v asprodftp <<PUTDATA >ftp_results.$$
+	bin
+	prompt
+	cd FOGS/NWATP
+	mput $pattern
+	dir
+	quit  
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP of $pattern files failed."
+	echo "Contact Production Services"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+echo -e "\nPut copy of files to $inbound_archive"
+	ls -1 $pattern | while read FILE1
+	do
+	gzip <$FILE1 >$inbound_archive/$FILE1.$datestamp.g	
+	done
+
+echo -e "\nremove archived files older than $Fileage minutes"
+find $inbound_archive/$pattern* -mmin +$FileAge | xargs rm -fv
+
+echo -e "\nend processing of $pattern files"
+
+	else
+
+	echo "no files matching pattern $pattern to process"
+	fi
+
+}
+
+export pattern=TP*.gif
+mainproc
+
+export pattern="*.JPG"
+mainproc
+
+export pattern="*.html"
+mainproc
+
+export pattern="*.css"
+mainproc

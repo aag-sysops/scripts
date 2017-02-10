@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# script to process outrigger hotels 'in' data
+# Stand alone FTP 
+
+set -x
+
+export sftp_host=alaskaa@secureftp.outrigger.com
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export lz=mpprod
+export rem_file=AlaskaAir.txt
+export rem_old_file=${rem_file}.old
+export local_file=OROUTRIGGERPIT.txt
+export datestamp=`date +%y%m%d`
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+echo -e "\nget file on Outrigger server" 
+	sftp -v $sftp_host <<GETDATA >ftp_results.$$ 2>&1
+	get $rem_file
+        quit
+GETDATA
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+# rename local file for SOLAR conv (see if we can get Vendor to put file as Solar name)
+cp $rem_file $local_file
+
+ftp_solar_in $ftp_local_host $local_file
+
+
+securezip $data_file inbound
+
+echo -e "\ndelet file on Outrigger server" 
+	sftp -v $sftp_host <<DELETE >ftp_results.$$ 2>&1
+        cd "OUT"
+       	rm $rem_file 
+        quit
+DELETE
+
+
+echo -e "\nclean up $inbound_dir"
+rm -f $local_file $rem_file
+
+#ftp_delete $ftp_host $rem_old_file 
+ftp_rename $ftp_host $rem_file $rem_old_file
+
+archive_clean $inbound_archive $data_file $FileAge
+
+echo -e "\nprocessing of inbound `whoami` file complete"
+
+
+
+
+

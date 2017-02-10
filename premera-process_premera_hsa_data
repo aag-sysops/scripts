@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -x
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_sig="Premera Blue Cross"
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export hcmbase=/home/hcmprod/
+export hcmin_dir=${hcmbase}/inbound/premera
+export hcmout_dir=${hcmbase}/outbound/premera
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export info_to="joanne.gies@alaskaair.com"
+export errors_to="eps@alaskaair.com"
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+cd $hcmout_dir
+
+echo -e "\nBegin processing outbound Premera FSA file $FILE1"
+
+export data_file=`ls -1 cn_aag*.txt`
+
+# Check for existence of Premera HSA data file
+	if [ ! -s $data_file ]; then
+	echo -e "\nFile is empty, nothing to do"
+	mv $data_file $outbound_archive/$data_file.$datestamp
+	rm -fv $hcmout_dir/cn_aag*.tag
+	exit 0
+	fi
+
+export pgp_file=${data_file}.pgp
+
+echo -e "\ncopy $data_file to $outbound_dir"
+cp $hcmout_dir/$data_file $outbound_dir
+
+	result=$?
+
+        if [ $result -ne 0 ]; then
+        echo -e "\nget $data_file from $hcmdir failed\n"
+	echo "contents of $hcmdir:"
+	ls -l $hcmdir
+        exit 4
+        fi
+
+cd $outbound_dir
+
+echo -e "\nencrypting file $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v -r "$pgp_remote_sig" --output $pgp_file --encrypt $data_file 
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -f $pgp_file ]; then
+	echo -e "\n$data_file encryption failure\n" 
+	exit 8
+	fi
+
+rm -f pgp_transcript.$$
+
+securezip $data_file outbound
+
+echo -e "\nremoving temporary files"
+rm -f $hcmout_dir/$data_file $data_file $hcmout_dir/*.tag
+
+archive_clean $outbound_archive cn_aag $FileAge  

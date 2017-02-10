@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# Process data from scotia, then upload to seavvfile1/ftpprod
+
+# Set the environment variables
+. $HOME/bin/scotia_environment
+
+rm ~/.netrc
+ln -s ~/.netrc.asputfile ~/.netrc
+
+cd $inbound_dir
+
+	if [ -s $scotia_pgp_filer ]; then
+	echo -e "\nprevious pgp encryption error on $scotia_pgp_filer"
+	echo -e "notify EPS\n"
+	ls -l
+	exit 4
+	fi
+
+	echo -e "\ngetting file $scotia_new_filer from $ftp_host"
+	ftp -v $ftp_host <<GETDATA >ftp_results.$$
+	bin
+	get $scotia_new_filer
+	quit  
+GETDATA
+
+result=$?
+succftp=`grep -c "Transfer complete" ftp_results.$$`
+
+	if [ $succftp -ne 1 -o $result -ne 0 ]; then
+	echo -e "\nFTP get of $scotia_new_filer from scotia failed."
+	echo -e "Contact Production Services or EPS\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+rm -f ftp_results.$$
+
+echo -e "\nchange file extension to .pgp"
+mv $scotia_new_filer $scotia_pgp_filer
+
+echo "decrypt $scotia_pgp_filer" 
+pgp $scotia_pgp_filer
+    
+result=$?
+
+	if [ $result -ne 0 -o ! -s $scotia_pgp_filer ]; then
+	echo -e "\nscotia inbound file decrypt problem.\n"
+	exit 8
+	fi
+
+echo -e "\nmove $scotia_pgp_filer to archive directory and timestamp"
+mv $scotia_pgp_filer $inbound_archive/$scotia_pgp_filer.$datestamp
+
+
+echo -e "\nFTP $scotia_file to asprodftp"
+        ftp -v asprodftp <<FTPDATA >ftp_results.$$
+        cd PSFINFTP/AP/APPOSPAY
+	ascii
+	put $scotia_filer scotia-report.$outdate.txt
+	quit
+
+FTPDATA
+
+result=$?
+succftp=`grep -c "Transfer complete" ftp_results.$$`
+
+	if [ $succftp -ne 1 -o $result -ne 0 ]; then
+	echo -e "\nFTP of $scotia_filer to asprodftp failed."
+	echo -e "Contact Production Services or EPS\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+echo "Send mail notification to $infor_to"
+Mail -s "The Alaska Scotia report has been sent to your server at `date`" $infor_to < $scotia_filer
+
+rm -f ftp_results.$$
+
+echo "remove temp files"
+rm -f $scotia_filer ftp_results* 
+
+echo "removing archived files older than $FileAge days"
+find $inbound_archive/ede* -mtime +$FileAge -print |
+	while read FILE1
+	do
+	echo "removing file $FILE1"
+	rm -f $FILE1
+	done

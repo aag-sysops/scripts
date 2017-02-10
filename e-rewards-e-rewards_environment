@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# Set up the e-rewards data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/e-rewards_environment"
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature='e-Rewards Operations'
+export ftp_local_host=asprodftp
+export lz=mpprod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+#export datestamp=`/bin/date +%b%d%Y.%H%M`
+export datestamp=`/bin/date +%Y%m%d`
+export nofiledate=`/bin/date "+%A, %D"`
+export data_pgp_file=AlaskaAir.gpg
+export local_file=EREREWARDSPIT.txt
+export outfile_prefix=EREREWARDSPIT
+export remote_out_file=AlaskaAir_Handback
+export mail_to="ctee@researchnow.com,ftsao@researchnow.com,jsoliz@e-rewards.com"
+FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+function inbound {
+
+cd $inbound_dir
+
+	if [ ! -f $data_pgp_file ]; then
+	echo -e "\nexpected rewards data file ($data_pgp_file) not found\n"
+	export MSG="There was no e-rewards file found for $nofiledate."
+	echo $MSG
+	echo $MSG | Mail -s "e-rewards Mileage Plan data" $MAILLIST
+	exit 0
+	fi
+
+echo -e "decrypt $data_pgp_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch --output $local_file --decrypt $data_pgp_file    
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "${program}: inbound results file decrypt problem.  Call Ops Analyst."
+        exit 8
+	fi
+
+records=`wc $local_file | awk '{print $2}'`
+
+	if [ $records -eq 0 ]; then
+	export MSG="rewards data file for date $rundate is empty."
+	echo -e "\n$MSG\n"
+	echo $MSG | Mail -s "e-rewards Mileage Plan data" $MAILLIST
+	mv $local_file $inbound_archive/$local_file.MT.$datestamp
+	exit 0
+	fi
+
+echo -e "\n$local_file file ($records records) received at `date`"
+
+securezip $local_file inbound
+
+ftp_check $ftp_local_host
+ftp_solar_in $ftp_local_host $local_file
+
+echo -e "\ncleaning up inbound directory"
+rm -f $local_file $data_pgp_file
+
+archive_clean $inbound_archive $local_file $FileAge
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+echo -e "\n***** remove previous outbound files ******"
+rm -fv $remote_out_file*.gpg
+
+ftp_check $ftp_local_host
+ftp_solar_out $ftp_local_host $outfile_prefix
+
+export solar_file=`ls -1 $outfile_prefix*`
+echo -e "\n****** processing outbound file $solar_file ******"
+
+securezip $solar_file outbound
+
+echo -e "\n****** encrypt $solar_file (output to ${remote_out_file}.${datestamp}.gpg) ******"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_signature" --output ${remote_out_file}.${datestamp}.gpg --encrypt $solar_file >pgp_transcript.$$
+	
+	result=$?
+
+	if [ ! -s ${remote_out_file}.${datestamp}.gpg -o $result -ne 0 ]; then
+	echo -e "\n######## $solar_file encryption failure, contact Production Analyst ########" 
+	cat pgp_transcript.$$
+	rm pgp_transcript.$$
+	exit 4
+	fi
+
+ftp_delete $ftp_local_host $solar_file "cd mpprod/outbound/handback"
+
+echo -e "\n****** remove local files in outbound ******"
+rm $solar_file pgp_transcript*
+
+archive_clean $outbound_archive $outfile_prefix $FileAge
+
+echo -e "\nemail to e-rewards that the handback file is ready, please delete after pickup"
+Mail -s "Hello Bruce, Handback file is now on our server, please delete after picking up" $mail_to </dev/null
+
+}

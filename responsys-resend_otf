@@ -1,0 +1,32 @@
+#!/bin/bash
+
+export sftp_host=alaskaair_scp@files.dc2.responsys.net
+#export ftp_host=ftptest #test
+export ftp_host=asprodftp #prod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export filedate=20140527
+export datestamp=`date +%Y%m%d%H%M`
+export FileAge=15
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+ls -1 *${filedate}* grep -v RESP_ | while read FILE1
+	do
+securezip $FILE1 outbound
+	done
+
+echo -e "\nput file(s) to $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd upload
+       	put *${filedate}*
+      	ls -l *${filedate}*
+       	quit
+PUT
+
+echo -e "\nclean up outbound directory"
+rm -fv *${filedate}*

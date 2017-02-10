@@ -1,0 +1,174 @@
+#!/bin/bash
+
+# Stand alone script
+
+# Set the environment variables
+export PGPPASS=seavvdmzftp
+#export remote_sig="Bank of America BA-CLEAR"
+export remote_sig=F2FD53A7
+export sftp_host=jgalaska@b2b22.bankofamerica.com
+export ftplocalhost=asprodftp
+#export ftplocalhost=testftp
+export lz=mpprod
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export DT=`date '+%c'`
+export info_to="joanne.gies@alaskaair.com"
+export datestamp=`/bin/date '+%b%d%Y.%H%M'`
+export outdate=`/bin/date '+%Y%m%d'`
+export errors_to="joanne.gies@alaskaair.com,dean.liebrich"
+export logfile=$HOME/transfer_log
+export FileAge=30
+
+. /opt/local/ops_scripts/function_lib
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm,
+	proper syntax is process_boa-mlr_data direction
+	where airline=in or out and direction=in or out. i.e.
+	process_boa-extract_data asout\n"
+	exit 4
+	fi
+
+function outproc {
+
+cd $outbound_dir
+
+#get the file
+echo -e "\nget $data file from $ftplocalhost" 
+	ftp -i -v $ftplocalhost <<GETDATA >ftp_results.$$
+	cd "\MPPROD\BankCardUpdate\Handback"
+        dir
+	mget "$basename"
+	quit
+GETDATA
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+export data_file=`ls -1 $basename`
+
+	if [ ! -f $data_file ]; then
+	echo "No file to process or FTP get from $ftplocalhost failed"
+	exit 4
+	fi
+
+export remote_pgp_file=${data_file}.pgp
+
+securezip $data_file outbound
+
+echo -e "\nencrypt file $data_file"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r $remote_sig --output $remote_pgp_file --encrypt $data_file >pgp_transcript.$$
+
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e "\nEncryption error on Alaska to BOA extract file $data_file,
+	notify Systems Management during normal business hours\n"
+	cat pgp_transcript.$$
+	rm -fv pgp_transcript.$$
+	exit 4
+	fi		
+
+
+echo -e "\nput $remote_pgp_file to $sftp_host"
+	sftp -v $sftp_host <<PUTDATA >ftp_results.$$
+        cd incoming/loyalty 
+  	put $remote_pgp_file
+	ls -l
+	quit
+PUTDATA
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo "FTP put of $remote_pgp_file BOA"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nremove temporary files"
+rm -f $remote_file $remote_pgp_file $data_file
+
+archive_clean $outbound_archive $remote_file $FileAge
+
+}
+
+function inproc {
+
+#rm ~/.netrc
+#ln -s ~/.netrc.$airdir ~/.netrc
+
+
+cd $inbound_dir
+
+ftp_check $ftp_host
+ftp_vendor_get $ftp_host $boa_pgp_file $local_pgp_file passive bin
+
+echo -e "\ndecrypt $local_pgp_file" 
+echo $PGPPASS | gpg --passphrase-f 0 --batch --output $boa_pgp_file --decrypt $local_pgp_file
+
+	result=$?
+
+	if [ $result -ne 0 -o ! -s $boa_pgp_file ]; then
+	echo -e "\n`whoami` $local_pgp_file decrypt problem.\n"
+	exit 8
+	fi
+
+record_count=`wc -l $boa_pgp_file | awk '{print $1}'`
+echo -e "\n$boa_pgp_file record count is $record_count on `date`"
+
+ftp_solar_in $ftp_local_host $boa_pgp_file
+
+echo -e "send confirmation email to BOA"
+echo -e "$boa_pgp_file file has been received by Alaska Airlines.
+Thank You." | mutt -s "$boa_pgp_file Received $datestamp2" $info_to
+
+echo -e "\nmove $local_pgp_file to archive directory and timestamp"
+mv $local_pgp_file $inbound_archive/$local_pgp_file.$datestamp
+
+echo "remove temp file $boa_pgp_file"
+rm -f $boa_pgp_file
+
+archive_clean $inbound_archive $local_pgp_file $FileAge
+
+}
+
+case "$direction" in
+
+	in)
+
+
+
+export local_file=xxx.txt
+export local_pgp_file=${local_file}.pgp
+export tag_file=xxboain.tag
+
+echo -e "\nBegin processing for inbound $local_file"
+inproc
+echo -e "\nInbound processing complete for $local_file"
+
+;;
+
+	out)
+
+export file_prefix=AlaskaExtract*.zip
+
+
+
+
+echo -e "\nBegin processing for $airline outbound file $data_file"
+outproc
+echo -e "\nOutbound processing complete for $airline file $data_file"
+
+
+;;
+
+esac

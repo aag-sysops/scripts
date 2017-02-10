@@ -1,0 +1,74 @@
+#!/bin/bash
+
+. $HOME/bin/iinet_idec_environment
+
+export airdir=$1
+
+	if [ -z $airdir ]; then
+echo -e "\n	Missing airline/direction parm,
+	proper syntax is process_iinet_idec direction
+	where direction=in or out. i.e.
+	process_iinet_idec_data out\n"
+	exit 4
+	fi	
+
+case "$airdir" in
+
+	in_sb)
+
+prefix=ST-PIDECF
+export ftp_local_host=testftp
+export sftp_host=SANDSFTP@144.194.18.35
+echo -e "\nBegin processing for inbound conf idec file"
+inproc
+echo -e "\nInbound processing complete for inbound conf idec file"
+;;
+
+	in_cert)
+
+prefix=CT-PIDECF
+export sftp_host=SANDSFTP@144.194.18.35
+export ftp_local_host=testftp
+echo -e "\nBegin processing for inbound conf idec file"
+inproc
+echo -e "\nInbound processing complete for inbound conf idec file"
+;;
+
+	in)
+
+prefix=PIDECF
+export sftp_host=ALSISFTP@144.194.18.35
+export ftp_local_host=asprodftp
+echo -e "\nBegin processing for inbound conf idec file"
+inproc
+echo -e "\nInbound processing complete for inbound conf idec file"
+;;
+
+	out_sb)
+
+export prefix=ST-
+export sftp_host=SANDSFTP@144.194.18.35
+echo -e "\nBegin processing for outbound iinet_idec_file"
+outproc
+echo -e "\nOutbound processing complete for iinet IDEC file"
+;;
+
+	out_cert)
+
+export prefix=CT-
+export sftp_host=SANDSFTP@144.194.18.35
+echo -e "\nBegin processing for outbound iinet_idec_file"
+outproc
+echo -e "\nOutbound processing complete for iinet IDEC file"
+;;
+
+	out)
+
+#export prefix=PIDECF
+export sftp_host=ALSISFTP@144.194.18.35
+echo -e "\nBegin processing for outbound iinet_idec_file"
+outproc
+echo -e "\nOutbound processing complete for iinet IDEC file"
+;;
+
+esac

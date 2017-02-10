@@ -1,0 +1,144 @@
+#!/bin/bash
+
+export local_host=twsadm@seavvtdbtda01
+export qa_host=twsadm@seaqatdbtda01
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export lz=/ftproot/TravelDataBatch
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export logfile=$HOME/transfer_log
+export FileAge=7
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+function mainproc {
+
+echo -e "\nBegin processing for incoming TDB files from Sabre at `date`"
+
+echo -e "\ncheck connectivity to $local_host"
+        sftp -vvv $local_host <<CHECK >ftp_results.$$
+	dir
+        quit
+CHECK
+        result=$?
+
+export check=`grep -ic sftp ftp_results.$$`
+
+        if [ $result -ne 0 -o $check -lt 1 ]; then
+        echo "FTP check to $local_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nget connectivity to $qa_host"
+        sftp -v $qa_host <<CHECK >ftp_results.$$
+        quit
+CHECK
+        result=$?
+
+export check=`grep -ic sftp ftp_results.$$`
+
+        if [ $result -ne 0 -o $check -lt 1 ]; then
+        echo "FTP check to $qa_host failed"
+        cat ftp_results.$$
+        rm ftp_results.$$
+        exit 4
+        fi
+
+cat ftp_results.$$
+rm -f ftp_results.$$
+
+cd $inbound_dir
+echo -e "\ncontents of $inbound_dir"
+ls -l
+
+export encfile=`ls -1 $file_pref*.enc`
+export donefile=`echo $encfile | sed -e 's/enc/done/'`
+
+echo -e "\nput file to $local_host"
+        sftp -v $local_host <<PUTDATA >ftp_results.$$
+        cd $lz
+	put $encfile
+	put $donefile
+        quit
+PUTDATA
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo "FTP put to $local_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nput file to $qa_host"
+        sftp -v $qa_host <<PUTDATA >ftp_results.$$
+        cd $lz
+	put $encfile
+	put $donefile
+        quit
+PUTDATA
+        result=$?
+
+        if [ $result -ne 0 ]; then
+        echo "FTP put to $qa_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$a
+
+securezip $encfile inbound 
+
+archive_clean $inbound_archive $file_pref $FileAge
+
+echo -e"\nProcessing of incoming TDB files complete at `date`"
+
+}
+
+export filetype=$1
+
+	if [ -z $filetype ]; then
+echo -e "\n	Missing filetype parm, proper syntax is:
+	process_tdb_files filetype where filename is:
+	acs, batch, or epr."
+	fi
+
+case "$filetype" in
+ 
+	 acs)
+export file_pref=as_acs_prod
+mainproc
+;;
+
+	 batch)
+export file_pref=as_batch
+batchproc
+;;
+
+	 epr)
+export file_pref=as_epr_prod
+mainproc
+;;
+
+*)
+
+echo -e "\nargument is missing or invalid, 
+need to run script with a file type arg"
+
+exit 4
+	;;
+
+esac

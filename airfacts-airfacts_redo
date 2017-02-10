@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Set up the Airfacts data transfer environment
+# This script is used by other scripts to preset values from a common source.
+
+export PGPPASS=seavvdmzftp
+export pgp_remote_sig="AS2015DEK"
+export ftp_localhost=asprodftp
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export ops=/opt/local/ops_scripts
+export filedate=`date +%Y%m%d`
+export datestamp=`date +%Y%m%d.%H%M`
+export wavdatestamp=`date +%Y%m%d_%H%M`
+export FileAge=100
+export ftp_host=asprodftp
+export filename=waiver2airfacts
+export ext=.txt
+export tagfile=${filename}${ext}.done
+
+. /opt/local/ops_scripts/function_lib
+
+cd $outbound_dir
+
+records=`wc -l ${filename}$ext | awk '{print $1}'`
+echo -e "\nthere are $records lines in file ${filename}$ext"
+
+echo -e "\nencrypt file ${filename}$ext as ${filename}_${wavdatestamp}$ext.asc"
+echo $PGPPASS | gpg --passphrase-fd 0 --batch -v --armor -r "$pgp_remote_sig" --output ${filename}_${wavdatestamp}$ext.asc --encrypt ${filename}$ext
+
+	if [ ! -s  ${filename}_${wavdatestamp}$ext.asc ]; then
+	echo -e "\nencryption of ${filename}$ext as ${filename}_${wavdatestamp}$ext.asc failed\n"
+	exit 4
+	fi
+
+echo -e "\ncreate tag file ${filename}_${wavdatestamp}$ext.asc.done"
+touch ${filename}_${wavdatestamp}$ext.asc.done
+
+securezip $filename$ext outbound 
+
+#rm ${filename}$ext
+
+echo "the following encrypted files ${filename}*.asc are in $outbound_dir:"
+ls -l ${filename}*.asc

@@ -1,0 +1,97 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ftp_local_host=asprodftp
+export partner=ssim_dist
+export lzout_dir=scheduling/PartnerSSIM/$partner/outbound
+export lzout_archive=scheduling/PartnerSSIM/$partner/outbound.archive
+export lzin_dir=scheduling/PartnerSSIM/$partner/inbound
+export lzin_archive=scheduling/PartnerSSIM/$partner/inbound.archive
+export maildom=alaskaair.com
+#export maillist="joanne.gies@$maildom,paul.twedt@$maildom"
+#export maillist=joanne.gies@$maildom
+export maillist="ssim.Distribution@$maildom,ASQX.ScheduleDistribution@$maildom,joanne.gies@$maildom"
+export sentdate=`/bin/date "+%Y%m%d_%H%M"`
+export datestamp=`/bin/date "+%j%y-%H%M"`
+export maildate=`/bin/date "+%Y%m%d %H:%M"`
+export FileAge=7
+
+export program=`basename $0`
+
+. /opt/local/ops_scripts/function_lib
+
+function getfile {
+
+cd $outbound_dir
+
+echo -e "\nftp get $namebase file from $ftp_local_host\n"
+	ftp -v -i $ftp_local_host <<MGET >ftp_results.$$
+	cd $lzout_dir
+	dir
+	mget $namebase.txt
+	bye
+MGET
+	result=$?
+
+	if [ $result -ne 0 ];then
+	echo "\nFTP get of $namebase file failed,
+	please investigate\n"
+	cat ftp_results.$$
+	rm ftp_results.$$
+	exit 4
+	fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+}
+
+
+function txtfile {
+
+export data_file=`ls -1 $namebase*.txt`
+export zip_file=$data_file.zip
+
+unix2dos $data_file
+
+echo -e "\nzip file for SSIM_DIST"
+zip $zip_file $data_file
+
+securezip $data_file outbound
+
+ftp_file $ftp_local_host $data_file ${data_file}_$sentdate$ext "cd $lzout_archive"
+
+ftp_delete $ftp_local_host $data_file "cd $lzout_dir"
+
+}
+
+function email {
+
+cd $outbound_dir
+
+echo "send mail to $maillist with `ls` files attached"
+echo -e "$maildate
+
+The following attached files were emailed from AS to $partner.
+
+$zip_file" | mutt -s "email from AS to $partner $maildate complete" -a "$zip_file"  $maillist
+
+echo "remove files `ls`"
+rm -fv $data_file $zip_file
+
+archive_clean $outbound_archive $namebase $FileAge
+
+}
+
+ftp_check $ftp_local_host
+
+sleep 30
+export namebase=ASoag*
+export ext=.txt
+getfile
+txtfile
+email
+

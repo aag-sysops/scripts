@@ -1,0 +1,230 @@
+#!/bin/bash
+
+export sftp_host=alaskaair_scp@files.dc2.responsys.net
+#export ftp_host=ftptest #test
+export ftp_host=asprodftp #prod
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export outbound_adhoc=$HOME/out-adhoc
+export filedate=`date +%Y%m%d`
+export datestamp=`date +%Y%m%d%H%M`
+export FileAge=7
+
+. /opt/local/ops_scripts/function_lib
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n Missing direction parm.  Proper syntax
+is put_responsys_data direction, where direction
+is equal to in, out, or out_cut"
+	exit 4
+	fi
+
+function sftpcheck {
+
+echo -e "\ncheck for connectivity to $sftp_host"
+	sftp -v $sftp_host <<TEST >ftp_results.$$
+	pwd
+	bye
+TEST
+
+ftptest=`grep -i -c -e "alaskaair_scp" ftp_results.$$`
+
+	if [ $ftptest -lt 1 ]; then
+echo -e "\nUNABLE TO OPEN SFTP SESSION TO $sftp_host\n"
+	cat ftp_results.$$
+	rm -v ftp_results.$$
+	exit 4
+	else
+echo -e "\nconnection to $sftp_host confirmed, processing continues..."
+rm -v ftp_results.$$
+	fi
+
+}
+
+function outbound {
+
+cd $outbound_dir
+
+sftpcheck $sftp_host
+
+ls -1 *${filedate}* grep -v RESP_ | while read FILE1
+	do
+securezip $FILE1 outbound
+	done
+
+echo -e "\nput file(s) to $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd upload
+       	put *${filedate}*
+      	ls -l *${filedate}*
+       	quit
+PUT
+
+errorchk $? "put file(s) to $sftp_host"
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nclean up outbound directory"
+rm -fv *${filedate}*
+
+archive_clean $outbound_archive .txt $FileAge
+
+echo -e "\nremove tag file $tagfile"
+rm -fv $tagfile
+
+}
+
+function outbound_cut {
+
+cd $outbound_dir
+
+sftpcheck $sftp_host
+
+ls -1 ${filepref}* | while read FILE1
+	do
+securezip $FILE1 outbound
+	done
+
+echo -e "\nput file(s) to $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd upload
+       	put ${filepref}*
+      	ls -l ${filepref}*
+       	quit
+PUT
+
+errorchk $? "put file(s) to $sftp_host"
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nclean up outbound directory"
+rm -fv ${filepref}*
+
+archive_clean $outbound_archive .${filepref}* $FileAge
+
+echo -e "\nremove tag file $tagfile"
+rm -fv $tagfile
+
+}
+
+function outbound_adhoc {
+
+cd $outbound_adhoc
+
+export filecheck=`ls -1 |wc |awk '{print $1}'`
+
+	if [ $filecheck -eq 0 ]; then 
+	echo "No file to process - Exiting"
+	exit 0
+	fi
+
+sftpcheck $sftp_host
+
+ls -1
+
+ls -1 | while read FILE1
+	do
+securezip $FILE1 outbound
+	done
+
+echo -e "\nput file(s) to $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd upload
+       	put *
+      	ls -l
+       	quit
+PUT
+
+errorchk $? "put file(s) to $sftp_host"
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\nclean up outbound directory"
+rm -fv *
+
+archive_clean $outbound_archive "." $FileAge
+
+}
+
+function inbound {
+
+cd $inbound_dir
+
+sftpcheck $sftp_host
+
+echo -e "\nget file(s) from $sftp_host" 
+	sftp -v $sftp_host <<PUT >ftp_results.$$ 2>&1
+        cd download
+       	get *${filedate}*
+      	ls -l
+       	quit
+PUT
+
+errorchk $? "get file(s) from $sftp_host"
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+ls -1 *${filedate}* | while read FILE1
+	do
+
+securezip $FILE1 inbound
+
+#ftp_file $ftp_host $FILE1 $FILE1 "cd MPTEST/Inbound/Responsys_CED"	#test
+ftp_file $ftp_host $FILE1 $FILE1 "cd MPPROD/Inbound/Responsys_CED" 	#prod
+
+let cutamt="`echo $FILE1 | wc | awk '{print $3}'` -21"
+newtmp="`echo $FILE1 | cut -c1-$cutamt`.txt"
+
+newname=`echo $newtmp | sed -e 's/54080_//'`
+
+echo -e "\nrename file $FILE1 to $newname"
+mv $FILE1 -fv $newname
+
+#rename/delete file on sftp host (responsys)
+	done
+
+archive_clean $inbound_archive .txt $FileAge
+
+touch $tagfile
+
+}
+
+case "$direction" in
+
+	out)
+echo -e "\nBegin processing for `whoami` outbound"
+export tagfile=responsys_out.tag
+outbound
+echo -e "\nEnd of `whoami` outbound processing"
+;;
+
+	out_cut)
+echo -e "\nBegin processing for `whoami` outbound"
+export tagfile=responsys_cut.tag
+export filepref=RESP_
+outbound_cut
+echo -e "\nEnd of `whoami` outbound processing"
+;;
+
+	out_adhoc)
+echo -e "\nBegin processing for `whoami` adhoc outbound"
+outbound_adhoc
+echo -e "\nEnd of `whoami` adhoc outbound processing"
+;;
+
+	in)
+echo -e "\nBegin processing for `whoami` inbound"
+export tagfile=responsys_in.tag
+inbound
+echo -e "\nEnd of `whoami` inbound processing"
+;;
+
+esac

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Process ARC data for Outbound.
+
+# Set the environment variables
+. $HOME/bin/arc_environment_adhoc
+
+export direction=$1
+
+	if [ -z $direction ]; then
+echo -e "\n	Missing direction parm.
+	proper syntax is: process_arc_data direction
+	where direction equals IN or OUT\n"
+	exit 4
+	fi
+
+case "$direction" in
+	OUT)
+
+outproc
+
+	;;
+
+	INBANK)
+
+CYC=$2
+
+echo "Begin processing for bank cycle=$CYC"
+inproc_bank
+echo "end processing for bank cycle=$CYC"
+
+	;;
+
+	INECB)
+
+CYC=$2
+
+echo "Begin processing for ECB cycle=$CYC"
+inproc_ecb
+echo "end processing for ECB cycle=$CYC"
+	
+	;;
+
+	INWKLY)
+
+echo "Begin processing for Weekly ARC file"
+inproc_weekly
+echo "end processing for Weekly ARC file"
+	
+	;;
+
+	INQTRLY)
+
+echo "Begin processing for Quarterly ARC file."
+inproc_quarterly
+echo "end processing for Quarterly ARC file."
+	
+	;;
+
+
+esac
+
+

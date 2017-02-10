@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Set up the vinesse data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/vinesse_environment"
+
+export sftp_host=ak_user@69.194.131.195
+export ftp_local_host=asprodftp
+export lz=mpprod
+export PGPPASS=seavvdmzftp
+export pgp_remote_signature="Vinesse LLC"
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export alert_recipient=eps@alaskaair.com
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export local_file=VNVINESSEPIT.TXT
+export local_pgp_file=${local_file}.pgp
+export outfile_prefix=VNVINESSEPIT
+export out_data_file=vinesse_handbk_out
+export out_pgp_data=${out_data_file}.asc
+export info_to="production.services@alaskaair.com"
+export errors_to="production.services@alaskaair.com"
+export FileAge=30
+export rundate=`date "+%A, %B %d, %Y"`
+#export MAILLIST="ftp.partner.alerts@alaskaair.com"
+export MAILLIST="joanne.gies@alaskaair.com"
+
+. /opt/local/ops_scripts/function_lib
+

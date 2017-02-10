@@ -1,0 +1,96 @@
+#!/bin/bash
+
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export datestamp=`/bin/date +%b%d%Y.%H%M`
+export FileAge=7
+export ops=/opt/local/ops_scripts
+export mail_to="Production.Operations@alaskaair.onmicrosoft.com"
+
+. /opt/local/ops_scripts/function_lib
+
+export file_env=$1
+
+function mainproc {
+
+cd $outbound_dir
+
+echo -e "\nBegin processing for outgoing Flt Booking files to Sabre at `date`"
+
+echo -e "\ncheck connectivity to $sftp_host"
+        sftp -v $sftp_host <<CHECK >ftp_results.$$
+        dir
+        quit
+CHECK
+        result=$?
+
+export check=`grep -ic sftp ftp_results.$$`
+
+        if [ $result -ne 0 -o $check -lt 1 ]; then
+        echo "FTP check to $sftp_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+cat ftp_results.$$
+rm -fv ftp_results.$$
+
+echo -e "\ncontents of $outbound_dir"
+ls -l
+
+export datafile=`ls -1 *${file_sufffix}`
+
+securezip $datafile outbound
+
+echo -e "\nFTP $datafile to $sftp_host"
+        sftp -v $sftp_host <<PUT >ftp_results.$$
+        put $datafile
+        quit
+PUT
+        result=$?
+
+export check=`grep -ic sftp ftp_results.$$`
+
+        if [ $result -ne 0 -o $check -lt 1 ]; then
+        echo "FTP $datafile to $sftp_host failed"
+        cat ftp_results.$$
+        rm -fv ftp_results.$$
+        exit 4
+        fi
+
+rm -fv ftp_results.$$
+
+echo -e "\nremove $datafile from $outbound_dir"
+rm -v $datafile
+
+archive_clean $outbound_archive $file_suffix $FileAge
+
+echo -e "\nProcessing of outgoing Flt booking files complete at `date`"
+
+}
+
+case "$file_env" in
+
+        cert)
+sftp_host=ex_as002@efg.cert.sabre.com
+file_sufffix=PCAFAS.csv
+mainproc
+       ;;
+
+        prod)
+sftp_host=ex_as002@efg.sabre.com
+file_prefix=PCAFAS.csv
+mainproc
+       ;;
+	
+	*)
+
+echo -e "\nargument is missing or invalid, 
+need to pass one of the following arguments: 
+cert or prod"
+exit 4
+        ;;
+esac

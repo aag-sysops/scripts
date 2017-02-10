@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Check for and then ftp amadeus files to seavvpsmcfs
+
+# Set environment values
+. $HOME/bin/amadeus_environment
+program=`basename $0`
+
+cd $inbound_dir
+
+echo -e "\nContents of inbound direcotry:"
+ls -l
+
+#process amedeus file
+export datafile=PRD.NBC.*
+export datafileo=bidt_amadeus.dat
+export tagfile=alaska.trig
+
+mainproc

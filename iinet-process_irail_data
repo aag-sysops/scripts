@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -x
+
+export ftp_local_host=mvs
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export basename=PIDECT*	
+export data_file_crlf="'ra.iinet.receive.idec.data'"
+#export data_file_crlf="'prog.ra.iinet.receive.idec.data'"
+#export jcl=$HOME/bin/rainlpld.jcl
+export dcbparms="site recfm=fb lrecl=500 cylinders pri=100 sec=50 unit=wrkda blksize=0"
+export datestamp=`date +%m%d%y.%H%M`
+export FileAge=7
+export errors_to=joanne.gies@alaskaair.com
+export ops=/opt/local/ops_scripts
+
+. /opt/local/ops_scripts/function_lib
+
+cd $inbound_dir
+
+ls -1 $basename*.ZIP | while read FILE1
+	do
+
+echo "check file size to make sure completed file is here"
+size_check $FILE1
+
+echo -e "\nunzip file $FILE1"
+
+unzip $FILE1 
+
+export dat_file=`ls -1 PIDECT*.DAT`
+
+crlf_rem $dat_file $data_file_crlf
+
+ftp_check $ftp_local_host
+dsn_2mvs $ftp_local_host $data_file_crlf $data_file_crlf
+
+#ftp_jcl $jcl $ftp_local_host
+
+securezip $dat_file inbound
+
+echo -e "\nclean up inbound directory"
+rm -fv $dat_file  $data_file_crlf $FILE1
+
+done
+
+archive_clean $inbound_archive PIDECT $FileAge

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Encrypt the Talx data file and push to Talx
+# for processing
+#If sending test data use 11971testin
+#If sending prod data use 11971prodin
+
+# Set the environment variables
+. $HOME/bin/talx_environment
+
+cd $outbound_dir
+
+#process talx file
+export datafile=astalx.txt
+export hcmdir=$ashcmdir
+#export pgpfile=11971prodin.msf
+export pgpfile=11971_${ni90datestamp}_prodin.v5.pgp
+export tagfile=$hcmdir/astalx.tag
+
+
+mainproc
+
+#Mail -s "Talx data AS  file sent to $ftp_host at `date`" $talx_mailto </dev/null

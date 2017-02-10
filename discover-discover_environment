@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Set up the Discover data transfer environment
+# This script is used by other scripts to preset values from a common source.
+# Usage: (in another script) ". $HOME/bin/discover_environment"
+
+export PGPPASS=seavvdmzftp
+export ftp_local_host=asprodftp
+export outbound_dir=$HOME/outbound
+export outbound_archive=${outbound_dir}.archive
+export inbound_dir=$HOME/inbound
+export inbound_archive=${inbound_dir}.archive
+export ops=/opt/local/ops_scripts
+export DT=`date '+%c'`
+export datestamp=`/bin/date '+%b%d%Y.%H%M'`
+export outdate=`/bin/date '+%Y%m%d'`
+export errors_to="joanne.gies@alaskaair.com"
+#export mail_to="joanne.gies@alaskaair.com,david.jarrett@gxs.com,timsmith@discover.com"
+#export mail_to="joanne.gies@alaskaair.com"
+export mail_local="accounts.receivable@alaskaair.com,fire.team.oncall.support@alaskaair.com,joanne.gies@alaskaair.com"
+export logfile=$HOME/transfer_log
+export FileAge=60
+
+. /opt/local/ops_scripts/function_lib
+
+function outproc {
+
+cd $outbound_dir
+
+#replace record terminator crlf (wintel) with newline (unix)
+crlf_rem $data_file $crlfile 
+
+echo -e "\nmake record length 250 for all records"
+$HOME/bin/250.pl $crlfile > $out_data_file
+	result=$?
+
+	if [ $result -ne 0 ]; then
+	echo -e  "\nchange record length failed, contact EPS"
+	exit 4
+	fi
+
+securezip $out_data_file outbound
+
+
+rm $data_file $crlfile
+
+archive_clean $outbound_archive $out_data_file $FileAge
+
+#echo -e "\nemail to Discover - the Alaska_file.dat is on our site for your pickup, please delete after pickup"
+#Mail -s "the alaska_file.dat is on our site for your pickup, please delete after pickup" $mail_to </dev/null
+
+}
+
+function inproc {
+
+cd $inbound_dir
+
+echo -e "\nemail to Rev folks - the Discover confirmation file has been received"
+Mail -s "the Discover confirmation file has been recieved" $mail_local < discvr_confirm.txt
+
+securezip $conf_file inbound
+
+ftp_file $ftp_local_host $conf_file conf_file.$datestamp.txt "cd AR_AccountsReceivable/Discover"
+
+
+echo "remove temp files"
+rm -f $conf_file
+
+archive_clean $inbound_archive $conf_file $FileAge
+
+}
