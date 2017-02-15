@@ -1,2 +1,0 @@
-Our automated process did not find the KS_7H_flight_data.csv file at the FTP drop location.  The monthly DOT reporting process for the Schedule Distribution group cannot proceed without that data.  Please advise when the file will be available by sending an email to big.support@alaskaair.com.
-

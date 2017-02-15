@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cd ~/outbound
-
-filecount=`ls -1 | wc | awk '{print $1}'`
-
-	if [ $filecount -eq 0 ]; then
-	echo "diners file has been retrieved" | Mail -s diners dean.liebrich@alaskaair.com
-	fi

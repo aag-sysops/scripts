@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd $HOME/outbound
-
-$HOME/bin/373.pl as_massmail.tmp >as_massmail
-

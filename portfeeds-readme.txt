@@ -1,1 +1,0 @@
-Dean: for connectivty problems to SEA send email to our service desk (ICTServiceDesk@portseattle.org) or call them at 206-787-3333 The Service Desk will open a trouble ticket and assign it to Joe's team for resolution.
